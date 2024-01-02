@@ -3,7 +3,6 @@
 
 string accountId;
 bool allTarget = false;
-CTrackMania@ App;
 string audienceCore = "NadeoServices";
 string audienceLive = "NadeoLiveServices";
 string colorMedalAuthor;
@@ -41,7 +40,7 @@ void Main() {
 
     OnSettingsChanged();
 
-    @App = cast<CTrackMania@>(GetApp());
+    CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
     accountId = App.LocalPlayerInfo.WebServicesUserId;
 
@@ -160,6 +159,8 @@ void OnSettingsChanged() {
 }
 
 void Loop() {
+    CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
     if (App.RootMap is null || App.RootMap.MapInfo is null) {
         currentUid = "";
         return;
