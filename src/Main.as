@@ -29,6 +29,29 @@ uint progressCount = 0;
 uint progressPercent = 0;
 string title = "\\$F82" + Icons::CalendarO + "\\$G Campaign Completionist";
 
+void Main() {
+    if (!Permissions::PlayLocalMap()) {
+        warn("plugin requires paid access to play maps");
+        return;
+    }
+
+    OnSettingsChanged();
+
+    @App = cast<CTrackMania@>(GetApp());
+
+    accountId = App.LocalPlayerInfo.WebServicesUserId;
+
+    NadeoServices::AddAudience(audienceCore);
+    NadeoServices::AddAudience(audienceLive);
+
+    GetMaps();
+
+    while (true) {
+        Loop();
+        yield();
+    }
+}
+
 void RenderMenu() {
     if (UI::BeginMenu(title)) {
         if (UI::MenuItem(Icons::Question + " Enabled", "", S_Enabled))
@@ -111,29 +134,6 @@ void RenderMenu() {
     }
 }
 
-void Main() {
-    if (!Permissions::PlayLocalMap()) {
-        warn("plugin requires paid access to play maps");
-        return;
-    }
-
-    OnSettingsChanged();
-
-    @App = cast<CTrackMania@>(GetApp());
-
-    accountId = App.LocalPlayerInfo.WebServicesUserId;
-
-    NadeoServices::AddAudience(audienceCore);
-    NadeoServices::AddAudience(audienceLive);
-
-    GetMaps();
-
-    while (true) {
-        Loop();
-        yield();
-    }
-}
-
 void OnSettingsChanged() {
     if (lastMode != S_Mode) {
         lastMode = S_Mode;
@@ -199,6 +199,7 @@ void Loop() {
         yield();
 
     if (nextMap.uid != currentUid) {
+        Notify();
         startnew(CoroutineFunc(nextMap.Play));
         sleep(10000);
     }
