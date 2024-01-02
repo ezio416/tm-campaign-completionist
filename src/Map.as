@@ -39,6 +39,8 @@ class Map {
 
         ReturnToMenu();
 
+        CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
         App.ManiaTitleControlScriptAPI.PlayMap(downloadUrl, "TrackMania/TM_PlayMap_Local", "");
 
         const uint64 waitToPlayAgain = 5000;
