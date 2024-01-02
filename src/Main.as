@@ -25,6 +25,7 @@ dictionary mapsTotdById;
 dictionary mapsTotdByUid;
 uint metTargetTotal = 0;
 Map@ nextMap;
+bool playPermission = false;
 uint progressCount = 0;
 uint progressPercent = 0;
 string title = "\\$F82" + Icons::CalendarO + "\\$G Campaign Completionist";
@@ -32,8 +33,11 @@ string title = "\\$F82" + Icons::CalendarO + "\\$G Campaign Completionist";
 void Main() {
     if (!Permissions::PlayLocalMap()) {
         warn("plugin requires paid access to play maps");
+        UI::ShowNotification(title, "Paid access (at least standard) is required to play maps", vec4(1.0f, 0.1f, 0.1f, 0.8f));
         return;
     }
+
+    playPermission = true;
 
     OnSettingsChanged();
 
@@ -127,7 +131,7 @@ void RenderMenu() {
         } else
             nextText += "you're done!";
 
-        if (UI::MenuItem(nextText, "", false, !gettingNow && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid))
+        if (UI::MenuItem(nextText, "", false, playPermission && !gettingNow && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid))
             startnew(CoroutineFunc(nextMap.Play));
 
         UI::EndMenu();
@@ -156,7 +160,7 @@ void OnSettingsChanged() {
 }
 
 void Loop() {
-    if (App.RootMap is null) {
+    if (App.RootMap is null || App.RootMap.MapInfo is null) {
         currentUid = "";
         return;
     }

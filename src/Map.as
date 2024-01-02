@@ -30,7 +30,7 @@ class Map {
 
     // courtesy of "Play Map" plugin - https://github.com/XertroV/tm-play-map
     void Play() {
-        if (loadingMap)
+        if (loadingMap || !playPermission)
             return;
 
         loadingMap = true;
