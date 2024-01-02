@@ -24,7 +24,7 @@ void RenderMenu() {
             Icons::Play + " Next: " + (!gettingDone ? "still getting data..." : nextMap !is null ? nextMap.date + ": " + nextMap.nameClean : "you're done!"),
             "",
             false,
-            gettingDone && nextMap !is null && !loadingMap
+            gettingDone && nextMap !is null && !loadingMap && !allTarget
         ))
             startnew(CoroutineFunc(nextMap.Play));
 
