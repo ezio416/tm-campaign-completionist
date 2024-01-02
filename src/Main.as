@@ -1,11 +1,13 @@
 // c 2024-01-01
 // m 2024-01-02
 
+string accountId;
 CTrackMania@ App;
 string audienceCore = "NadeoServices";
 string audienceLive = "NadeoLiveServices";
 Map@[] maps;
-dictionary mapsDict;
+dictionary mapsById;
+dictionary mapsByUid;
 string title = "\\$FA0" + Icons::CalendarO + "\\$G TOTD Grinder";
 
 [Setting category="General" name="Enabled"]
@@ -23,6 +25,8 @@ void Main() {
     }
 
     @App = cast<CTrackMania@>(GetApp());
+
+    accountId = App.LocalPlayerInfo.WebServicesUserId;
 
     NadeoServices::AddAudience(audienceCore);
     NadeoServices::AddAudience(audienceLive);
