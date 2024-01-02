@@ -9,7 +9,7 @@ void NandoRequestWait() {
         return;
     }
 
-    while (Time::Now - latestNandoRequest < 1000)
+    while (Time::Now - latestNandoRequest < 1000)  // wait 1000ms between requests
         yield();
 
     latestNandoRequest = Time::Now;
@@ -24,6 +24,10 @@ void GetMaps() {
         yield();
 
     trace("getting maps");
+
+    maps.RemoveRange(0, maps.Length);
+    mapsById.DeleteAll();
+    mapsByUid.DeleteAll();
 
     Net::HttpRequest@ req = NadeoServices::Get(
         audienceLive,
@@ -175,4 +179,8 @@ void GetRecords() {
     // }
 
     trace("getting records done");
+
+    gettingDone = true;
+
+    SetNextMap();
 }

@@ -40,6 +40,7 @@ class Map {
 
         const uint64 waitToPlayAgain = 5000;
         const uint64 now = Time::Now;
+
         while (Time::Now - now < waitToPlayAgain)
             yield();
 
