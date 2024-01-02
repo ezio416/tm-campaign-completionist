@@ -6,31 +6,105 @@ bool allTarget = false;
 CTrackMania@ App;
 string audienceCore = "NadeoServices";
 string audienceLive = "NadeoLiveServices";
+string colorMedalAuthor;
+string colorMedalBronze;
+string colorMedalGold;
+string colorMedalNone;
+string colorMedalSilver;
+string colorTarget;
 string currentUid;
-bool gettingDone = false;
+bool gettingNow = false;
+Mode lastMode = S_Mode;
 Map@[] maps;
-dictionary mapsById;
 dictionary mapsByUid;
+Map@[] mapsCampaign;
+dictionary mapsCampaignById;
+dictionary mapsCampaignByUid;
+Map@[] mapsTotd;
+dictionary mapsTotdById;
+dictionary mapsTotdByUid;
 uint metTargetTotal = 0;
 Map@ nextMap;
-string targetColor;
-string title = "\\$F82" + Icons::CalendarO + "\\$G TOTD Completionist";
+uint progressCount = 0;
+uint progressPercent = 0;
+string title = "\\$F82" + Icons::CalendarO + "\\$G Campaign Completionist";
 
 void RenderMenu() {
     if (UI::BeginMenu(title)) {
-        UI::MenuItem(targetColor + Icons::Circle + " Target Medal: " + tostring(S_Target), "", false, false);
-        UI::MenuItem(Icons::Percent + " Progress: " + (!gettingDone ? "..." : metTargetTotal + "/" + maps.Length + " (" + (int(100 * metTargetTotal / maps.Length)) +"%)"), "", false, false);
+        if (UI::MenuItem(Icons::Question + " Enabled", "", S_Enabled))
+            S_Enabled = !S_Enabled;
 
-        if (UI::MenuItem(
-            "\\$0F0" + Icons::Play + "\\$G Next: " + (
-                !gettingDone ? "still getting data..." : nextMap !is null ? nextMap.date + ": " +
-                    (S_ColorMapName ? nextMap.nameColored : nextMap.nameClean) +
-                    (nextMap.uid == currentUid ? " (current)" : ""): "you're done!"
-            ),
+        if (UI::BeginMenu((S_Mode == Mode::NadeoCampaign ? "\\$1D4" : "\\$19F") + Icons::ArrowsH + " Mode: " + (S_Mode == Mode::NadeoCampaign ? "Nadeo Campaign" : "Track of the Day"), !gettingNow)) {
+            if (UI::MenuItem("\\$1D4" + Icons::Kenney::Car + " Nadeo Campaign")) {
+                S_Mode = Mode::NadeoCampaign;
+                OnSettingsChanged();
+            }
+            if (UI::MenuItem("\\$19F" + Icons::Calendar + " Track of the Day")) {
+                S_Mode = Mode::TrackOfTheDay;
+                OnSettingsChanged();
+            }
+            UI::EndMenu();
+        }
+
+        if (UI::BeginMenu(colorTarget + Icons::Circle + " Target Medal: " + tostring(S_Target))) {
+            if (UI::MenuItem(colorMedalAuthor + Icons::Circle + " Author", "")) {
+                S_Target = TargetMedal::Author;
+                OnSettingsChanged();
+                startnew(SetNextMap);
+            }
+            if (UI::MenuItem(colorMedalGold + Icons::Circle + " Gold", "")) {
+                S_Target = TargetMedal::Gold;
+                OnSettingsChanged();
+                startnew(SetNextMap);
+            }
+            if (UI::MenuItem(colorMedalSilver + Icons::Circle + " Silver", "")) {
+                S_Target = TargetMedal::Silver;
+                OnSettingsChanged();
+                startnew(SetNextMap);
+            }
+            if (UI::MenuItem(colorMedalBronze + Icons::Circle + " Bronze", "")) {
+                S_Target = TargetMedal::Bronze;
+                OnSettingsChanged();
+                startnew(SetNextMap);
+            }
+            if (UI::MenuItem(colorMedalNone + Icons::Circle + " None", "")) {
+                S_Target = TargetMedal::None;
+                OnSettingsChanged();
+                startnew(SetNextMap);
+            }
+            UI::EndMenu();
+        }
+
+        UI::MenuItem(
+            Icons::Percent + " Progress: " + (gettingNow ? "..." : metTargetTotal + "/" + maps.Length + " (" + (int(100 * metTargetTotal / maps.Length)) +"%)"),
             "",
             false,
-            gettingDone && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid
-        ))
+            false
+        );
+
+        if (S_Mode == Mode::NadeoCampaign) {
+            if (mapsCampaign.Length > 0)
+                progressPercent = uint(100.0f * float(progressCount) / float(2 * mapsCampaign.Length));
+            else
+                progressPercent = 0;
+        } else {
+            if (mapsTotd.Length > 0)
+                progressPercent = uint(100.0f * float(progressCount) / float(2 * mapsTotd.Length));
+            else
+                progressPercent = 0;
+        }
+
+        string nextText = "\\$0F0" + Icons::Play + "\\$G Next: ";
+        if (gettingNow)
+            nextText += "still getting data... (" + progressPercent + "%)";
+        else if (nextMap !is null) {
+            nextText += S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ";
+            nextText += S_ColorMapName ? nextMap.nameColored : nextMap.nameClean;
+            nextText += nextMap.uid == currentUid ? " (current)" : "";
+        } else
+            nextText += "you're done!";
+
+        if (UI::MenuItem(nextText, "", false, !gettingNow && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid))
             startnew(CoroutineFunc(nextMap.Play));
 
         UI::EndMenu();
@@ -61,14 +135,23 @@ void Main() {
 }
 
 void OnSettingsChanged() {
-    SetNextMap();
+    if (lastMode != S_Mode) {
+        lastMode = S_Mode;
+        startnew(GetMaps);
+    }
+
+    colorMedalAuthor = "\\" + Text::FormatGameColor(S_ColorMedalAuthor);
+    colorMedalGold   = "\\" + Text::FormatGameColor(S_ColorMedalGold);
+    colorMedalSilver = "\\" + Text::FormatGameColor(S_ColorMedalSilver);
+    colorMedalBronze = "\\" + Text::FormatGameColor(S_ColorMedalBronze);
+    colorMedalNone   = "\\" + Text::FormatGameColor(S_ColorMedalNone);
 
     switch (S_Target) {
-        case TargetMedal::Author: targetColor = "\\$2B0"; break;
-        case TargetMedal::Gold:   targetColor = "\\$FE0"; break;
-        case TargetMedal::Silver: targetColor = "";       break;
-        case TargetMedal::Bronze: targetColor = "\\$A70"; break;
-        default:                  targetColor = "\\$F00";
+        case TargetMedal::Author: colorTarget = colorMedalAuthor; break;
+        case TargetMedal::Gold:   colorTarget = colorMedalGold;   break;
+        case TargetMedal::Silver: colorTarget = colorMedalSilver; break;
+        case TargetMedal::Bronze: colorTarget = colorMedalBronze; break;
+        default:                  colorTarget = colorMedalNone;
     }
 }
 
@@ -84,7 +167,7 @@ void Loop() {
     currentUid = App.RootMap.MapInfo.MapUid;
 
     if (
-        !mapsByUid.Exists(currentUid) ||
+        nextMap is null ||
         App.Network is null ||
         App.Network.ClientManiaAppPlayground is null ||
         App.Network.ClientManiaAppPlayground.UI is null ||
@@ -108,22 +191,22 @@ void Loop() {
 
     trace("run finished, getting PB on current map");
 
-    Map@ map = cast<Map@>(mapsByUid[currentUid]);
-    map.myTime = ScoreMgr.Map_GetRecord_v2(userId, currentUid, "PersonalBest", "", "TimeAttack", "");
-    map.myMedals = ScoreMgr.Map_GetMedal(userId, currentUid, "PersonalBest", "", "TimeAttack", "");
+    nextMap.myTime = ScoreMgr.Map_GetRecord_v2(userId, currentUid, "PersonalBest", "", "TimeAttack", "");
+    nextMap.myMedals = ScoreMgr.Map_GetMedal(userId, currentUid, "PersonalBest", "", "TimeAttack", "");
 
-    SetNextMap();
+    Meta::PluginCoroutine@ coro = startnew(SetNextMap);
+    while (coro.IsRunning())
+        yield();
 
     if (nextMap.uid != currentUid) {
-        trace("target met, next map...");
         startnew(CoroutineFunc(nextMap.Play));
-    } else
         sleep(10000);
+    }
 }
 
 void SetNextMap() {
-    if (!gettingDone)
-        return;
+    while (gettingNow)
+        yield();
 
     trace("setting next map");
 
@@ -132,7 +215,7 @@ void SetNextMap() {
     uint target = 4 - S_Target;
 
     for (uint i = 0; i < maps.Length; i++) {
-        if (S_Target == TargetMedal::JustFinish) {
+        if (S_Target == TargetMedal::None) {
             if (maps[i].myTime > 0) {
                 metTargetTotal++;
                 continue;
@@ -149,6 +232,9 @@ void SetNextMap() {
     if (metTargetTotal == maps.Length) {
         allTarget = true;
         trace("congrats, you've met your target on all maps!");
-    } else if (nextMap !is null)
-        trace("next map: " + nextMap.date + ": " + nextMap.nameClean);
+    } else {
+        allTarget = false;
+        if (nextMap !is null)
+            trace("next map: " + nextMap.date + ": " + nextMap.nameClean);
+    }
 }
