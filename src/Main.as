@@ -6,6 +6,7 @@ bool allTarget = false;
 CTrackMania@ App;
 string audienceCore = "NadeoServices";
 string audienceLive = "NadeoLiveServices";
+string currentUid;
 bool gettingDone = false;
 Map@[] maps;
 dictionary mapsById;
@@ -21,10 +22,14 @@ void RenderMenu() {
         UI::MenuItem(Icons::Percent + " Progress: " + (!gettingDone ? "..." : metTargetTotal + "/" + maps.Length + " (" + (int(100 * metTargetTotal / maps.Length)) +"%)"), "", false, false);
 
         if (UI::MenuItem(
-            Icons::Play + " Next: " + (!gettingDone ? "still getting data..." : nextMap !is null ? nextMap.date + ": " + nextMap.nameClean : "you're done!"),
+            "\\$0F0" + Icons::Play + "\\$G Next: " + (
+                !gettingDone ? "still getting data..." : nextMap !is null ? nextMap.date + ": " +
+                    (S_ColorMapName ? nextMap.nameColored : nextMap.nameClean) +
+                    (nextMap.uid == currentUid ? " (current)" : ""): "you're done!"
+            ),
             "",
             false,
-            gettingDone && nextMap !is null && !loadingMap && !allTarget
+            gettingDone && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid
         ))
             startnew(CoroutineFunc(nextMap.Play));
 
@@ -63,18 +68,23 @@ void OnSettingsChanged() {
         case TargetMedal::Gold:   targetColor = "\\$FE0"; break;
         case TargetMedal::Silver: targetColor = "";       break;
         case TargetMedal::Bronze: targetColor = "\\$A70"; break;
-        default:                  targetColor = "\\$F11";
+        default:                  targetColor = "\\$F00";
     }
 }
 
 void Loop() {
-    if (!S_Enabled || loadingMap || App.RootMap is null)
+    if (App.RootMap is null) {
+        currentUid = "";
+        return;
+    }
+
+    if (!S_Enabled || loadingMap)
         return;
 
-    string thisUid = App.RootMap.MapInfo.MapUid;
+    currentUid = App.RootMap.MapInfo.MapUid;
 
     if (
-        !mapsByUid.Exists(thisUid) ||
+        !mapsByUid.Exists(currentUid) ||
         App.Network is null ||
         App.Network.ClientManiaAppPlayground is null ||
         App.Network.ClientManiaAppPlayground.UI is null ||
@@ -98,16 +108,17 @@ void Loop() {
 
     trace("run finished, getting PB on current map");
 
-    Map@ map = cast<Map@>(mapsByUid[thisUid]);
-    map.myTime = ScoreMgr.Map_GetRecord_v2(userId, thisUid, "PersonalBest", "", "TimeAttack", "");
-    map.myMedals = ScoreMgr.Map_GetMedal(userId, thisUid, "PersonalBest", "", "TimeAttack", "");
+    Map@ map = cast<Map@>(mapsByUid[currentUid]);
+    map.myTime = ScoreMgr.Map_GetRecord_v2(userId, currentUid, "PersonalBest", "", "TimeAttack", "");
+    map.myMedals = ScoreMgr.Map_GetMedal(userId, currentUid, "PersonalBest", "", "TimeAttack", "");
 
     SetNextMap();
 
-    if (nextMap.uid != thisUid) {
+    if (nextMap.uid != currentUid) {
         trace("target met, next map...");
         startnew(CoroutineFunc(nextMap.Play));
-    }
+    } else
+        sleep(10000);
 }
 
 void SetNextMap() {

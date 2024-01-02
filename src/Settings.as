@@ -14,3 +14,6 @@ bool S_Enabled = true;
 
 [Setting category="General" name="Target Medal"]
 TargetMedal S_Target = TargetMedal::Author;
+
+[Setting category="General" name="Colored map name in menu"]
+bool S_ColorMapName = false;
