@@ -23,6 +23,8 @@ void GetMaps() {
     while (coro.IsRunning())
         yield();
 
+    trace("getting maps");
+
     Net::HttpRequest@ req = NadeoServices::Get(
         audienceLive,
         NadeoServices::BaseURLLive() + "/api/token/campaign/month?length=999&offset=0"
@@ -47,10 +49,12 @@ void GetMaps() {
 
             if (map.uid.Length > 0) {
                 maps.InsertLast(map);
-                mapsDict.Set(map.uid, @map);
+                mapsByUid.Set(map.uid, @map);
             }
         }
     }
+
+    trace("getting maps done");
 
     GetMapInfo();
 }
@@ -94,30 +98,81 @@ void GetMapInfo() {
         Json::Value@ mapInfo = Json::Parse(req.String());
 
         for (uint i = 0; i < mapInfo.Length; i++) {
-            Map@ map = cast<Map@>(mapsDict[mapInfo[i]["mapUid"]]);
+            Map@ map = cast<Map@>(mapsByUid[mapInfo[i]["mapUid"]]);
 
             map.authorTime  = mapInfo[i]["authorScore"];
             map.bronzeTime  = mapInfo[i]["bronzeScore"];
             map.downloadUrl = mapInfo[i]["fileUrl"];
             map.goldTime    = mapInfo[i]["goldScore"];
             map.id          = mapInfo[i]["mapId"];
-            map.nameRaw     = mapInfo[i]["name"];
+            map.nameRaw     = string(mapInfo[i]["name"]).Trim();
             map.silverTime  = mapInfo[i]["silverScore"];
 
             map.nameClean = StripFormatCodes(map.nameRaw);
             map.nameColored = ColoredString(map.nameRaw);
             map.nameQuoted = "\"" + map.nameClean + "\"";
+
+            mapsById.Set(map.id, @map);
         }
     }
 
-    for (uint i = 0; i < maps.Length; i++) {
-        Map@ map = maps[i];
-        print(map.date + " " + map.nameColored + "\\$G: " + Time::Format(map.authorTime));
-    }
+    // for (uint i = 0; i < maps.Length; i++) {
+    //     Map@ map = maps[i];
+    //     print(map.date + " " + map.nameColored + "\\$G: " + map.id);
+    // }
+
+    trace("getting map info done");
 
     GetRecords();
 }
 
 void GetRecords() {
-    ;
+    uint index = 0;
+    string url;
+
+    while (index < maps.Length - 1) {
+        url = NadeoServices::BaseURLCore() + "/mapRecords/?accountIdList=" + accountId + "&mapIdList=";
+
+        for (uint i = index; i < maps.Length; i++) {
+            index = i;
+
+            if (url.Length < 8183)
+                url += maps[i].id + ",";
+            else
+                break;
+        }
+
+        Meta::PluginCoroutine@ coro = startnew(NandoRequestWait);
+        while (coro.IsRunning())
+            yield();
+
+        trace("getting records (" + (index + 1) + "/" + maps.Length + ")");
+
+        Net::HttpRequest@ req = NadeoServices::Get(audienceCore, url.SubStr(0, url.Length - 1));
+        req.Start();
+        while (!req.Finished())
+            yield();
+
+        int code = req.ResponseCode();
+        if (code != 200) {
+            warn("error getting records: " + code + "; " + req.Error() + "; " + req.String());
+            return;
+        }
+
+        Json::Value@ records = Json::Parse(req.String());
+
+        for (uint i = 0; i < records.Length; i++) {
+            Map@ map = cast<Map@>(mapsById[records[i]["mapId"]]);
+
+            map.myMedals = records[i]["medal"];
+            map.myTime = records[i]["recordScore"]["time"];
+        }
+    }
+
+    // for (uint i = 0; i < maps.Length; i++) {
+    //     Map@ map = maps[i];
+    //     print(map.date + " " + map.nameColored + "\\$G: " + Time::Format(map.myTime));
+    // }
+
+    trace("getting records done");
 }
