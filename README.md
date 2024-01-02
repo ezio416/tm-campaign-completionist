@@ -1,3 +1,3 @@
-# TOTD Completionist
+# Campaign Completionist
 
-Switches map to the next TOTD when you get the target medal.
+Switches map to the next campaign/TOTD map when you get the target medal.

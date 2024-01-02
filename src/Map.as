@@ -20,7 +20,10 @@ class Map {
     string uid;
 
     Map() { }
-    Map(int year, int month, Json::Value@ day) {
+    Map(Json::Value@ map) {  // campaign
+        uid = map["mapUid"];
+    }
+    Map(int year, int month, Json::Value@ day) {  // TOTD
         date = year + "-" + ZPad2(month) + "-" + ZPad2(day["monthDay"]);
         uid = day["mapUid"];
     }
