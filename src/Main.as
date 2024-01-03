@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-01-02
+// m 2024-01-03
 
 string accountId;
 bool allTarget = false;
@@ -19,6 +19,7 @@ dictionary mapsByUid;
 Map@[] mapsCampaign;
 dictionary mapsCampaignById;
 dictionary mapsCampaignByUid;
+Map@[] mapsRemaining;
 Map@[] mapsTotd;
 dictionary mapsTotdById;
 dictionary mapsTotdByUid;
@@ -57,7 +58,7 @@ void Main() {
 
 void RenderMenu() {
     if (UI::BeginMenu(title)) {
-        if (UI::MenuItem(Icons::Question + " Enabled", "", S_Enabled))
+        if (UI::MenuItem(Icons::Question + " Auto Switch Maps", "", S_Enabled))
             S_Enabled = !S_Enabled;
 
         if (UI::BeginMenu((S_Mode == Mode::NadeoCampaign ? "\\$1D4" : "\\$19F") + Icons::ArrowsH + " Mode: " + (S_Mode == Mode::NadeoCampaign ? "Nadeo Campaign" : "Track of the Day"), !gettingNow)) {
@@ -132,6 +133,19 @@ void RenderMenu() {
 
         if (UI::MenuItem(nextText, "", false, playPermission && !gettingNow && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid))
             startnew(CoroutineFunc(nextMap.Play));
+
+        if (S_AllMapsInMenu) {
+            if (UI::BeginMenu(Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow)) {
+                for (uint i = 0; i < mapsRemaining.Length; i++) {
+                    Map@ map = mapsRemaining[i];
+
+                    if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameRaw : map.date + ": " + (S_ColorMapName ? map.nameColored : map.nameClean), ""))
+                        startnew(CoroutineFunc(map.Play));
+                }
+
+                UI::EndMenu();
+            }
+        }
 
         UI::EndMenu();
     }
@@ -220,6 +234,8 @@ void SetNextMap() {
     @nextMap = null;
     uint target = 4 - S_Target;
 
+    mapsRemaining.RemoveRange(0, mapsRemaining.Length);
+
     for (uint i = 0; i < maps.Length; i++) {
         if (S_Target == TargetMedal::None) {
             if (maps[i].myTime > 0) {
@@ -230,6 +246,8 @@ void SetNextMap() {
             metTargetTotal++;
             continue;
         }
+
+        mapsRemaining.InsertLast(maps[i]);
 
         if (nextMap is null)
             @nextMap = maps[i];

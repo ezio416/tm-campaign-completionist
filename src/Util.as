@@ -45,5 +45,5 @@ void ReturnToMenu() {
 }
 
 string ZPad2(int num) {
-    return num < 10 ? "0" + num : tostring(num);
+    return (num < 10 ? "0" : "") + num;
 }

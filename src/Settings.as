@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-02
+// m 2024-01-03
 
 enum Mode {
     NadeoCampaign,
@@ -25,7 +25,11 @@ Mode S_Mode = Mode::NadeoCampaign;
 TargetMedal S_Target = TargetMedal::Author;
 
 
-[Setting category="Colors" name="Colored map name in menu"]
+[Setting category="General" name="Show a list of all remaining maps"]
+bool S_AllMapsInMenu = false;
+
+
+[Setting category="Colors" name="Colored map name"]
 bool S_ColorMapName = false;
 
 [Setting category="Colors" name="Author medal" color]
