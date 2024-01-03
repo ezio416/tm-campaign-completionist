@@ -1,6 +1,8 @@
 // c 2024-01-02
 // m 2024-01-03
 
+#if TMNEXT
+
 uint64 latestNandoRequest = 0;
 
 void NandoRequestWait() {
@@ -232,3 +234,5 @@ void GetRecords() {
 
     SetNextMap();
 }
+
+#endif
