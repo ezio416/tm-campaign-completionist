@@ -31,11 +31,13 @@ uint progressPercent = 0;
 string title = "\\$F82" + Icons::CalendarO + "\\$G Campaign Completionist";
 
 void Main() {
+#if TMNEXT
     if (!Permissions::PlayLocalMap()) {
         warn("plugin requires paid access to play maps");
         UI::ShowNotification(title, "Paid access (at least standard) is required to play maps", vec4(1.0f, 0.1f, 0.1f, 0.8f));
         return;
     }
+#endif
 
     playPermission = true;
 
@@ -45,8 +47,10 @@ void Main() {
 
     accountId = App.LocalPlayerInfo.WebServicesUserId;
 
+#if TMNEXT
     NadeoServices::AddAudience(audienceCore);
     NadeoServices::AddAudience(audienceLive);
+#endif
 
     GetMaps();
 
