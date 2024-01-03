@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-02
+// m 2024-01-03
 
 uint64 latestNandoRequest = 0;
 
@@ -47,8 +47,8 @@ void GetMaps() {
 
     Net::HttpRequest@ req = NadeoServices::Get(
         audienceLive,
-        NadeoServices::BaseURLLive() + "/api/token/campaign/" + (S_Mode == Mode::NadeoCampaign ? "official" : "month") + "?length=999&offset=0"
-    );
+        NadeoServices::BaseURLLive() + "/api/token/campaign/" + (S_Mode == Mode::NadeoCampaign ? "official" : "month") + "?length=99&offset=0"
+    );  // length 99 will work until 2029 (TOTD) or 2045 (campaign)
     req.Start();
     while (!req.Finished())
         yield();
