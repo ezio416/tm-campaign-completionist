@@ -187,6 +187,7 @@ void Loop() {
 
     if (
         nextMap is null ||
+        nextMap.uid != currentUid ||
         App.Network is null ||
         App.Network.ClientManiaAppPlayground is null ||
         App.Network.ClientManiaAppPlayground.UI is null ||
