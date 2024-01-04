@@ -247,24 +247,36 @@ void LoadTitlepack() {
 
     switch (desiredTitlepack) {
         case 0:
-            ReturnToTitleSelect();
-            ScriptAPI.SelectTitle("TMCanyon@nadeo");
-            ScriptAPI.EnterTitle("TMCanyon@nadeo");
+            if (hasCanyon) {
+                ReturnToTitleSelect();
+                ScriptAPI.SelectTitle("TMCanyon@nadeo");
+                ScriptAPI.EnterTitle("TMCanyon@nadeo");
+            } else
+                warn("you don't own Canyon!");
             break;
         case 1:
-            ReturnToTitleSelect();
-            ScriptAPI.SelectTitle("TMCanyon@nadeo");
-            ScriptAPI.EnterTitle("TMStadium@nadeo");
+            if (hasStadium) {
+                ReturnToTitleSelect();
+                ScriptAPI.SelectTitle("TMCanyon@nadeo");
+                ScriptAPI.EnterTitle("TMStadium@nadeo");
+            } else
+                warn("you don't have Stadium!");
             break;
         case 2:
-            ReturnToTitleSelect();
-            ScriptAPI.SelectTitle("TMCanyon@nadeo");
-            ScriptAPI.EnterTitle("TMValley@nadeo");
+            if (hasValley) {
+                ReturnToTitleSelect();
+                ScriptAPI.SelectTitle("TMCanyon@nadeo");
+                ScriptAPI.EnterTitle("TMValley@nadeo");
+            } else
+                warn("you don't have Valley!");
             break;
         case 3:
-            ReturnToTitleSelect();
-            ScriptAPI.SelectTitle("TMCanyon@nadeo");
-            ScriptAPI.EnterTitle("TMLagoon@nadeo");
+            if (hasLagoon) {
+                ReturnToTitleSelect();
+                ScriptAPI.SelectTitle("TMCanyon@nadeo");
+                ScriptAPI.EnterTitle("TMLagoon@nadeo");
+            } else
+                warn("you don't have Lagoon!");
             break;
         default: warn("invalid titlepack: " + desiredTitlepack);
     }
