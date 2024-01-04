@@ -36,8 +36,10 @@ void NotifyTrace(const string &in msg) {
     UI::ShowNotification(title, msg, vec4(0.4f, 0.4f, 0.4f, 0.8f));
 }
 
-void NotifyWarn(const string &in msg) {
-    warn(msg);
+void NotifyWarn(const string &in msg, bool log = true) {
+    if (log)
+        warn(msg);
+
     UI::ShowNotification(title, msg, vec4(0.9f, 0.6f, 0.0f, 0.8f));
 }
 

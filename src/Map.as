@@ -155,7 +155,7 @@ class Map {
             FallbackPlayFromManiaExchange();
         else {
             trace("map has no mxid");
-            SelectOpponent();
+            SelectOpponentLocal();
         }
     }
 
@@ -169,7 +169,7 @@ class Map {
 
         if (App.RootMap !is null && App.RootMap.MapInfo !is null && App.RootMap.MapInfo.MapUid == currentUid) {
             trace("load seems okay");
-            SelectOpponent();
+            SelectOpponentLocal();
             return;
         }
 
@@ -179,7 +179,7 @@ class Map {
 
         App.ManiaTitleControlScriptAPI.PlayMap(url, "SingleMap", "");
 
-        SelectOpponent();
+        SelectOpponentLocal();
     }
 
     // courtesy of "MXRandom" plugin - https://github.com/GreepTheSheep/openplanet-MXRandom

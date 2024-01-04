@@ -42,7 +42,7 @@ TargetMedal S_Target = TargetMedal::Author;
 bool S_AllMapsInMenu = false;
 
 #if MP4
-[Setting category="General" name="Select opponent automatically when joining map"]
+[Setting category="General" name="Select opponent automatically when joining map" description="Only works when loading a map in 'local' mode. I'm not sure how to load it that way consistently, so this won't always work."]
 bool S_AutoOpponent = true;
 
 enum OpponentSelection {

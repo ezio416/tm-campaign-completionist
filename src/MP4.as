@@ -477,18 +477,29 @@ void ReturnToTitleSelect() {
 }
 
 // void SelectOpponentCampaign() {
-//     trace("selecting opponent in campaign menu");
+    // trace("selecting opponent in campaign menu");
 
-//     CTrackMania@ App = cast<CTrackMania@>(GetApp());
+    // CTrackMania@ App = cast<CTrackMania@>(GetApp());
+    // CTrackManiaNetwork@ Network = cast<CTrackManiaNetwork@>(App.Network);
+    // if (Network is null)
+    //     return;
 
-//     const uint64 now = Time::Now;
-//     while (App.RootMap is null && Time::Now - now < 10000)
-//         yield();  // time this so we don't get stuck if the map load fails
+    // const uint64 now = Time::Now;
+    // while (App.RootMap is null && Time::Now - now < 10000)
+    //     yield();  // time this so we don't get stuck if the map load fails
 
-//     ;
+    // CTmRaceInterfaceManialinkScripHandler@ Handler = cast<CTmRaceInterfaceManialinkScripHandler@>(Network.PlaygroundInterfaceScriptHandler);  // yes, nando misspelled this one
+    // if (Handler is null)
+    //     return;
+
+    // MwFastBuffer<wstring> ghostChoice = MwFastBuffer<wstring>();
+    // ghostChoice.Add("0");  // C_GhostChoice_None
+    // Handler.SendCustomEvent("StartRaceMenuEvent_StartRace", ghostChoice);
+
+    // warn("can't set opponent in campaign mode");
 // }
 
-void SelectOpponent() {
+void SelectOpponentLocal() {
     if (!S_AutoOpponent)
         return;
 
@@ -500,125 +511,130 @@ void SelectOpponent() {
     while (Time::Now - now < 10000 && (App.RootMap is null || App.RootMap.MapInfo is null || App.ActiveMenus.Length == 0))
         yield();  // time this so we don't get stuck if the map load fails
 
-    CGameMenu@ Menu = App.ActiveMenus[0];
-    if (Menu is null) {
-        warn("Menu is null!");
-        return;
-    }
+    try {
+        CGameMenu@ Menu = App.ActiveMenus[0];
+        if (Menu is null) {
+            warn("Menu is null!");
+            return;
+        }
 
-    CGameMenuFrame@ CurrentFrame = Menu.CurrentFrame;
-    if (CurrentFrame is null) {
-        warn("CurrentFrame is null!");
-        return;
-    }
+        CGameMenuFrame@ CurrentFrame = Menu.CurrentFrame;
+        if (CurrentFrame is null) {
+            warn("CurrentFrame is null!");
+            return;
+        }
 
-    if (CurrentFrame.Id.GetName() != "FrameDialogQuickChooseGhostOpponents") {
-        warn("not in opponent selection menu!");
-        return;
-    }
+        if (CurrentFrame.Id.GetName() != "FrameDialogQuickChooseGhostOpponents") {
+            warn("not in opponent selection menu!");
+            return;
+        }
 
-    if (CurrentFrame.Childs.Length == 0) {
-        warn("CurrentFrame has no children!");
-        return;
-    }
+        if (CurrentFrame.Childs.Length == 0) {
+            warn("CurrentFrame has no children!");
+            return;
+        }
 
-    for (uint i = 0; i < CurrentFrame.Childs.Length; i++) {
-        CControlFrame@ FrameContent = cast<CControlFrame@>(CurrentFrame.Childs[i]);
-        if (FrameContent is null)
-            continue;
+        for (uint i = 0; i < CurrentFrame.Childs.Length; i++) {
+            CControlFrame@ FrameContent = cast<CControlFrame@>(CurrentFrame.Childs[i]);
+            if (FrameContent is null)
+                continue;
 
-        if (FrameContent.Id.GetName() == "FrameContent") {
-            if (FrameContent.Childs.Length == 0) {
-                warn("FrameContent has no children!");
-                return;
-            }
-
-            for (uint j = 0; j < FrameContent.Childs.Length; j++) {
-                CControlPager@ Pager = cast<CControlPager@>(FrameContent.Childs[j]);  // get to medals page if on a regional one
-                if (Pager !is null && Pager.Id.GetName() == "PagerGridZones" && Pager.ButtonNextPage !is null) {
-                    for (uint k = 0; k < 4; k++) {
-                        // trace("clicking next page");
-                        Pager.ButtonNextPage.OnAction();
-                    }
-                }
-
-                CControlListCard@ ListRankings = cast<CControlListCard@>(FrameContent.Childs[j]);
-                if (ListRankings is null)
-                    continue;
-
-                if (ListRankings.Id.GetName() == "ListRankings") {
-                    if (ListRankings.Childs.Length < 5 || ListRankings.Childs.Length > 6) {
-                        warn("ListRankings has a wrong number of children!");
-                        return;
-                    }
-
-                    CControlFrame@ GhostFrame = cast<CControlFrame@>(ListRankings.Childs[GetOpponentButtonIndex(ListRankings.Childs.Length, App.RootMap.MapInfo.MapUid)]);
-                    if (GhostFrame is null) {
-                        warn("GhostFrame is null!");
-                        return;
-                    }
-
-                    if (GhostFrame.Childs.Length == 0) {
-                        warn("GhostFrame has no children!");
-                        return;
-                    }
-
-                    for (uint k = 0; k < GhostFrame.Childs.Length; k++) {
-                        CControlButton@ Button = cast<CControlButton@>(GhostFrame.Childs[k]);
-                        if (Button is null)
-                            continue;
-
-                        if (Button.Id.GetName() == "ButtonFocus") {
-                            trace("selecting opponent (" + (S_OpponentSelection == OpponentSelection::None ? "None" : tostring(S_Target)) + ")");
-                            Button.IsFocused = true;
-                            Button.OnAction();
-                            break;
-                        }
-
-                        warn("ButtonFocus not found!");
-                        return;
-                    }
-
-                    for (uint k = 0; k < CurrentFrame.Childs.Length; k++) {
-                        CGameControlCardGeneric@ ButtonPlay = cast<CGameControlCardGeneric@>(CurrentFrame.Childs[k]);
-                        if (ButtonPlay is null)
-                            continue;
-
-                        if (ButtonPlay.Id.GetName() == "ButtonPlay") {
-                            if (ButtonPlay.Childs.Length == 0) {
-                                warn("ButtonPlay has no children!");
-                                return;
-                            }
-
-                            for (uint l = 0; l < ButtonPlay.Childs.Length; l++) {
-                                CControlButton@ ButtonSelection = cast<CControlButton@>(ButtonPlay.Childs[l]);
-                                if (ButtonSelection is null)
-                                    continue;
-
-                                if (ButtonSelection.Id.GetName() == "ButtonSelection") {
-                                    trace("clicking play");
-                                    ButtonSelection.IsFocused = true;
-                                    ButtonSelection.OnAction();
-                                    return;
-                                }
-                            }
-
-                            warn("ButtonSelection not found!");
-                            return;
-                        }
-                    }
-
-                    warn("ButtonPlay not found!");
+            if (FrameContent.Id.GetName() == "FrameContent") {
+                if (FrameContent.Childs.Length == 0) {
+                    warn("FrameContent has no children!");
                     return;
                 }
 
-                warn("ListRankings not found!");
-                return;
+                for (uint j = 0; j < FrameContent.Childs.Length; j++) {
+                    CControlPager@ Pager = cast<CControlPager@>(FrameContent.Childs[j]);  // go to medals page if on a regional one
+                    if (Pager !is null && Pager.Id.GetName() == "PagerGridZones" && Pager.ButtonNextPage !is null) {
+                        for (uint k = 0; k < 4; k++) {
+                            // trace("clicking next page");
+                            Pager.ButtonNextPage.OnAction();
+                        }
+                    }
+
+                    CControlListCard@ ListRankings = cast<CControlListCard@>(FrameContent.Childs[j]);
+                    if (ListRankings is null)
+                        continue;
+
+                    if (ListRankings.Id.GetName() == "ListRankings") {
+                        if (ListRankings.Childs.Length < 5 || ListRankings.Childs.Length > 6) {
+                            warn("ListRankings has a wrong number of children!");
+                            return;
+                        }
+
+                        CControlFrame@ GhostFrame = cast<CControlFrame@>(ListRankings.Childs[GetOpponentButtonIndex(ListRankings.Childs.Length, App.RootMap.MapInfo.MapUid)]);
+                        if (GhostFrame is null) {
+                            warn("GhostFrame is null!");
+                            return;
+                        }
+
+                        if (GhostFrame.Childs.Length == 0) {
+                            warn("GhostFrame has no children!");
+                            return;
+                        }
+
+                        for (uint k = 0; k < GhostFrame.Childs.Length; k++) {
+                            CControlButton@ Button = cast<CControlButton@>(GhostFrame.Childs[k]);
+                            if (Button is null)
+                                continue;
+
+                            if (Button.Id.GetName() == "ButtonFocus") {
+                                trace("selecting opponent (" + (S_OpponentSelection == OpponentSelection::None ? "None" : tostring(S_Target)) + ")");
+                                Button.IsFocused = true;
+                                Button.OnAction();
+                                break;
+                            }
+
+                            warn("ButtonFocus not found!");
+                            return;
+                        }
+
+                        for (uint k = 0; k < CurrentFrame.Childs.Length; k++) {
+                            CGameControlCardGeneric@ ButtonPlay = cast<CGameControlCardGeneric@>(CurrentFrame.Childs[k]);
+                            if (ButtonPlay is null)
+                                continue;
+
+                            if (ButtonPlay.Id.GetName() == "ButtonPlay") {
+                                if (ButtonPlay.Childs.Length == 0) {
+                                    warn("ButtonPlay has no children!");
+                                    return;
+                                }
+
+                                for (uint l = 0; l < ButtonPlay.Childs.Length; l++) {
+                                    CControlButton@ ButtonSelection = cast<CControlButton@>(ButtonPlay.Childs[l]);
+                                    if (ButtonSelection is null)
+                                        continue;
+
+                                    if (ButtonSelection.Id.GetName() == "ButtonSelection") {
+                                        trace("clicking play");
+                                        ButtonSelection.IsFocused = true;
+                                        ButtonSelection.OnAction();
+                                        return;
+                                    }
+                                }
+
+                                warn("ButtonSelection not found!");
+                                return;
+                            }
+                        }
+
+                        warn("ButtonPlay not found!");
+                        return;
+                    }
+
+                    warn("ListRankings not found!");
+                    return;
+                }
             }
         }
-    }
 
-    warn("FrameContent not found!");
+        warn("FrameContent not found!");
+    } catch {
+        NotifyWarn("Error selecting opponent, maybe it loaded in campaign mode?", false);
+        warn("exception in selecting opponent: " + getExceptionInfo());
+    }
 }
 
 uint GetOpponentButtonIndex(uint length, const string &in uid) {
