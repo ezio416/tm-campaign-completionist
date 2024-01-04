@@ -149,7 +149,7 @@ class Map {
 
         // not working for:
         //    Canyon D02-D05, D07-D10, D12-D15, E01-E05
-        // App.ManiaTitleControlScriptAPI.PlayCampaign(Campaign, MapInfo, "SingleMap", "");
+        App.ManiaTitleControlScriptAPI.PlayCampaign(Campaign, MapInfo, "SingleMap", "");
 
         if (mxid != 0)
             FallbackPlayFromManiaExchange();

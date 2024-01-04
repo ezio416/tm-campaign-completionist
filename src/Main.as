@@ -153,10 +153,10 @@ void RenderMenu() {
 
         if (S_AllMapsInMenu) {
             if (UI::BeginMenu(Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow)) {
-                // for (uint i = 0; i < mapsRemaining.Length; i++) {
-                //     Map@ map = mapsRemaining[i];
-                for (uint i = 0; i < maps.Length; i++) {
-                    Map@ map = maps[i];
+                for (uint i = 0; i < mapsRemaining.Length; i++) {
+                    Map@ map = mapsRemaining[i];
+                // for (uint i = 0; i < maps.Length; i++) {
+                //     Map@ map = maps[i];
 
 #if TMNEXT
                     if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapName ? map.nameColored : map.nameClean), "", false, !loadingMap))
@@ -356,10 +356,21 @@ void SetNextMap() {
     }
 }
 
+int desiredTitlepack = -1;
+
 void Render() {
     bool open = true;
 
     UI::Begin(title + " debug", open);
+        if (UI::Button("back to title select"))
+            ReturnToTitleSelect();
+
+        desiredTitlepack = UI::InputInt("titlepack", desiredTitlepack);
+        UI::BeginDisabled(desiredTitlepack < 0 || desiredTitlepack > 3);
+        if (UI::Button("Enter"))
+            startnew(LoadTitlepack);
+        UI::EndDisabled();
+
         if (UI::BeginTable("##table", 6)) {
             UI::TableSetupColumn("map", UI::TableColumnFlags::WidthFixed, 120.0f);
             UI::TableSetupColumn("time", UI::TableColumnFlags::WidthFixed, 100.0f);

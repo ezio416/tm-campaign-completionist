@@ -236,6 +236,159 @@ void GetRecordsFromLoadedCampaign(bool fromTitleSwitch = false) {
     gettingNow = false;
 }
 
+void LoadTitlepack() {
+    CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+    CGameManiaPlanetScriptAPI@ ScriptAPI = App.ManiaPlanetScriptAPI;
+    if (ScriptAPI is null) {
+        warn("failed to load titlepack - ScriptAPI null");
+        return;
+    }
+
+    switch (desiredTitlepack) {
+        case 0:
+            ReturnToTitleSelect();
+            ScriptAPI.SelectTitle("TMCanyon@nadeo");
+            ScriptAPI.EnterTitle("TMCanyon@nadeo");
+            break;
+        case 1:
+            ReturnToTitleSelect();
+            ScriptAPI.SelectTitle("TMCanyon@nadeo");
+            ScriptAPI.EnterTitle("TMStadium@nadeo");
+            break;
+        case 2:
+            ReturnToTitleSelect();
+            ScriptAPI.SelectTitle("TMCanyon@nadeo");
+            ScriptAPI.EnterTitle("TMValley@nadeo");
+            break;
+        case 3:
+            ReturnToTitleSelect();
+            ScriptAPI.SelectTitle("TMCanyon@nadeo");
+            ScriptAPI.EnterTitle("TMLagoon@nadeo");
+            break;
+        default: warn("invalid titlepack: " + desiredTitlepack);
+    }
+}
+
+void ReturnToTitleSelect() {
+    CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+    if (App.ActiveMenus.Length == 0) {
+        warn("no active menus!");
+        return;
+    }
+
+    CGameMenu@ Menu = App.ActiveMenus[0];
+    if (Menu is null) {
+        warn("Menu is null!");
+        return;
+    }
+
+    CGameMenuFrame@ CurrentFrame = Menu.CurrentFrame;
+    if (CurrentFrame is null) {
+        warn("CurrentFrame is null!");
+        return;
+    }
+
+    if (CurrentFrame.Id.GetName() != "FrameMenuCustom") {
+        warn("not in titlepack menu!");
+        return;
+    }
+
+    if (CurrentFrame.Childs.Length == 0) {
+        warn("CurrentFrame has no children!");
+        return;
+    }
+
+    CGameMenuFrame@ Instance = cast<CGameMenuFrame@>(CurrentFrame.Childs[0]);
+    if (Instance is null) {
+        warn("Instance is null!");
+        return;
+    }
+
+    if (Instance.Id.GetName() != "MenuFrameInstance") {
+        warn("Instance has wrong type: " + Instance.Id.GetName());
+        return;
+    }
+
+    if (Instance.Childs.Length == 0) {
+        warn("Instance has no children!");
+        return;
+    }
+
+    for (uint i = 0; i < Instance.Childs.Length; i++) {
+        CControlFrame@ Content = cast<CControlFrame@>(Instance.Childs[i]);
+        if (Content is null)
+            continue;
+
+        if (Content.Id.GetName() == "FrameContent") {
+            if (Content.Childs.Length == 0) {
+                warn("Content has no children!");
+                return;
+            }
+
+            CControlFrame@ Container = cast<CControlFrame@>(Content.Childs[0]);
+            if (Container is null) {
+                warn("Container is null!");
+                return;
+            }
+
+            if (Container.Childs.Length < 12) {
+                warn("Container doesn't have enough children!");
+                return;
+            }
+
+            CControlFrame@ Frame1 = cast<CControlFrame@>(Container.Childs[11]);  // #12
+            if (Frame1 is null) {
+                warn("Frame1 is null!");
+                return;
+            }
+
+            if (Frame1.Childs.Length == 0) {
+                warn("Frame1 has no children!");
+                return;
+            }
+
+            CControlFrame@ Frame2 = cast<CControlFrame@>(Frame1.Childs[0]);  // #1
+            if (Frame2 is null) {
+                warn("Frame2 is null!");
+                return;
+            }
+
+            if (Frame2.Childs.Length < 4) {
+                warn("Frame2 doesn't have enough children!");
+                return;
+            }
+
+            CControlFrame@ Frame3 = cast<CControlFrame@>(Frame2.Childs[3]);  // #4
+            if (Frame3 is null) {
+                warn("Frame3 is null!");
+                return;
+            }
+
+            if (Frame3.Childs.Length == 0) {
+                warn("Frame3 has no children!");
+                return;
+            }
+
+            CControlQuad@ BackBtn = cast<CControlQuad@>(Frame3.Childs[0]);  // #1
+            if (BackBtn is null) {
+                warn("BackBtn is null!");
+                return;
+            }
+
+            BackBtn.OnAction();
+
+            for (uint j = 0; j < 10; j++)
+                yield();
+
+            return;
+        }
+    }
+
+    warn("FrameContent not found!");
+}
+
 void SetMP4Colors() {
     colorCanyon  = "\\" + Text::FormatGameColor(S_ColorCanyon);
     colorStadium = "\\" + Text::FormatGameColor(S_ColorStadium);
