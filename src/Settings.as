@@ -41,7 +41,20 @@ TargetMedal S_Target = TargetMedal::Author;
 [Setting category="General" name="Show a list of all remaining maps"]
 bool S_AllMapsInMenu = false;
 
-#if TMNEXT
+#if MP4
+[Setting category="General" name="Select opponent automatically when joining map"]
+bool S_AutoOpponent = true;
+
+enum OpponentSelection {
+    None,
+    TargetMedal
+}
+
+[Setting category="General" name="Auto-opponent selection"]
+OpponentSelection S_OpponentSelection = OpponentSelection::None;
+
+#elif TMNEXT
+
 [Setting category="Colors" name="Colored map name"]
 bool S_ColorMapName = false;
 #endif

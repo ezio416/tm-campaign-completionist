@@ -153,8 +153,10 @@ class Map {
 
         if (mxid != 0)
             FallbackPlayFromManiaExchange();
-        else
+        else {
             trace("map has no mxid");
+            SelectOpponent();
+        }
     }
 
     // only for when the above method fails for some reason
@@ -167,6 +169,7 @@ class Map {
 
         if (App.RootMap !is null && App.RootMap.MapInfo !is null && App.RootMap.MapInfo.MapUid == currentUid) {
             trace("load seems okay");
+            SelectOpponent();
             return;
         }
 
@@ -175,6 +178,8 @@ class Map {
         trace("loading map from game failed, trying ManiaExchange (" + url + ")");
 
         App.ManiaTitleControlScriptAPI.PlayMap(url, "SingleMap", "");
+
+        SelectOpponent();
     }
 
     // courtesy of "MXRandom" plugin - https://github.com/GreepTheSheep/openplanet-MXRandom
