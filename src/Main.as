@@ -79,7 +79,25 @@ void RenderMenu() {
             UI::EndMenu();
         }
 #elif MP4
-        UI::MenuItem(colorLoadedTitle + Icons::Download + " Loaded Titlepack: " + loadedTitleName, "", false, false);
+        if (UI::BeginMenu(colorLoadedTitle + Icons::Download + " Titlepack: " + loadedTitleName, !loadingTitlepack)) {
+            if (UI::MenuItem(colorCanyon + Icons::Road + " Canyon", "", false, loadedTitleName != "Canyon")) {
+                S_Titlepack = Titlepack::Canyon;
+                startnew(LoadTitlepack);
+            }
+            if (UI::MenuItem(colorStadium + Icons::Gamepad + " Stadium", "", false, loadedTitleName != "Stadium")) {
+                S_Titlepack = Titlepack::Stadium;
+                startnew(LoadTitlepack);
+            }
+            if (UI::MenuItem(colorValley + Icons::Tree + " Valley", "", false, loadedTitleName != "Valley")) {
+                S_Titlepack = Titlepack::Valley;
+                startnew(LoadTitlepack);
+            }
+            if (UI::MenuItem(colorLagoon + Icons::Shower + " Lagoon", "", false, loadedTitleName != "Lagoon")) {
+                S_Titlepack = Titlepack::Lagoon;
+                startnew(LoadTitlepack);
+            }
+            UI::EndMenu();
+        }
 #endif
 
         if (UI::BeginMenu(colorTarget + Icons::Circle + " Target Medal: " + tostring(S_Target))) {
@@ -361,19 +379,30 @@ void SetNextMap() {
     }
 }
 
-int desiredTitlepack = -1;
-
 void Render() {
     bool open = true;
 
     UI::Begin(title + " debug", open);
+        if (UI::Button("back to main menu"))
+            startnew(ReturnToMenu);
+
         UI::BeginDisabled(loadingTitlepack);
+        UI::SameLine();
         if (UI::Button("back to title select"))
-            ReturnToTitleSelect();
+            startnew(ReturnToTitleSelect);
         UI::EndDisabled();
 
-        desiredTitlepack = UI::InputInt("titlepack", desiredTitlepack);
-        UI::BeginDisabled(desiredTitlepack < 0 || desiredTitlepack > 3 || loadingTitlepack);
+        if (UI::BeginCombo("titlepack", tostring(S_Titlepack))) {
+            for (int i = -1; i < 4; i++) {
+                Titlepack selected = Titlepack(i);
+                if (UI::Selectable(tostring(selected), S_Titlepack == selected))
+                    S_Titlepack = selected;
+            }
+            UI::EndCombo();
+        }
+
+        UI::BeginDisabled(loadingTitlepack || S_Titlepack == Titlepack::None);
+        UI::SameLine();
         if (UI::Button("Enter"))
             startnew(LoadTitlepack);
         UI::EndDisabled();

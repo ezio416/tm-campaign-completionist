@@ -267,10 +267,13 @@ void LoadTitlepack() {
         return;
     }
 
-    switch (desiredTitlepack) {
-        case 0:
+    bool success = false;
+
+    switch (S_Titlepack) {
+        case Titlepack::Canyon:
             if (App.LoadedManiaTitle !is null && App.LoadedManiaTitle.TitleId == "TMCanyon@nadeo") {
                 trace("already in Canyon");
+                success = true;
                 break;
             }
             if (hasCanyon) {
@@ -278,12 +281,14 @@ void LoadTitlepack() {
                 ReturnToTitleSelect();
                 // ScriptAPI.SelectTitle("TMCanyon@nadeo");
                 ScriptAPI.EnterTitle("TMCanyon@nadeo");
+                success = true;
             } else
                 NotifyWarn("You don't own Canyon!");
             break;
-        case 1:
+        case Titlepack::Stadium:
             if (App.LoadedManiaTitle !is null && App.LoadedManiaTitle.TitleId == "TMStadium@nadeo") {
                 trace("already in Stadium");
+                success = true;
                 break;
             }
             if (hasStadium) {
@@ -291,12 +296,14 @@ void LoadTitlepack() {
                 ReturnToTitleSelect();
                 // ScriptAPI.SelectTitle("TMCanyon@nadeo");
                 ScriptAPI.EnterTitle("TMStadium@nadeo");
+                success = true;
             } else
                 NotifyWarn("You don't have Stadium!");
             break;
-        case 2:
+        case Titlepack::Valley:
             if (App.LoadedManiaTitle !is null && App.LoadedManiaTitle.TitleId == "TMValley@nadeo") {
                 trace("already in Valley");
+                success = true;
                 break;
             }
             if (hasValley) {
@@ -304,12 +311,14 @@ void LoadTitlepack() {
                 ReturnToTitleSelect();
                 // ScriptAPI.SelectTitle("TMCanyon@nadeo");
                 ScriptAPI.EnterTitle("TMValley@nadeo");
+                success = true;
             } else
                 NotifyWarn("You don't have Valley!");
             break;
-        case 3:
+        case Titlepack::Lagoon:
             if (App.LoadedManiaTitle !is null && App.LoadedManiaTitle.TitleId == "TMLagoon@nadeo") {
                 trace("already in Lagoon");
+                success = true;
                 break;
             }
             if (hasLagoon) {
@@ -317,10 +326,25 @@ void LoadTitlepack() {
                 ReturnToTitleSelect();
                 // ScriptAPI.SelectTitle("TMCanyon@nadeo");
                 ScriptAPI.EnterTitle("TMLagoon@nadeo");
+                success = true;
             } else
                 NotifyWarn("You don't have Lagoon!");
             break;
         default:;
+    }
+
+    if (success) {
+        progressCount = 0;
+        mapsRemaining.RemoveRange(0, mapsRemaining.Length);
+
+        while (
+            App.LoadedManiaTitle is null ||
+            App.ActiveMenus.Length == 0 ||
+            App.ActiveMenus[0] is null ||
+            App.ActiveMenus[0].CurrentFrame is null ||
+            App.ActiveMenus[0].CurrentFrame.Id.GetName() != "FrameMenuCustom"
+        )
+            yield();
     }
 
     loadingTitlepack = false;
@@ -352,7 +376,7 @@ void ReturnToTitleSelect() {
     }
 
     if (CurrentFrame.Id.GetName() != "FrameMenuCustom") {
-        warn("not in titlepack menu!");
+        // warn("not in titlepack menu!");
         return;
     }
 
@@ -442,6 +466,8 @@ void ReturnToTitleSelect() {
 
             for (uint j = 0; j < 10; j++)
                 yield();
+
+            ReturnToTitleSelect();  // may need to go back a few times
 
             return;
         }

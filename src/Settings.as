@@ -12,6 +12,18 @@ enum Mode {
 
 [Setting hidden]
 Mode S_Mode = Mode::NadeoCampaign;
+
+#elif MP4
+enum Titlepack {
+    None = -1,
+    Canyon,
+    Stadium,
+    Valley,
+    Lagoon
+}
+
+[Setting hidden]
+Titlepack S_Titlepack = Titlepack::None;
 #endif
 
 enum TargetMedal {
@@ -54,7 +66,7 @@ vec3 S_ColorMedalNone = vec3(1.0f, 0.0f, 1.0f);
 vec3 S_ColorCanyon = vec3(0.8f, 0.5f, 0.1f);
 
 [Setting category="Colors" name="Stadium" color]
-vec3 S_ColorStadium = vec3(0.1f, 0.1f, 0.8f);
+vec3 S_ColorStadium = vec3(0.3f, 0.3f, 0.8f);
 
 [Setting category="Colors" name="Valley" color]
 vec3 S_ColorValley = vec3(0.1f, 0.8f, 0.1f);
