@@ -2,9 +2,9 @@
 // m 2024-01-04
 
 string     accountId;
-bool       allTarget = false;
-string     audienceCore = "NadeoServices";
-string     audienceLive = "NadeoLiveServices";
+bool       allTarget       = false;
+string     audienceCore    = "NadeoServices";
+string     audienceLive    = "NadeoLiveServices";
 string     colorMedalAuthor;
 string     colorMedalBronze;
 string     colorMedalGold;
@@ -12,10 +12,10 @@ string     colorMedalNone;
 string     colorMedalSilver;
 string     colorTarget;
 string     currentUid;
-bool       gettingNow = false;
+bool       gettingNow      = false;
 
 #if TMNEXT
-Mode       lastMode = S_Mode;
+Mode       lastMode        = S_Mode;
 #endif
 
 Map@[]     maps;
@@ -27,12 +27,12 @@ Map@[]     mapsRemaining;
 Map@[]     mapsTotd;
 dictionary mapsTotdById;
 dictionary mapsTotdByUid;
-uint       metTargetTotal = 0;
+uint       metTargetTotal  = 0;
 Map@       nextMap;
-bool       playPermission = false;
-uint       progressCount = 0;
+bool       playPermission  = false;
+uint       progressCount   = 0;
 uint       progressPercent = 0;
-string     title = "\\$F82" + Icons::CalendarO + "\\$G Campaign Completionist";
+string     title           = "\\$F82" + Icons::CalendarO + "\\$G Campaign Completionist";
 
 void Main() {
 #if TMNEXT

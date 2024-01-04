@@ -93,7 +93,7 @@ class Map {
         CTrackMania@ App = cast<CTrackMania@>(GetApp());
         App.ManiaTitleControlScriptAPI.PlayMap(downloadUrl, "TrackMania/TM_PlayMap_Local", "");
 #elif MP4
-        FindAndPlay();
+        FindAndPlayFromCampaign();
 #endif
 
         const uint64 waitToPlayAgain = 5000;
@@ -106,7 +106,7 @@ class Map {
     }
 
 #if MP4
-    void FindAndPlay() {
+    void FindAndPlayFromCampaign() {
         CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
         if (App.OfficialCampaigns.Length == 0) {
