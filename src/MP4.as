@@ -1,5 +1,5 @@
 // c 2024-01-03
-// m 2024-01-03
+// m 2024-01-04
 
 #if MP4
 
@@ -43,7 +43,7 @@ void GetTitlepacks() {
         }
 
         if (title.TitleId == "TMValley@nadeo") {
-            hasStadium = true;
+            hasValley = true;
             continue;
         }
 
@@ -72,7 +72,7 @@ void GetMaps() {
 
     progressCount = 0;
 
-    maps.RemoveRange(0, maps.Length);
+    // maps.RemoveRange(0, maps.Length);
     mapsCanyon.RemoveRange(0, mapsCanyon.Length);
     mapsStadium.RemoveRange(0, mapsStadium.Length);
     mapsValley.RemoveRange(0, mapsValley.Length);
@@ -127,11 +127,13 @@ void GetMaps() {
         }
     }
 
-    GetRecords();
+    GetRecordsFromReplays();
 }
 
-void GetRecords() {
-    trace("getting records");
+void GetRecordsFromReplays() {
+    gettingNow = true;
+
+    trace("getting records from replays");
 
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
@@ -152,7 +154,84 @@ void GetRecords() {
         map.CalcMedal();
     }
 
-    trace("getting records done");
+    trace("getting records from replays done");
+
+    // GetRecordsFromLoadedCampaign();
+    gettingNow = false;
+}
+
+void GetRecordsFromLoadedCampaign(bool fromTitleSwitch = false) {
+    if (fromTitleSwitch) {
+        for (uint i = 0; i < 10; i++)
+            yield();  // give game time to load maps into the campaign
+    }
+
+    if (loadedTitle == -1) {
+        warn("no titlepack loaded, can't load records from campaign");
+        return;
+    }
+
+    gettingNow = true;
+
+    trace("getting records from loaded campaign");
+
+    CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+    if (App.OfficialCampaigns.Length == 0) {
+        warn("no campaigns loaded!");
+        gettingNow = false;
+        return;
+    }
+
+    CGameCtnCampaign@ Campaign = App.OfficialCampaigns[0];
+    if (Campaign is null) {
+        warn("Campaign is null!");
+        gettingNow = false;
+        return;
+    }
+
+    if (Campaign.MapGroups.Length == 0) {
+        warn("Campaign has no map groups!");
+        gettingNow = false;
+        return;
+    }
+
+    for (uint i = 0; i < Campaign.MapGroups.Length; i++) {
+        if (Campaign.MapGroups[i].MapInfos.Length == 0) {
+            warn("MapGroup[" + i + "] has no maps!");
+            continue;
+        }
+
+        for (uint j = 0; j < Campaign.MapGroups[i].MapInfos.Length; j++) {
+            CGameCtnChallengeInfo@ MapInfo = Campaign.MapGroups[i].MapInfos[j];
+            if (MapInfo is null) {
+                warn("MapInfo[ " + j + "] is null!");
+                continue;
+            }
+
+            Map@ map = cast<Map@>(mapsByUid[MapInfo.MapUid]);
+            if (map is null) {
+                warn("map[" + MapInfo.MapUid + "] is null!");
+                continue;
+            }
+
+            if (map.myTime > 0) {
+                // trace(map.nameClean + " already has a time of " + Time::Format(map.myTime));
+                continue;
+            }
+
+            if (MapInfo.BestTime == uint(-1)) {
+                // warn("no time exists for " + map.nameClean);
+                continue;
+            }
+
+            // trace("found time for " + map.nameClean);
+            map.myTime = MapInfo.BestTime;
+            map.CalcMedal();
+        }
+    }
+
+    trace("getting records from loaded campaign done");
 
     gettingNow = false;
 }

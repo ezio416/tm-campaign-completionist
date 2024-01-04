@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-02
+// m 2024-01-04
 
 bool loadingMap = false;
 
@@ -10,6 +10,7 @@ class Map {
     string downloadUrl;
     uint   goldTime;
     string id;
+    uint   mxid = 0;
     uint   myMedals;
     uint   myTime;
     string nameClean;
@@ -35,6 +36,7 @@ class Map {
         goldTime   = map["goldTime"];
         group      = map["group"];
         groupIndex = map["groupIndex"];
+        try { mxid = map["mxid"]; } catch { }  // ManiaExchange ID, only used for fallback on certain maps
         silverTime = map["silverTime"];
         uid        = map["uid"];
 
@@ -145,7 +147,34 @@ class Map {
             return;
         }
 
-        App.ManiaTitleControlScriptAPI.PlayCampaign(Campaign, MapInfo, "SingleMap", "");
+        // not working for:
+        //    Canyon D02-D05, D07-D10, D12-D15, E01-E05
+        // App.ManiaTitleControlScriptAPI.PlayCampaign(Campaign, MapInfo, "SingleMap", "");
+
+        if (mxid != 0)
+            FallbackPlayFromManiaExchange();
+        else
+            trace("map has no mxid");
+    }
+
+    // only for when the above method fails for some reason
+    void FallbackPlayFromManiaExchange() {
+        const uint64 now = Time::Now;
+        while (Time::Now - now < 5000)
+            yield();
+
+        CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+        if (App.RootMap !is null && App.RootMap.MapInfo !is null && App.RootMap.MapInfo.MapUid == currentUid) {
+            trace("load seems okay");
+            return;
+        }
+
+        string url = "https://tm.mania.exchange/maps/download/" + mxid;
+
+        trace("loading map from game failed, trying ManiaExchange (" + url + ")");
+
+        App.ManiaTitleControlScriptAPI.PlayMap(url, "SingleMap", "");
     }
 
     // courtesy of "MXRandom" plugin - https://github.com/GreepTheSheep/openplanet-MXRandom
@@ -154,11 +183,17 @@ class Map {
 
         CTrackManiaRaceNew@ Playground = cast<CTrackManiaRaceNew@>(App.CurrentPlayground);
 
-        if (Playground is null || Playground.PlayerRecordedGhost is null || myTime < Playground.PlayerRecordedGhost.RaceTime)
+        if (
+            Playground is null ||
+            Playground.PlayerRecordedGhost is null ||
+            (myTime > 0 && myTime < Playground.PlayerRecordedGhost.RaceTime)
+        )
             return false;
 
         myTime = Playground.PlayerRecordedGhost.RaceTime;
         CalcMedal();
+
+        trace("new PB on " + nameClean + ": " + Time::Format(myTime));
 
         return true;
     }

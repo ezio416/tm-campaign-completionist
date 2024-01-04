@@ -2,7 +2,7 @@
 // m 2024-01-03
 
 [Setting hidden]
-bool S_Enabled = true;
+bool S_AutoSwitch = true;
 
 #if TMNEXT
 enum Mode {
