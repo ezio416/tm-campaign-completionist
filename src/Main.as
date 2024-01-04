@@ -37,21 +37,16 @@ void Main() {
         UI::ShowNotification(title, "Paid access (at least standard) is required to play maps", vec4(1.0f, 0.1f, 0.1f, 0.8f));
         return;
     }
-#endif
-
-    playPermission = true;
-
-    OnSettingsChanged();
 
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
-
     accountId = App.LocalPlayerInfo.WebServicesUserId;
 
-#if TMNEXT
     NadeoServices::AddAudience(audienceCore);
     NadeoServices::AddAudience(audienceLive);
 #endif
 
+    playPermission = true;
+    OnSettingsChanged();
     GetMaps();
 
     while (true) {
@@ -65,6 +60,7 @@ void RenderMenu() {
         if (UI::MenuItem(Icons::Question + " Auto Switch Maps", "", S_Enabled))
             S_Enabled = !S_Enabled;
 
+#if TMNEXT
         if (UI::BeginMenu((S_Mode == Mode::NadeoCampaign ? "\\$1D4" : "\\$19F") + Icons::ArrowsH + " Mode: " + (S_Mode == Mode::NadeoCampaign ? "Nadeo Campaign" : "Track of the Day"), !gettingNow)) {
             if (UI::MenuItem("\\$1D4" + Icons::Kenney::Car + " Nadeo Campaign")) {
                 S_Mode = Mode::NadeoCampaign;
@@ -76,6 +72,31 @@ void RenderMenu() {
             }
             UI::EndMenu();
         }
+#elif MP4
+        if (UI::BeginMenu(colorSelectedTitle + Icons::ArrowsH + " Mode: " + tostring(S_Mode), !gettingNow)) {
+            if (hasCanyon)
+                if (UI::MenuItem(colorCanyon + Icons::Road + " Canyon")) {
+                    S_Mode = Mode::Canyon;
+                    OnSettingsChanged();
+                }
+            if (hasStadium)
+                if (UI::MenuItem(colorStadium + Icons::Gamepad + " Stadium")) {
+                    S_Mode = Mode::Stadium;
+                    OnSettingsChanged();
+                }
+            if (hasValley)
+                if (UI::MenuItem(colorValley + Icons::Tree + " Valley")) {
+                    S_Mode = Mode::Valley;
+                    OnSettingsChanged();
+                }
+            if (hasLagoon)
+                if (UI::MenuItem(colorLagoon + Icons::Shower + " Lagoon")) {
+                    S_Mode = Mode::Lagoon;
+                    OnSettingsChanged();
+                }
+            UI::EndMenu();
+        }
+#endif
 
         if (UI::BeginMenu(colorTarget + Icons::Circle + " Target Medal: " + tostring(S_Target))) {
             if (UI::MenuItem(colorMedalAuthor + Icons::Circle + " Author", "")) {
@@ -142,8 +163,11 @@ void RenderMenu() {
             if (UI::BeginMenu(Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow)) {
                 for (uint i = 0; i < mapsRemaining.Length; i++) {
                     Map@ map = mapsRemaining[i];
-
-                    if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameRaw : map.date + ": " + (S_ColorMapName ? map.nameColored : map.nameClean), ""))
+#if TMNEXT
+                    if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapName ? map.nameColored : map.nameClean)))
+#elif MP4
+                    if (UI::MenuItem(map.nameClean))
+#endif
                         startnew(CoroutineFunc(map.Play));
                 }
 
@@ -166,6 +190,10 @@ void OnSettingsChanged() {
     colorMedalSilver = "\\" + Text::FormatGameColor(S_ColorMedalSilver);
     colorMedalBronze = "\\" + Text::FormatGameColor(S_ColorMedalBronze);
     colorMedalNone   = "\\" + Text::FormatGameColor(S_ColorMedalNone);
+
+#if MP4
+    SetMP4Colors();
+#endif
 
     switch (S_Target) {
         case TargetMedal::Author: colorTarget = colorMedalAuthor; break;
