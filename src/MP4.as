@@ -3,29 +3,39 @@
 
 #if MP4
 
+bool         checkingTitlepacks = false;
 string       colorCanyon;
 string       colorLoadedTitle;
 string       colorStadium;
 string       colorValley;
 string       colorLagoon;
-bool         hasCanyon       = false;
-bool         hasStadium      = false;
-bool         hasValley       = false;
-bool         hasLagoon       = false;
-int          lastLoadedTitle = -1;
-Json::Value@ loadedCanyon    = Json::Object();
-Json::Value@ loadedStadium   = Json::Object();
-int          loadedTitle     = -1;
+bool         hasCanyon          = false;
+bool         hasStadium         = false;
+bool         hasValley          = false;
+bool         hasLagoon          = false;
+int          lastLoadedTitle    = -1;
+Json::Value@ loadedCanyon       = Json::Object();
+Json::Value@ loadedStadium      = Json::Object();
+int          loadedTitle        = -1;
 string       loadedTitleName;
-Json::Value@ loadedValley    = Json::Object();
-Json::Value@ loadedLagoon    = Json::Object();
+Json::Value@ loadedValley       = Json::Object();
+Json::Value@ loadedLagoon       = Json::Object();
+bool         loadingTitlepack   = false;
 Map@[]       mapsCanyon;
 Map@[]       mapsStadium;
 Map@[]       mapsValley;
 Map@[]       mapsLagoon;
 
 void GetTitlepacks() {
+    if (checkingTitlepacks)
+        return;
+
+    checkingTitlepacks = true;
+
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+    while (App.ManiaTitles.Length == 0)
+        yield();
 
     for (uint i = 0; i < App.ManiaTitles.Length; i++) {
         CGameManiaTitle@ title = App.ManiaTitles[i];
@@ -52,6 +62,8 @@ void GetTitlepacks() {
             continue;
         }
     }
+
+    checkingTitlepacks = false;
 }
 
 void GetMaps() {
@@ -162,12 +174,12 @@ void GetRecordsFromReplays() {
 
 void GetRecordsFromLoadedCampaign(bool fromTitleSwitch = false) {
     if (fromTitleSwitch) {
-        for (uint i = 0; i < 10; i++)
+        for (uint i = 0; i < 20; i++)
             yield();  // give game time to load maps into the campaign
     }
 
     if (loadedTitle == -1) {
-        warn("no titlepack loaded, can't load records from campaign");
+        // warn("no titlepack loaded, can't load records from campaign");
         return;
     }
 
@@ -237,7 +249,17 @@ void GetRecordsFromLoadedCampaign(bool fromTitleSwitch = false) {
 }
 
 void LoadTitlepack() {
+    if (loadingTitlepack)
+        return;
+
+    loadingTitlepack = true;
+
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+    if (App.ManiaTitles.Length == 0) {
+        warn("game not loaded yet!");
+        return;
+    }
 
     CGameManiaPlanetScriptAPI@ ScriptAPI = App.ManiaPlanetScriptAPI;
     if (ScriptAPI is null) {
@@ -247,43 +269,70 @@ void LoadTitlepack() {
 
     switch (desiredTitlepack) {
         case 0:
+            if (App.LoadedManiaTitle !is null && App.LoadedManiaTitle.TitleId == "TMCanyon@nadeo") {
+                trace("already in Canyon");
+                break;
+            }
             if (hasCanyon) {
+                NotifyTrace("Switching titlepack to Canyon...");
                 ReturnToTitleSelect();
-                ScriptAPI.SelectTitle("TMCanyon@nadeo");
+                // ScriptAPI.SelectTitle("TMCanyon@nadeo");
                 ScriptAPI.EnterTitle("TMCanyon@nadeo");
             } else
-                warn("you don't own Canyon!");
+                NotifyWarn("You don't own Canyon!");
             break;
         case 1:
+            if (App.LoadedManiaTitle !is null && App.LoadedManiaTitle.TitleId == "TMStadium@nadeo") {
+                trace("already in Stadium");
+                break;
+            }
             if (hasStadium) {
+                NotifyTrace("Switching titlepack to Stadium...");
                 ReturnToTitleSelect();
-                ScriptAPI.SelectTitle("TMCanyon@nadeo");
+                // ScriptAPI.SelectTitle("TMCanyon@nadeo");
                 ScriptAPI.EnterTitle("TMStadium@nadeo");
             } else
-                warn("you don't have Stadium!");
+                NotifyWarn("You don't have Stadium!");
             break;
         case 2:
+            if (App.LoadedManiaTitle !is null && App.LoadedManiaTitle.TitleId == "TMValley@nadeo") {
+                trace("already in Valley");
+                break;
+            }
             if (hasValley) {
+                NotifyTrace("Switching titlepack to Valley...");
                 ReturnToTitleSelect();
-                ScriptAPI.SelectTitle("TMCanyon@nadeo");
+                // ScriptAPI.SelectTitle("TMCanyon@nadeo");
                 ScriptAPI.EnterTitle("TMValley@nadeo");
             } else
-                warn("you don't have Valley!");
+                NotifyWarn("You don't have Valley!");
             break;
         case 3:
+            if (App.LoadedManiaTitle !is null && App.LoadedManiaTitle.TitleId == "TMLagoon@nadeo") {
+                trace("already in Lagoon");
+                break;
+            }
             if (hasLagoon) {
+                NotifyTrace("Switching titlepack to Lagoon...");
                 ReturnToTitleSelect();
-                ScriptAPI.SelectTitle("TMCanyon@nadeo");
+                // ScriptAPI.SelectTitle("TMCanyon@nadeo");
                 ScriptAPI.EnterTitle("TMLagoon@nadeo");
             } else
-                warn("you don't have Lagoon!");
+                NotifyWarn("You don't have Lagoon!");
             break;
-        default: warn("invalid titlepack: " + desiredTitlepack);
+        default:;
     }
+
+    loadingTitlepack = false;
 }
 
 void ReturnToTitleSelect() {
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+    if (App.ManiaTitles.Length == 0) {
+        warn("game not loaded yet!");
+        return;
+    }
 
     if (App.ActiveMenus.Length == 0) {
         warn("no active menus!");

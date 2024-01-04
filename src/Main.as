@@ -307,7 +307,7 @@ void Loop() {
 void SetNextMap() {
 #if MP4
     if (loadedTitle == -1) {
-        warn("no titlepack loaded, can't set next map");
+        // warn("no titlepack loaded, can't set next map");
         return;
     }
 #endif
@@ -341,18 +341,23 @@ void SetNextMap() {
             @nextMap = maps[i];
     }
 
-    if (metTargetTotal == maps.Length) {
-        allTarget = true;
-        trace("congrats, you've met your target on all maps!");
-    } else {
-        allTarget = false;
-        if (nextMap !is null)
+    if (maps.Length > 0) {
+        if (metTargetTotal == maps.Length) {
+            allTarget = true;
+            trace("congrats, you've met your target on all maps!");
+        } else {
+            allTarget = false;
+            if (nextMap !is null)
 
 #if TMNEXT
-            trace("next map: " + (S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ") + nextMap.nameClean);
+                trace("next map: " + (S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ") + nextMap.nameClean);
 #elif MP4
-            trace("next map: " + nextMap.nameClean);
+                trace("next map: " + nextMap.nameClean);
+        }
+    } else {
+        warn("no maps!");
 #endif
+
     }
 }
 
@@ -362,11 +367,13 @@ void Render() {
     bool open = true;
 
     UI::Begin(title + " debug", open);
+        UI::BeginDisabled(loadingTitlepack);
         if (UI::Button("back to title select"))
             ReturnToTitleSelect();
+        UI::EndDisabled();
 
         desiredTitlepack = UI::InputInt("titlepack", desiredTitlepack);
-        UI::BeginDisabled(desiredTitlepack < 0 || desiredTitlepack > 3);
+        UI::BeginDisabled(desiredTitlepack < 0 || desiredTitlepack > 3 || loadingTitlepack);
         if (UI::Button("Enter"))
             startnew(LoadTitlepack);
         UI::EndDisabled();

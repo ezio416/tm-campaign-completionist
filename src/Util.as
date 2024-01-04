@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-03
+// m 2024-01-04
 
 void Notify() {
     switch (S_Target) {
@@ -29,6 +29,16 @@ void NotifyBronze() {
 
 void NotifyNone() {
     UI::ShowNotification(title, "Map finished! Switching map...", vec4(S_ColorMedalNone.x, S_ColorMedalNone.y, S_ColorMedalNone.z, 0.8f));
+}
+
+void NotifyTrace(const string &in msg) {
+    trace(msg);
+    UI::ShowNotification(title, msg, vec4(0.4f, 0.4f, 0.4f, 0.8f));
+}
+
+void NotifyWarn(const string &in msg) {
+    warn(msg);
+    UI::ShowNotification(title, msg, vec4(0.9f, 0.6f, 0.0f, 0.8f));
 }
 
 string PosNegColor(bool b) {
