@@ -1,18 +1,18 @@
 // c 2024-01-02
 // m 2024-01-03
 
-enum Mode {
+[Setting hidden]
+bool S_Enabled = true;
+
 #if TMNEXT
+enum Mode {
     NadeoCampaign,
-    TrackOfTheDay,
-#elif MP4
-    None,
-    Canyon,
-    Stadium,
-    Valley,
-    Lagoon
-#endif
+    TrackOfTheDay
 }
+
+[Setting hidden]
+Mode S_Mode = Mode::NadeoCampaign;
+#endif
 
 enum TargetMedal {
     Author,
@@ -22,17 +22,6 @@ enum TargetMedal {
     None
 }
 
-
-[Setting hidden]
-bool S_Enabled = true;
-
-[Setting hidden]
-#if TMNEXT
-Mode S_Mode = Mode::NadeoCampaign;
-#elif MP4
-Mode S_Mode = Mode::None;
-#endif
-
 [Setting hidden]
 TargetMedal S_Target = TargetMedal::Author;
 
@@ -40,9 +29,10 @@ TargetMedal S_Target = TargetMedal::Author;
 [Setting category="General" name="Show a list of all remaining maps"]
 bool S_AllMapsInMenu = false;
 
-
+#if TMNEXT
 [Setting category="Colors" name="Colored map name"]
 bool S_ColorMapName = false;
+#endif
 
 [Setting category="Colors" name="Author medal" color]
 vec3 S_ColorMedalAuthor = vec3(0.17f, 0.75f, 0.0f);
@@ -60,15 +50,15 @@ vec3 S_ColorMedalBronze = vec3(0.69f, 0.5f, 0.0f);
 vec3 S_ColorMedalNone = vec3(1.0f, 0.0f, 1.0f);
 
 #if MP4
-[Setting category="Colors" name="Canyon"]
+[Setting category="Colors" name="Canyon" color]
 vec3 S_ColorCanyon = vec3(0.8f, 0.5f, 0.1f);
 
-[Setting category="Colors" name="Stadium"]
+[Setting category="Colors" name="Stadium" color]
 vec3 S_ColorStadium = vec3(0.1f, 0.1f, 0.8f);
 
-[Setting category="Colors" name="Valley"]
+[Setting category="Colors" name="Valley" color]
 vec3 S_ColorValley = vec3(0.1f, 0.8f, 0.1f);
 
-[Setting category="Colors" name="Lagoon"]
+[Setting category="Colors" name="Lagoon" color]
 vec3 S_ColorLagoon = vec3(0.1f, 0.8f, 0.8f);
 #endif

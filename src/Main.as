@@ -1,34 +1,38 @@
 // c 2024-01-01
 // m 2024-01-03
 
-string accountId;
-bool allTarget = false;
-string audienceCore = "NadeoServices";
-string audienceLive = "NadeoLiveServices";
-string colorMedalAuthor;
-string colorMedalBronze;
-string colorMedalGold;
-string colorMedalNone;
-string colorMedalSilver;
-string colorTarget;
-string currentUid;
-bool gettingNow = false;
-Mode lastMode = S_Mode;
-Map@[] maps;
+string     accountId;
+bool       allTarget = false;
+string     audienceCore = "NadeoServices";
+string     audienceLive = "NadeoLiveServices";
+string     colorMedalAuthor;
+string     colorMedalBronze;
+string     colorMedalGold;
+string     colorMedalNone;
+string     colorMedalSilver;
+string     colorTarget;
+string     currentUid;
+bool       gettingNow = false;
+
+#if TMNEXT
+Mode       lastMode = S_Mode;
+#endif
+
+Map@[]     maps;
 dictionary mapsByUid;
-Map@[] mapsCampaign;
+Map@[]     mapsCampaign;
 dictionary mapsCampaignById;
 dictionary mapsCampaignByUid;
-Map@[] mapsRemaining;
-Map@[] mapsTotd;
+Map@[]     mapsRemaining;
+Map@[]     mapsTotd;
 dictionary mapsTotdById;
 dictionary mapsTotdByUid;
-uint metTargetTotal = 0;
-Map@ nextMap;
-bool playPermission = false;
-uint progressCount = 0;
-uint progressPercent = 0;
-string title = "\\$F82" + Icons::CalendarO + "\\$G Campaign Completionist";
+uint       metTargetTotal = 0;
+Map@       nextMap;
+bool       playPermission = false;
+uint       progressCount = 0;
+uint       progressPercent = 0;
+string     title = "\\$F82" + Icons::CalendarO + "\\$G Campaign Completionist";
 
 void Main() {
 #if TMNEXT
@@ -43,6 +47,8 @@ void Main() {
 
     NadeoServices::AddAudience(audienceCore);
     NadeoServices::AddAudience(audienceLive);
+#elif MP4
+    GetTitlepacks();
 #endif
 
     playPermission = true;
@@ -73,29 +79,7 @@ void RenderMenu() {
             UI::EndMenu();
         }
 #elif MP4
-        if (UI::BeginMenu(colorSelectedTitle + Icons::ArrowsH + " Mode: " + tostring(S_Mode), !gettingNow)) {
-            if (hasCanyon)
-                if (UI::MenuItem(colorCanyon + Icons::Road + " Canyon")) {
-                    S_Mode = Mode::Canyon;
-                    OnSettingsChanged();
-                }
-            if (hasStadium)
-                if (UI::MenuItem(colorStadium + Icons::Gamepad + " Stadium")) {
-                    S_Mode = Mode::Stadium;
-                    OnSettingsChanged();
-                }
-            if (hasValley)
-                if (UI::MenuItem(colorValley + Icons::Tree + " Valley")) {
-                    S_Mode = Mode::Valley;
-                    OnSettingsChanged();
-                }
-            if (hasLagoon)
-                if (UI::MenuItem(colorLagoon + Icons::Shower + " Lagoon")) {
-                    S_Mode = Mode::Lagoon;
-                    OnSettingsChanged();
-                }
-            UI::EndMenu();
-        }
+        UI::MenuItem(colorLoadedTitle + Icons::Download + " Loaded Titlepack: " + loadedTitleName, "", false, false);
 #endif
 
         if (UI::BeginMenu(colorTarget + Icons::Circle + " Target Medal: " + tostring(S_Target))) {
@@ -128,12 +112,13 @@ void RenderMenu() {
         }
 
         UI::MenuItem(
-            Icons::Percent + " Progress: " + (gettingNow ? "..." : metTargetTotal + "/" + maps.Length + " (" + (int(100 * metTargetTotal / maps.Length)) +"%)"),
+            Icons::Percent + " Progress: " + (gettingNow ? "..." : metTargetTotal + "/" + maps.Length + " (" + (maps.Length > 0 ? int(100 * metTargetTotal / maps.Length) : 0) +"%)"),
             "",
             false,
             false
         );
 
+#if TMNEXT
         if (S_Mode == Mode::NadeoCampaign) {
             if (mapsCampaign.Length > 0)
                 progressPercent = uint(100.0f * float(progressCount) / float(2 * mapsCampaign.Length));
@@ -145,13 +130,18 @@ void RenderMenu() {
             else
                 progressPercent = 0;
         }
+#elif MP4
+        progressPercent = uint(100.0f * float(progressCount) / 130.0f);
+#endif
 
         string nextText = "\\$0F0" + Icons::Play + "\\$G Next: ";
         if (gettingNow)
             nextText += "still getting data... (" + progressPercent + "%)";
         else if (nextMap !is null) {
+#if TMNEXT
             nextText += S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ";
             nextText += S_ColorMapName ? nextMap.nameColored : nextMap.nameClean;
+#endif
             nextText += nextMap.uid == currentUid ? " (current)" : "";
         } else
             nextText += "you're done!";
@@ -163,11 +153,13 @@ void RenderMenu() {
             if (UI::BeginMenu(Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow)) {
                 for (uint i = 0; i < mapsRemaining.Length; i++) {
                     Map@ map = mapsRemaining[i];
+
 #if TMNEXT
                     if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapName ? map.nameColored : map.nameClean)))
 #elif MP4
                     if (UI::MenuItem(map.nameClean))
 #endif
+
                         startnew(CoroutineFunc(map.Play));
                 }
 
@@ -180,10 +172,12 @@ void RenderMenu() {
 }
 
 void OnSettingsChanged() {
+#if TMNEXT
     if (lastMode != S_Mode) {
         lastMode = S_Mode;
         startnew(GetMaps);
     }
+#endif
 
     colorMedalAuthor = "\\" + Text::FormatGameColor(S_ColorMedalAuthor);
     colorMedalGold   = "\\" + Text::FormatGameColor(S_ColorMedalGold);
@@ -207,6 +201,44 @@ void OnSettingsChanged() {
 void Loop() {
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
+#if MP4
+    if (App.LoadedManiaTitle is null) {
+        loadedTitle = -1;
+        loadedTitleName = "None";
+    } else {
+        string titleId = App.LoadedManiaTitle.TitleId;
+
+        if (titleId == "TMCanyon@nadeo") {
+            loadedTitle = 0;
+            loadedTitleName = "Canyon";
+        } else if (titleId == "TMStadium@nadeo") {
+            loadedTitle = 1;
+            loadedTitleName = "Stadium";
+        } else if (titleId == "TMValley@nadeo") {
+            loadedTitle = 2;
+            loadedTitleName = "Valley";
+        } else if (titleId == "TMLagoon@nadeo") {
+            loadedTitle = 3;
+            loadedTitleName = "Lagoon";
+        }
+    }
+
+    if (lastLoadedTitle != loadedTitle) {
+        lastLoadedTitle = loadedTitle;
+
+        switch (loadedTitle) {
+            case 0: maps = mapsCanyon;  break;
+            case 1: maps = mapsStadium; break;
+            case 2: maps = mapsValley;  break;
+            case 3: maps = mapsLagoon;  break;
+            default: maps.RemoveRange(0, maps.Length);
+        }
+
+        SetMP4Colors();
+        SetNextMap();
+    }
+#endif
+
     if (App.RootMap is null || App.RootMap.MapInfo is null) {
         currentUid = "";
         return;
@@ -218,15 +250,23 @@ void Loop() {
     currentUid = App.RootMap.MapInfo.MapUid;
 
     if (
-        nextMap is null ||
-        nextMap.uid != currentUid ||
-        App.Network is null ||
-        App.Network.ClientManiaAppPlayground is null ||
-        App.Network.ClientManiaAppPlayground.UI is null ||
-        App.Network.ClientManiaAppPlayground.UI.UISequence != CGamePlaygroundUIConfig::EUISequence::Finish
+        nextMap is null
+        || nextMap.uid != currentUid
+#if TMNEXT
+        || App.Network is null
+        || App.Network.ClientManiaAppPlayground is null
+        || App.Network.ClientManiaAppPlayground.UI is null
+        || App.Network.ClientManiaAppPlayground.UI.UISequence != CGamePlaygroundUIConfig::EUISequence::Finish
+#elif MP4
+        || App.CurrentPlayground is null
+        || App.CurrentPlayground.UIConfigs.Length == 0
+        || App.CurrentPlayground.UIConfigs[0].UISequence != CGamePlaygroundUIConfig::EUISequence::EndRound
+        || !nextMap.ThisSessionPB()
+#endif
     )
         return;
 
+#if TMNEXT
     CGameUserManagerScript@ UserMgr = App.Network.ClientManiaAppPlayground.UserMgr;
     if (UserMgr is null)
         return;
@@ -245,6 +285,7 @@ void Loop() {
 
     nextMap.myTime = ScoreMgr.Map_GetRecord_v2(userId, currentUid, "PersonalBest", "", "TimeAttack", "");
     nextMap.myMedals = ScoreMgr.Map_GetMedal(userId, currentUid, "PersonalBest", "", "TimeAttack", "");
+#endif
 
     Meta::PluginCoroutine@ coro = startnew(SetNextMap);
     while (coro.IsRunning())
