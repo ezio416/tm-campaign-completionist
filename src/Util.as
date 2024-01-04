@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-02
+// m 2024-01-03
 
 void Notify() {
     switch (S_Target) {
@@ -29,6 +29,20 @@ void NotifyBronze() {
 
 void NotifyNone() {
     UI::ShowNotification(title, "Map finished! Switching map...", vec4(S_ColorMedalNone.x, S_ColorMedalNone.y, S_ColorMedalNone.z, 0.8f));
+}
+
+string PosNegColor(bool b) {
+    return b ? "\\$0F0true" : "\\$F00false";
+}
+
+string PosNegColor(uint u, bool format = true) {
+    if (u > 0)
+        return "\\$0F0" + (format ? Time::Format(u) : tostring(u));
+
+    if (u < 0)
+        return "\\$F00" + (format ? Time::Format(Math::Abs(u)) : tostring(Math::Abs(u)));
+
+    return "\\$G0";
 }
 
 // courtesy of "BetterTOTD" plugin - https://github.com/XertroV/tm-better-totd
