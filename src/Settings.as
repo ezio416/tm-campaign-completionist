@@ -1,9 +1,12 @@
 // c 2024-01-02
 // m 2024-01-03
 
+#if TMNEXT || MP4
+
 [Setting hidden]
 bool S_AutoSwitch = true;
 
+#endif
 #if TMNEXT
 
 enum Mode {
@@ -30,7 +33,21 @@ Titlepack S_Titlepack = Titlepack::None;
 #endif
 
 enum TargetMedal {
+
+#if TURBO
+
+    SuperTrackmaster,
+    SuperGold,
+    SuperSilver,
+    SuperBronze,
+    Trackmaster,
+
+#else
+
     Author,
+
+#endif
+
     Gold,
     Silver,
     Bronze,
@@ -38,8 +55,16 @@ enum TargetMedal {
 }
 
 [Setting hidden]
+
+#if TURBO
+
+TargetMedal S_Target = TargetMedal::Trackmaster;
+
+#else
+
 TargetMedal S_Target = TargetMedal::Author;
 
+#endif
 
 [Setting category="General" name="Show a list of all remaining maps"]
 bool S_AllMapsInMenu = false;
@@ -69,9 +94,29 @@ bool S_Debug = false;
 bool S_ColorMapName = false;
 
 #endif
+#if TURBO
+
+[Setting category="Colors" name="Super Trackmaster medal" color]
+vec3 S_ColorMedalSuperTrackmaster = vec3(0.0f, 1.0f, 1.0f);
+
+[Setting category="Colors" name="Super Gold medal" color]
+vec3 S_ColorMedalSuperGold = vec3(1.0f, 0.97f, 0.0f);
+
+[Setting category="Colors" name="Super Silver medal" color]
+vec3 S_ColorMedalSuperSilver = vec3(0.75f, 0.75f, 0.75f);
+
+[Setting category="Colors" name="Super Bronze medal" color]
+vec3 S_ColorMedalSuperBronze = vec3(0.69f, 0.5f, 0.0f);
+
+[Setting category="Colors" name="Trackmaster medal" color]
+vec3 S_ColorMedalTrackmaster = vec3(0.17f, 0.75f, 0.0f);
+
+#else
 
 [Setting category="Colors" name="Author medal" color]
 vec3 S_ColorMedalAuthor = vec3(0.17f, 0.75f, 0.0f);
+
+#endif
 
 [Setting category="Colors" name="Gold medal" color]
 vec3 S_ColorMedalGold = vec3(1.0f, 0.97f, 0.0f);

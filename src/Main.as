@@ -83,9 +83,13 @@ void Update(float) {
 
 void RenderMenu() {
     if (UI::BeginMenu(title)) {
+
+#if TMNEXT || MP4
+
         if (UI::MenuItem(Icons::Question + " Auto Switch Maps", "", S_AutoSwitch))
             S_AutoSwitch = !S_AutoSwitch;
 
+#endif
 #if TMNEXT
 
         if (UI::BeginMenu((S_Mode == Mode::NadeoCampaign ? "\\$1D4" : "\\$19F") + Icons::ArrowsH + " Mode: " + (S_Mode == Mode::NadeoCampaign ? "Nadeo Campaign" : "Track of the Day"), !gettingNow)) {
@@ -125,11 +129,45 @@ void RenderMenu() {
 #endif
 
         if (UI::BeginMenu(colorTarget + Icons::Circle + " Target Medal: " + tostring(S_Target))) {
+
+#if TURBO
+
+            if (UI::MenuItem(colorMedalSuperTrackmaster+ Icons::Circle + " Super Trackmaster", "")) {
+                S_Target = TargetMedal::SuperTrackmaster;
+                OnSettingsChanged();
+                startnew(SetNextMap);
+            }
+            if (UI::MenuItem(colorMedalSuperGold + Icons::Circle + " Super Gold", "")) {
+                S_Target = TargetMedal::SuperGold;
+                OnSettingsChanged();
+                startnew(SetNextMap);
+            }
+            if (UI::MenuItem(colorMedalSuperSilver + Icons::Circle + " Super Silver", "")) {
+                S_Target = TargetMedal::SuperSilver;
+                OnSettingsChanged();
+                startnew(SetNextMap);
+            }
+            if (UI::MenuItem(colorMedalSuperBronze + Icons::Circle + " Super Bronze", "")) {
+                S_Target = TargetMedal::SuperBronze;
+                OnSettingsChanged();
+                startnew(SetNextMap);
+            }
+            if (UI::MenuItem(colorMedalTrackmaster + Icons::Circle + " Trackmaster", "")) {
+                S_Target = TargetMedal::Trackmaster;
+                OnSettingsChanged();
+                startnew(SetNextMap);
+            }
+
+#else
+
             if (UI::MenuItem(colorMedalAuthor + Icons::Circle + " Author", "")) {
                 S_Target = TargetMedal::Author;
                 OnSettingsChanged();
                 startnew(SetNextMap);
             }
+
+#endif
+
             if (UI::MenuItem(colorMedalGold + Icons::Circle + " Gold", "")) {
                 S_Target = TargetMedal::Gold;
                 OnSettingsChanged();
@@ -190,7 +228,7 @@ void RenderMenu() {
             nextText += S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ";
             nextText += S_ColorMapName ? nextMap.nameColored : nextMap.nameClean;
 
-#elif MP4
+#else
 
             nextText += nextMap.nameClean;
 
@@ -200,8 +238,16 @@ void RenderMenu() {
         } else
             nextText += "you're done!";
 
+#if TMNEXT || MP4
+
         if (UI::MenuItem(nextText, "", false, playPermission && !gettingNow && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid))
             startnew(CoroutineFunc(nextMap.Play));
+
+#else
+
+        UI::MenuItem(nextText, "", false, false);
+
+#endif
 
         if (S_AllMapsInMenu) {
             if (UI::BeginMenu(Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow)) {
@@ -242,7 +288,20 @@ void OnSettingsChanged() {
 
 #endif
 
+#if TURBO
+
+    colorMedalSuperTrackmaster = "\\" + Text::FormatGameColor(S_ColorMedalSuperTrackmaster);
+    colorMedalSuperGold        = "\\" + Text::FormatGameColor(S_ColorMedalSuperGold);
+    colorMedalSuperSilver      = "\\" + Text::FormatGameColor(S_ColorMedalSuperSilver);
+    colorMedalSuperBronze      = "\\" + Text::FormatGameColor(S_ColorMedalSuperBronze);
+    colorMedalTrackmaster      = "\\" + Text::FormatGameColor(S_ColorMedalTrackmaster);
+
+#else
+
     colorMedalAuthor = "\\" + Text::FormatGameColor(S_ColorMedalAuthor);
+
+#endif
+
     colorMedalGold   = "\\" + Text::FormatGameColor(S_ColorMedalGold);
     colorMedalSilver = "\\" + Text::FormatGameColor(S_ColorMedalSilver);
     colorMedalBronze = "\\" + Text::FormatGameColor(S_ColorMedalBronze);
@@ -255,7 +314,21 @@ void OnSettingsChanged() {
 #endif
 
     switch (S_Target) {
+
+#if TURBO
+
+        case TargetMedal::SuperTrackmaster: colorTarget = colorMedalSuperTrackmaster; break;
+        case TargetMedal::SuperGold:        colorTarget = colorMedalSuperGold;        break;
+        case TargetMedal::SuperSilver:      colorTarget = colorMedalSuperSilver;      break;
+        case TargetMedal::SuperBronze:      colorTarget = colorMedalSuperBronze;      break;
+        case TargetMedal::Trackmaster:      colorTarget = colorMedalTrackmaster;      break;
+
+#else
+
         case TargetMedal::Author: colorTarget = colorMedalAuthor; break;
+
+#endif
+
         case TargetMedal::Gold:   colorTarget = colorMedalGold;   break;
         case TargetMedal::Silver: colorTarget = colorMedalSilver; break;
         case TargetMedal::Bronze: colorTarget = colorMedalBronze; break;
@@ -308,10 +381,13 @@ void Loop() {
 
 #endif
 
-    if (!S_AutoSwitch || loadingMap)
+    if (loadingMap)
         return;
 
 #if TMNEXT || MP4
+
+    if (!S_AutoSwitch)
+        return;
 
     if (App.RootMap is null || App.RootMap.MapInfo is null) {
         currentUid = "";

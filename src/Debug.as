@@ -74,4 +74,21 @@ void Render() {
     UI::End();
 }
 
+#elif TURBO
+
+void Render() {
+    if (!S_Debug)
+        return;
+
+    UI::Begin(title + " debug", S_Debug);
+        if (UI::Button("ReturnToMenu"))
+            startnew(ReturnToMenu);
+
+        // UI::Text(colorMedalSuperTrackmaster.Replace("\\$", ""));
+        // UI::Text(colorMedalSuperGold.Replace("\\$", ""));
+        // UI::Text(colorMedalSuperSilver.Replace("\\$", ""));
+        // UI::Text(colorMedalSuperBronze.Replace("\\$", ""));
+    UI::End();
+}
+
 #endif

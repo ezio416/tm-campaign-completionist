@@ -3,13 +3,67 @@
 
 void Notify() {
     switch (S_Target) {
+
+#if TURBO
+
+        case TargetMedal::SuperTrackmaster: NotifySuperTrackmaster(); break;
+        case TargetMedal::SuperGold:        NotifySuperGold();        break;
+        case TargetMedal::SuperSilver:      NotifySuperSilver();      break;
+        case TargetMedal::SuperBronze:      NotifySuperBronze();      break;
+        case TargetMedal::Trackmaster:      NotifyTrackmaster();      break;
+
+#else
+
         case TargetMedal::Author: NotifyAuthor(); break;
-        case TargetMedal::Gold:   NotifyGold(); break;
+
+#endif
+
+        case TargetMedal::Gold:   NotifyGold();   break;
         case TargetMedal::Silver: NotifySilver(); break;
         case TargetMedal::Bronze: NotifyBronze(); break;
         default:                  NotifyNone();
     }
 }
+
+#if TURBO
+
+void NotifySuperTrackmaster() {
+    UI::ShowNotification(title, "Super Trackmaster achieved!", vec4(S_ColorMedalSuperTrackmaster.x, S_ColorMedalSuperTrackmaster.y, S_ColorMedalSuperTrackmaster.z, 0.8f));
+}
+
+void NotifySuperGold() {
+    UI::ShowNotification(title, "Super Gold achieved!", vec4(S_ColorMedalSuperGold.x, S_ColorMedalSuperGold.y, S_ColorMedalSuperGold.z, 0.8f));
+}
+
+void NotifySuperSilver() {
+    UI::ShowNotification(title, "Super Silver achieved!", vec4(S_ColorMedalSuperSilver.x, S_ColorMedalSuperSilver.y, S_ColorMedalSuperSilver.z, 0.8f));
+}
+
+void NotifySuperBronze() {
+    UI::ShowNotification(title, "Super Bronze achieved!", vec4(S_ColorMedalSuperBronze.x, S_ColorMedalSuperBronze.y, S_ColorMedalSuperBronze.z, 0.8f));
+}
+
+void NotifyTrackmaster() {
+    UI::ShowNotification(title, "Trackmaster achieved!", vec4(S_ColorMedalTrackmaster.x, S_ColorMedalTrackmaster.y, S_ColorMedalTrackmaster.z, 0.8f));
+}
+
+void NotifyGold() {
+    UI::ShowNotification(title, "Gold achieved!", vec4(S_ColorMedalGold.x, S_ColorMedalGold.y, S_ColorMedalGold.z, 0.8f));
+}
+
+void NotifySilver() {
+    UI::ShowNotification(title, "Silver achieved!", vec4(S_ColorMedalSilver.x, S_ColorMedalSilver.y, S_ColorMedalSilver.z, 0.8f));
+}
+
+void NotifyBronze() {
+    UI::ShowNotification(title, "Bronze achieved!", vec4(S_ColorMedalBronze.x, S_ColorMedalBronze.y, S_ColorMedalBronze.z, 0.8f));
+}
+
+void NotifyNone() {
+    UI::ShowNotification(title, "Map finished!", vec4(S_ColorMedalNone.x, S_ColorMedalNone.y, S_ColorMedalNone.z, 0.8f));
+}
+
+#else
 
 void NotifyAuthor() {
     UI::ShowNotification(title, "Author achieved! Switching map...", vec4(S_ColorMedalAuthor.x, S_ColorMedalAuthor.y, S_ColorMedalAuthor.z, 0.8f));
@@ -30,6 +84,8 @@ void NotifyBronze() {
 void NotifyNone() {
     UI::ShowNotification(title, "Map finished! Switching map...", vec4(S_ColorMedalNone.x, S_ColorMedalNone.y, S_ColorMedalNone.z, 0.8f));
 }
+
+#endif
 
 void NotifyTrace(const string &in msg) {
     trace(msg);

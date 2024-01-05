@@ -3,18 +3,14 @@
 
 #if TURBO
 
+string colorMedalSuperBronze;
+string colorMedalSuperGold;
+string colorMedalSuperSilver;
+string colorMedalSuperTrackmaster;
+string colorMedalTrackmaster;
+
 void GetMaps() {
     ;
-}
-
-void Render() {
-    if (!S_Debug)
-        return;
-
-    UI::Begin(title + " debug", S_Debug);
-        if (UI::Button("ReturnToMenu"))
-            startnew(ReturnToMenu);
-    UI::End();
 }
 
 #endif
