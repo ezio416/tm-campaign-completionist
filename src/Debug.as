@@ -84,7 +84,7 @@ void Render() {
         if (UI::Button("ReturnToMenu"))
             startnew(ReturnToMenu);
 
-        if (UI::BeginTable("##table", 6)) {
+        if (UI::BeginTable("##table", 5)) {
             UI::TableSetupScrollFreeze(0, 1);
             UI::TableSetupColumn("map", UI::TableColumnFlags::WidthFixed, 120.0f);
             UI::TableSetupColumn("PB", UI::TableColumnFlags::WidthFixed, 100.0f);
