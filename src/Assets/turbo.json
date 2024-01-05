@@ -5,6 +5,7 @@
         "goldTime": 35126,
         "nameRaw": "001",
         "silverTime": 40226,
+        "superTrackmasterTime": 32256,
         "uid": "rdClvxHy8JgOjrNrEbK4X5Jj7V"
     },
     "001": {
@@ -13,6 +14,7 @@
         "goldTime": 38211,
         "nameRaw": "002",
         "silverTime": 42980,
+        "superTrackmasterTime": 34943,
         "uid": "4pQoOddIpzHQdtVNLcK3tvNvbo7"
     },
     "002": {
@@ -21,6 +23,7 @@
         "goldTime": 30425,
         "nameRaw": "003",
         "silverTime": 34697,
+        "superTrackmasterTime": 28387,
         "uid": "GxU3iOGT7Smt_Zs77TZoL8rCCa8"
     },
     "003": {
@@ -29,6 +32,7 @@
         "goldTime": 28325,
         "nameRaw": "004",
         "silverTime": 31808,
+        "superTrackmasterTime": 25152,
         "uid": "8sHSwzzzjNRUCH5w8T94sUfPZre"
     },
     "004": {
@@ -37,6 +41,7 @@
         "goldTime": 81614,
         "nameRaw": "005",
         "silverTime": 92565,
+        "superTrackmasterTime": 73910,
         "uid": "7HR4Rv5hCUnOtrtuKSmVy67bcJ0"
     },
     "005": {
@@ -45,6 +50,7 @@
         "goldTime": 30943,
         "nameRaw": "006",
         "silverTime": 35413,
+        "superTrackmasterTime": 28535,
         "uid": "_yG041avqwhMvYr7BptqG_o4ZE6"
     },
     "006": {
@@ -53,6 +59,7 @@
         "goldTime": 27683,
         "nameRaw": "007",
         "silverTime": 31897,
+        "superTrackmasterTime": 25184,
         "uid": "rlHkbV9pSPBccx1z1HVk5DwrMri"
     },
     "007": {
@@ -61,6 +68,7 @@
         "goldTime": 21696,
         "nameRaw": "008",
         "silverTime": 24803,
+        "superTrackmasterTime": 19885,
         "uid": "8M0gG9tU4iabde3J3prTbyM4wn7"
     },
     "008": {
@@ -69,6 +77,7 @@
         "goldTime": 29728,
         "nameRaw": "009",
         "silverTime": 34044,
+        "superTrackmasterTime": 26316,
         "uid": "UPo3szSC7VUHvBQMPcaLA8P0nMl"
     },
     "009": {
@@ -77,6 +86,7 @@
         "goldTime": 79976,
         "nameRaw": "010",
         "silverTime": 89795,
+        "superTrackmasterTime": 71968,
         "uid": "6Fy5gErdHMLqZLvHQj88L6XieVl"
     },
     "010": {
@@ -85,6 +95,7 @@
         "goldTime": 29046,
         "nameRaw": "011",
         "silverTime": 32708,
+        "superTrackmasterTime": 26473,
         "uid": "eCcrPpKsfMIwzKk0MQc7BBUBot4"
     },
     "011": {
@@ -93,6 +104,7 @@
         "goldTime": 30688,
         "nameRaw": "012",
         "silverTime": 34277,
+        "superTrackmasterTime": 26966,
         "uid": "UZ548IRpA1wX5Tf6Age9mnxg1Gm"
     },
     "012": {
@@ -101,6 +113,7 @@
         "goldTime": 29904,
         "nameRaw": "013",
         "silverTime": 33768,
+        "superTrackmasterTime": 27208,
         "uid": "SJfPiBMcAZh3BQyZ39SrjzEjz61"
     },
     "013": {
@@ -109,6 +122,7 @@
         "goldTime": 22081,
         "nameRaw": "014",
         "silverTime": 23904,
+        "superTrackmasterTime": 17897,
         "uid": "1vVNEWkhaxf6Pbd4IkgWTYimIc0"
     },
     "014": {
@@ -117,6 +131,7 @@
         "goldTime": 97060,
         "nameRaw": "015",
         "silverTime": 109124,
+        "superTrackmasterTime": 86125,
         "uid": "H5ifnHfyB89K_bdSQQMLH8iAEDb"
     },
     "015": {
@@ -125,6 +140,7 @@
         "goldTime": 28828,
         "nameRaw": "016",
         "silverTime": 32928,
+        "superTrackmasterTime": 26818,
         "uid": "f22AD7faeO4y9m_uoORV0AwKzag"
     },
     "016": {
@@ -133,6 +149,7 @@
         "goldTime": 30012,
         "nameRaw": "017",
         "silverTime": 33814,
+        "superTrackmasterTime": 26832,
         "uid": "Qw7um9iQoXs1gcd6p6yyzdELwCm"
     },
     "017": {
@@ -141,6 +158,7 @@
         "goldTime": 23875,
         "nameRaw": "018",
         "silverTime": 27391,
+        "superTrackmasterTime": 22765,
         "uid": "6uDWp2IKnHQFAyNDlqZR5N_dlQm"
     },
     "018": {
@@ -149,6 +167,7 @@
         "goldTime": 23012,
         "nameRaw": "019",
         "silverTime": 26078,
+        "superTrackmasterTime": 21062,
         "uid": "5ocjGecH6ndTR19tsz_SoH29gXf"
     },
     "019": {
@@ -157,6 +176,7 @@
         "goldTime": 76662,
         "nameRaw": "020",
         "silverTime": 85869,
+        "superTrackmasterTime": 66764,
         "uid": "UtnxtiGizDCVzfJP_392mfQ7mrc"
     },
     "020": {
@@ -165,6 +185,7 @@
         "goldTime": 22624,
         "nameRaw": "021",
         "silverTime": 25835,
+        "superTrackmasterTime": 21531,
         "uid": "bjEvsdH1evcZyToEhqc2KVg0eoa"
     },
     "021": {
@@ -173,6 +194,7 @@
         "goldTime": 26140,
         "nameRaw": "022",
         "silverTime": 30403,
+        "superTrackmasterTime": 24546,
         "uid": "4kJi4x9PTLAdiqM4fCfXPPB8sGg"
     },
     "022": {
@@ -181,6 +203,7 @@
         "goldTime": 23003,
         "nameRaw": "023",
         "silverTime": 27487,
+        "superTrackmasterTime": 20681,
         "uid": "k_ldRH_nhe3CoUnV1ZhJLFdZk0i"
     },
     "023": {
@@ -189,6 +212,7 @@
         "goldTime": 19618,
         "nameRaw": "024",
         "silverTime": 22075,
+        "superTrackmasterTime": 18171,
         "uid": "kuHckbBtz9V358dR3CzpP4hCqZ0"
     },
     "024": {
@@ -197,6 +221,7 @@
         "goldTime": 83794,
         "nameRaw": "025",
         "silverTime": 95487,
+        "superTrackmasterTime": 77028,
         "uid": "9M8RyJrtVjDL3lXiK5NG530nXS6"
     },
     "025": {
@@ -205,6 +230,7 @@
         "goldTime": 22596,
         "nameRaw": "026",
         "silverTime": 25882,
+        "superTrackmasterTime": 21268,
         "uid": "5sWBvjJfKr5IvtC5RWaSv8okTwe"
     },
     "026": {
@@ -213,6 +239,7 @@
         "goldTime": 30578,
         "nameRaw": "027",
         "silverTime": 34022,
+        "superTrackmasterTime": 28558,
         "uid": "LpCyy9zinSGoReEUoyuEFKTWZ8e"
     },
     "027": {
@@ -221,6 +248,7 @@
         "goldTime": 33183,
         "nameRaw": "028",
         "silverTime": 36008,
+        "superTrackmasterTime": 30960,
         "uid": "sCQNGGQsH7IskJ5hzbLTqvOdJ48"
     },
     "028": {
@@ -229,6 +257,7 @@
         "goldTime": 27728,
         "nameRaw": "029",
         "silverTime": 30518,
+        "superTrackmasterTime": 25843,
         "uid": "HVgVpwJhQCpDk5h0moWcx8R0Shl"
     },
     "029": {
@@ -237,6 +266,7 @@
         "goldTime": 73058,
         "nameRaw": "030",
         "silverTime": 81174,
+        "superTrackmasterTime": 67205,
         "uid": "Js4o1rScWjD2PQlUaABFLeUrbj8"
     },
     "030": {
@@ -245,6 +275,7 @@
         "goldTime": 26563,
         "nameRaw": "031",
         "silverTime": 29838,
+        "superTrackmasterTime": 23653,
         "uid": "xcisw1p_aa6M5Tmp8uFcf3hHsph"
     },
     "031": {
@@ -253,6 +284,7 @@
         "goldTime": 25091,
         "nameRaw": "032",
         "silverTime": 27390,
+        "superTrackmasterTime": 22968,
         "uid": "fDjbGVcMUxVtCREIsQ_tP6Cf8Yb"
     },
     "032": {
@@ -261,6 +293,7 @@
         "goldTime": 26590,
         "nameRaw": "033",
         "silverTime": 29465,
+        "superTrackmasterTime": 22956,
         "uid": "henG2rvwIqldWA5xUXslzHqPNx2"
     },
     "033": {
@@ -269,6 +302,7 @@
         "goldTime": 28708,
         "nameRaw": "034",
         "silverTime": 32848,
+        "superTrackmasterTime": 25461,
         "uid": "rxidB0ge8VfpNAzPw_Em2yU3Qz2"
     },
     "034": {
@@ -277,6 +311,7 @@
         "goldTime": 62720,
         "nameRaw": "035",
         "silverTime": 70900,
+        "superTrackmasterTime": 53548,
         "uid": "s6L92Rb0swZ3Pp_URZybJu7OS6a"
     },
     "035": {
@@ -285,6 +320,7 @@
         "goldTime": 25400,
         "nameRaw": "036",
         "silverTime": 27691,
+        "superTrackmasterTime": 23217,
         "uid": "0ykfSU0GfbpTQKiOcPjn6oWu73i"
     },
     "036": {
@@ -293,6 +329,7 @@
         "goldTime": 29902,
         "nameRaw": "037",
         "silverTime": 33256,
+        "superTrackmasterTime": 26778,
         "uid": "AyDRoCpQz0yOpM_JstgHUgtKkx4"
     },
     "037": {
@@ -301,6 +338,7 @@
         "goldTime": 18946,
         "nameRaw": "038",
         "silverTime": 21264,
+        "superTrackmasterTime": 17025,
         "uid": "Go_VlGNc_jz0cBLbFh4pwQEDIF9"
     },
     "038": {
@@ -309,6 +347,7 @@
         "goldTime": 31623,
         "nameRaw": "039",
         "silverTime": 35580,
+        "superTrackmasterTime": 27616,
         "uid": "XJWjiRyWxaxq5kvFBSCSxy7D36k"
     },
     "039": {
@@ -317,6 +356,7 @@
         "goldTime": 82051,
         "nameRaw": "040",
         "silverTime": 91793,
+        "superTrackmasterTime": 72578,
         "uid": "ktePhBgAaIRi5zle_D1tH9bF3el"
     },
     "040": {
@@ -325,6 +365,7 @@
         "goldTime": 36035,
         "nameRaw": "041",
         "silverTime": 40610,
+        "superTrackmasterTime": 33051,
         "uid": "XUuBzeBgKAx0m6MMstYeTuWZGdb"
     },
     "041": {
@@ -333,6 +374,7 @@
         "goldTime": 38430,
         "nameRaw": "042",
         "silverTime": 45035,
+        "superTrackmasterTime": 36048,
         "uid": "JxiYDFatjzBr808xEJ65_HnPeG0"
     },
     "042": {
@@ -341,6 +383,7 @@
         "goldTime": 26857,
         "nameRaw": "043",
         "silverTime": 30474,
+        "superTrackmasterTime": 24993,
         "uid": "AcMRh6x4gYXUXaIb9CDnnER6tVg"
     },
     "043": {
@@ -349,6 +392,7 @@
         "goldTime": 31948,
         "nameRaw": "044",
         "silverTime": 35875,
+        "superTrackmasterTime": 29108,
         "uid": "xLiIcdqfeDD0uFdt3GeggXEOkuj"
     },
     "044": {
@@ -357,6 +401,7 @@
         "goldTime": 135371,
         "nameRaw": "045",
         "silverTime": 153850,
+        "superTrackmasterTime": 120998,
         "uid": "rLLj3npQ1D1cEMXZWbfXISizwJ4"
     },
     "045": {
@@ -365,6 +410,7 @@
         "goldTime": 38322,
         "nameRaw": "046",
         "silverTime": 43016,
+        "superTrackmasterTime": 35495,
         "uid": "NrppF0G4ENEI9_2V627dPZb0Ii6"
     },
     "046": {
@@ -373,6 +419,7 @@
         "goldTime": 39031,
         "nameRaw": "047",
         "silverTime": 44284,
+        "superTrackmasterTime": 32415,
         "uid": "RiJpMl2LotrqAO7IjGmIY2BOKHc"
     },
     "047": {
@@ -381,6 +428,7 @@
         "goldTime": 32933,
         "nameRaw": "048",
         "silverTime": 37908,
+        "superTrackmasterTime": 29898,
         "uid": "8TyNQa52fxTJqu2_fW8OEWsxyrj"
     },
     "048": {
@@ -389,6 +437,7 @@
         "goldTime": 39912,
         "nameRaw": "049",
         "silverTime": 44894,
+        "superTrackmasterTime": 36885,
         "uid": "KmIiEIrVpxz7vTwQH7HYiXzpd0e"
     },
     "049": {
@@ -397,6 +446,7 @@
         "goldTime": 101208,
         "nameRaw": "050",
         "silverTime": 116283,
+        "superTrackmasterTime": 90314,
         "uid": "jupNQq_K0bdHpApmLTv0wXfbPU4"
     },
     "050": {
@@ -405,6 +455,7 @@
         "goldTime": 39501,
         "nameRaw": "051",
         "silverTime": 44157,
+        "superTrackmasterTime": 36556,
         "uid": "s6dFCATJeTorAgaGx1GsAw87w7h"
     },
     "051": {
@@ -413,6 +464,7 @@
         "goldTime": 32674,
         "nameRaw": "052",
         "silverTime": 35660,
+        "superTrackmasterTime": 29835,
         "uid": "qqO6v0Rvm81uUkEjgxBwLKe2V4b"
     },
     "052": {
@@ -421,6 +473,7 @@
         "goldTime": 34836,
         "nameRaw": "053",
         "silverTime": 38783,
+        "superTrackmasterTime": 32994,
         "uid": "Y10UpwaCJveiJ5z9I0gf9Uezsff"
     },
     "053": {
@@ -429,6 +482,7 @@
         "goldTime": 40020,
         "nameRaw": "054",
         "silverTime": 44568,
+        "superTrackmasterTime": 35205,
         "uid": "p3W9LavGCme1yzu59V41sCrNRUa"
     },
     "054": {
@@ -437,6 +491,7 @@
         "goldTime": 131083,
         "nameRaw": "055",
         "silverTime": 145870,
+        "superTrackmasterTime": 117235,
         "uid": "W3jwefo33f3pBomGJCBaARYp1sj"
     },
     "055": {
@@ -445,6 +500,7 @@
         "goldTime": 34075,
         "nameRaw": "056",
         "silverTime": 38214,
+        "superTrackmasterTime": 30623,
         "uid": "I8rEh72b5HUhz8i2KFZIQ8mFdbk"
     },
     "056": {
@@ -453,6 +509,7 @@
         "goldTime": 34827,
         "nameRaw": "057",
         "silverTime": 36927,
+        "superTrackmasterTime": 31206,
         "uid": "xmKHAzTZ8HjrYvfmtU7erV0IBzc"
     },
     "057": {
@@ -461,6 +518,7 @@
         "goldTime": 39971,
         "nameRaw": "058",
         "silverTime": 44796,
+        "superTrackmasterTime": 36267,
         "uid": "IRmdgd5tv7BTt8rE5t8RylH5gnh"
     },
     "058": {
@@ -469,6 +527,7 @@
         "goldTime": 41005,
         "nameRaw": "059",
         "silverTime": 45536,
+        "superTrackmasterTime": 36985,
         "uid": "68CLItIO8_sqVsnl7qT5xG9Igra"
     },
     "059": {
@@ -477,6 +536,7 @@
         "goldTime": 125563,
         "nameRaw": "060",
         "silverTime": 140909,
+        "superTrackmasterTime": 106515,
         "uid": "cMk5cGK5_nt_FNWBhHLbvioBKg7"
     },
     "060": {
@@ -485,6 +545,7 @@
         "goldTime": 36015,
         "nameRaw": "061",
         "silverTime": 41381,
+        "superTrackmasterTime": 32918,
         "uid": "YK2ztzDHWI9qpOONtiLVLZPhqef"
     },
     "061": {
@@ -493,6 +554,7 @@
         "goldTime": 33975,
         "nameRaw": "062",
         "silverTime": 38510,
+        "superTrackmasterTime": 29622,
         "uid": "phd2Q9GmnZq69LW2YiJp6MpzkNa"
     },
     "062": {
@@ -501,6 +563,7 @@
         "goldTime": 38473,
         "nameRaw": "063",
         "silverTime": 43173,
+        "superTrackmasterTime": 35104,
         "uid": "0zHGaeC58PL1ksbwdORokdfm0I"
     },
     "063": {
@@ -509,6 +572,7 @@
         "goldTime": 36391,
         "nameRaw": "064",
         "silverTime": 41972,
+        "superTrackmasterTime": 32790,
         "uid": "VXVtXk7dtIaRt54XtKWHcoBWyR3"
     },
     "064": {
@@ -517,6 +581,7 @@
         "goldTime": 86948,
         "nameRaw": "065",
         "silverTime": 98171,
+        "superTrackmasterTime": 80172,
         "uid": "GxzE7f6ypuEPBtP6tDPg5qS5o_6"
     },
     "065": {
@@ -525,6 +590,7 @@
         "goldTime": 34021,
         "nameRaw": "066",
         "silverTime": 39342,
+        "superTrackmasterTime": 29068,
         "uid": "2WigIMH1hGIJVnIWvfp9sT1UhJl"
     },
     "066": {
@@ -533,6 +599,7 @@
         "goldTime": 33818,
         "nameRaw": "067",
         "silverTime": 38618,
+        "superTrackmasterTime": 31418,
         "uid": "TH0qjFPePDYjz3TT057I_JFUhm7"
     },
     "067": {
@@ -541,6 +608,7 @@
         "goldTime": 39008,
         "nameRaw": "068",
         "silverTime": 42518,
+        "superTrackmasterTime": 35377,
         "uid": "thzM84G2xoepxyFXhfb5VmfDIB8"
     },
     "068": {
@@ -549,6 +617,7 @@
         "goldTime": 34843,
         "nameRaw": "069",
         "silverTime": 39905,
+        "superTrackmasterTime": 32702,
         "uid": "jawsnMJtJHjgZN4YOlZuaBrRbke"
     },
     "069": {
@@ -557,6 +626,7 @@
         "goldTime": 132552,
         "nameRaw": "070",
         "silverTime": 153467,
+        "superTrackmasterTime": 123650,
         "uid": "s5Uu8nrmePxGLkrVkU8TL8uTI63"
     },
     "070": {
@@ -565,6 +635,7 @@
         "goldTime": 40217,
         "nameRaw": "071",
         "silverTime": 45413,
+        "superTrackmasterTime": 36177,
         "uid": "ncYEHjNezVgxx9DZp8DSrckBlH2"
     },
     "071": {
@@ -573,6 +644,7 @@
         "goldTime": 29247,
         "nameRaw": "072",
         "silverTime": 33348,
+        "superTrackmasterTime": 26722,
         "uid": "gKf0qZfMpc8Cd3ZxCVgzBmjGtM3"
     },
     "072": {
@@ -581,6 +653,7 @@
         "goldTime": 27596,
         "nameRaw": "073",
         "silverTime": 31755,
+        "superTrackmasterTime": 25726,
         "uid": "LsPtRMnE_Or73URMNncjoO2mgjd"
     },
     "073": {
@@ -589,6 +662,7 @@
         "goldTime": 38160,
         "nameRaw": "074",
         "silverTime": 42048,
+        "superTrackmasterTime": 34448,
         "uid": "BnAOBU_K39tq5htTW3ZgT3BMuIb"
     },
     "074": {
@@ -597,6 +671,7 @@
         "goldTime": 113566,
         "nameRaw": "075",
         "silverTime": 127563,
+        "superTrackmasterTime": 99589,
         "uid": "2QTNxKnWoZAF7s_8_575laDM9X0"
     },
     "075": {
@@ -605,6 +680,7 @@
         "goldTime": 38040,
         "nameRaw": "076",
         "silverTime": 42095,
+        "superTrackmasterTime": 33411,
         "uid": "Vkvy2fdI2uKPORxZc9G6xJk8i0f"
     },
     "076": {
@@ -613,6 +689,7 @@
         "goldTime": 33944,
         "nameRaw": "077",
         "silverTime": 39178,
+        "superTrackmasterTime": 31181,
         "uid": "IKqb2swC6CcHFVatZHrgFDNl_X6"
     },
     "077": {
@@ -621,6 +698,7 @@
         "goldTime": 31248,
         "nameRaw": "078",
         "silverTime": 35123,
+        "superTrackmasterTime": 28205,
         "uid": "9hHto2CJxyJnJyzPNrRpzdxw4Z9"
     },
     "078": {
@@ -629,6 +707,7 @@
         "goldTime": 37540,
         "nameRaw": "079",
         "silverTime": 42452,
+        "superTrackmasterTime": 33905,
         "uid": "VezskkwkOd3v3hdmIsTPLHxRqJ5"
     },
     "079": {
@@ -637,6 +716,7 @@
         "goldTime": 126408,
         "nameRaw": "080",
         "silverTime": 142118,
+        "superTrackmasterTime": 108000,
         "uid": "W5yu8oAEW4mGHyTw43lSBNPH4pi"
     },
     "080": {
@@ -645,6 +725,7 @@
         "goldTime": 44743,
         "nameRaw": "081",
         "silverTime": 50526,
+        "superTrackmasterTime": 38893,
         "uid": "9iktGoDZvhqgc_iYLcr9Kkx8E26"
     },
     "081": {
@@ -653,6 +734,7 @@
         "goldTime": 42098,
         "nameRaw": "082",
         "silverTime": 46051,
+        "superTrackmasterTime": 38935,
         "uid": "EcChHIU2xYtOssAfnDF_spESSj0"
     },
     "082": {
@@ -661,6 +743,7 @@
         "goldTime": 37566,
         "nameRaw": "083",
         "silverTime": 41918,
+        "superTrackmasterTime": 32018,
         "uid": "25DU78NJvWNDoGL1UDCFhah3NIh"
     },
     "083": {
@@ -669,6 +752,7 @@
         "goldTime": 53408,
         "nameRaw": "084",
         "silverTime": 59538,
+        "superTrackmasterTime": 44005,
         "uid": "NpN_t0M_LwwXu8vDpXDO1QlPmC8"
     },
     "084": {
@@ -677,6 +761,7 @@
         "goldTime": 177924,
         "nameRaw": "085",
         "silverTime": 206171,
+        "superTrackmasterTime": 159170,
         "uid": "2HfsNUIdzA2guwQNaB7iSLrfl4n"
     },
     "085": {
@@ -685,6 +770,7 @@
         "goldTime": 47758,
         "nameRaw": "086",
         "silverTime": 54008,
+        "superTrackmasterTime": 43018,
         "uid": "_EgvFFkMj9gCeQ1QbxXuRK41ymb"
     },
     "086": {
@@ -693,6 +779,7 @@
         "goldTime": 52438,
         "nameRaw": "087",
         "silverTime": 57017,
+        "superTrackmasterTime": 46947,
         "uid": "otZWINTIlOi8BvYd_AzSJuF9IJi"
     },
     "087": {
@@ -701,6 +788,7 @@
         "goldTime": 43606,
         "nameRaw": "088",
         "silverTime": 50103,
+        "superTrackmasterTime": 39408,
         "uid": "hnba3puzPxrQUojy6yx4szecsRf"
     },
     "088": {
@@ -709,6 +797,7 @@
         "goldTime": 59305,
         "nameRaw": "089",
         "silverTime": 65774,
+        "superTrackmasterTime": 50568,
         "uid": "9ikInR9LycTjz5zc7XcI19RzhTj"
     },
     "089": {
@@ -717,6 +806,7 @@
         "goldTime": 213097,
         "nameRaw": "090",
         "silverTime": 226774,
+        "superTrackmasterTime": 176840,
         "uid": "aF7sHBuQQJu4rlura8233lPeCS"
     },
     "090": {
@@ -725,6 +815,7 @@
         "goldTime": 50791,
         "nameRaw": "091",
         "silverTime": 55718,
+        "superTrackmasterTime": 46835,
         "uid": "pi6_xX462vMw9fgGYh2wL3W1_39"
     },
     "091": {
@@ -733,6 +824,7 @@
         "goldTime": 50114,
         "nameRaw": "092",
         "silverTime": 54472,
+        "superTrackmasterTime": 41401,
         "uid": "aLoHM7GbsVUvHnqda_4_MKGlZK8"
     },
     "092": {
@@ -741,6 +833,7 @@
         "goldTime": 48886,
         "nameRaw": "093",
         "silverTime": 54605,
+        "superTrackmasterTime": 41475,
         "uid": "2Cv5wxzkKW4MFnF3RmxHiV7Iv4n"
     },
     "093": {
@@ -749,6 +842,7 @@
         "goldTime": 50550,
         "nameRaw": "094",
         "silverTime": 54836,
+        "superTrackmasterTime": 43251,
         "uid": "KyjT3_e9DsTPYUUnF3COxzIXNB"
     },
     "094": {
@@ -757,6 +851,7 @@
         "goldTime": 124199,
         "nameRaw": "095",
         "silverTime": 138844,
+        "superTrackmasterTime": 111587,
         "uid": "VMd5bbXY58N3fm_WwHJor4iNTb1"
     },
     "095": {
@@ -765,6 +860,7 @@
         "goldTime": 51628,
         "nameRaw": "096",
         "silverTime": 56853,
+        "superTrackmasterTime": 44776,
         "uid": "PAgMsWjqkZaNw91Rnu6WuvNt462"
     },
     "096": {
@@ -773,6 +869,7 @@
         "goldTime": 47804,
         "nameRaw": "097",
         "silverTime": 54110,
+        "superTrackmasterTime": 42972,
         "uid": "aOpJSZ9Yoxh13tEjXzyKax4UAQ5"
     },
     "097": {
@@ -781,6 +878,7 @@
         "goldTime": 50280,
         "nameRaw": "098",
         "silverTime": 57130,
+        "superTrackmasterTime": 45231,
         "uid": "CboRVghJtzOcAgjUfXRF1w7vKbj"
     },
     "098": {
@@ -789,6 +887,7 @@
         "goldTime": 50815,
         "nameRaw": "099",
         "silverTime": 56041,
+        "superTrackmasterTime": 44838,
         "uid": "iY1GWl69R9BssG64t5tyNG0FtR8"
     },
     "099": {
@@ -797,6 +896,7 @@
         "goldTime": 162772,
         "nameRaw": "100",
         "silverTime": 179634,
+        "superTrackmasterTime": 140555,
         "uid": "VnA7wB11l7UjWYZ5uZGkuNK1_d5"
     },
     "100": {
@@ -805,6 +905,7 @@
         "goldTime": 44527,
         "nameRaw": "101",
         "silverTime": 50967,
+        "superTrackmasterTime": 41622,
         "uid": "TDQAaKRbvHzDx4ZmgjWre5v9nke"
     },
     "101": {
@@ -813,6 +914,7 @@
         "goldTime": 48033,
         "nameRaw": "102",
         "silverTime": 52461,
+        "superTrackmasterTime": 44015,
         "uid": "qKsesW_pHxeyjJcmksW9lp_YSFk"
     },
     "102": {
@@ -821,6 +923,7 @@
         "goldTime": 42342,
         "nameRaw": "103",
         "silverTime": 48367,
+        "superTrackmasterTime": 40278,
         "uid": "eEzasoebsyEdq3_o9PHhCMXT3p5"
     },
     "103": {
@@ -829,6 +932,7 @@
         "goldTime": 53646,
         "nameRaw": "104",
         "silverTime": 61407,
+        "superTrackmasterTime": 49972,
         "uid": "UqclUkIC1ITaOyKj4JdwBEJod1d"
     },
     "104": {
@@ -837,6 +941,7 @@
         "goldTime": 157963,
         "nameRaw": "105",
         "silverTime": 166089,
+        "superTrackmasterTime": 120671,
         "uid": "Ye_5gMpzhv9hG9j2a4E6EKmTbq5"
     },
     "105": {
@@ -845,6 +950,7 @@
         "goldTime": 47285,
         "nameRaw": "106",
         "silverTime": 54481,
+        "superTrackmasterTime": 42324,
         "uid": "FS0m32BradjHWWbKkLdHpX7YVkm"
     },
     "106": {
@@ -853,6 +959,7 @@
         "goldTime": 50642,
         "nameRaw": "107",
         "silverTime": 54108,
+        "superTrackmasterTime": 44638,
         "uid": "AciwOlVsLPm7j_y4cr17cJw1yfh"
     },
     "107": {
@@ -861,6 +968,7 @@
         "goldTime": 40385,
         "nameRaw": "108",
         "silverTime": 45921,
+        "superTrackmasterTime": 37683,
         "uid": "Zq4c6rhDBY9RjOj0k5lVQSQRH7i"
     },
     "108": {
@@ -869,6 +977,7 @@
         "goldTime": 49670,
         "nameRaw": "109",
         "silverTime": 53985,
+        "superTrackmasterTime": 42772,
         "uid": "oCAbM52wUJDdkvRax1Xs8RJXawa"
     },
     "109": {
@@ -877,6 +986,7 @@
         "goldTime": 160080,
         "nameRaw": "110",
         "silverTime": 174945,
+        "superTrackmasterTime": 144614,
         "uid": "Q2a4rGOTCBy6_EdbY4mz7nEEKsb"
     },
     "110": {
@@ -885,6 +995,7 @@
         "goldTime": 43221,
         "nameRaw": "111",
         "silverTime": 48049,
+        "superTrackmasterTime": 38052,
         "uid": "WfjkN4bMFIYLRzXiQ6KCKsqG8T8"
     },
     "111": {
@@ -893,6 +1004,7 @@
         "goldTime": 47248,
         "nameRaw": "112",
         "silverTime": 53365,
+        "superTrackmasterTime": 41982,
         "uid": "dKbIOFSXb9lUAPP0CnadyOzvBN8"
     },
     "112": {
@@ -901,6 +1013,7 @@
         "goldTime": 45981,
         "nameRaw": "113",
         "silverTime": 51170,
+        "superTrackmasterTime": 38335,
         "uid": "7EGpoJtHofcOpM39m0fAa4oucA3"
     },
     "113": {
@@ -909,6 +1022,7 @@
         "goldTime": 52883,
         "nameRaw": "114",
         "silverTime": 58644,
+        "superTrackmasterTime": 47033,
         "uid": "kyNTF8rUiawHEdr0QDhGC5b_ldb"
     },
     "114": {
@@ -917,6 +1031,7 @@
         "goldTime": 130364,
         "nameRaw": "115",
         "silverTime": 143676,
+        "superTrackmasterTime": 117402,
         "uid": "7BiKpnhW7BgNNucDgIAnFighkFa"
     },
     "115": {
@@ -925,6 +1040,7 @@
         "goldTime": 52446,
         "nameRaw": "116",
         "silverTime": 56618,
+        "superTrackmasterTime": 44893,
         "uid": "09AzYGtROh3KKMGwgwP2kCDIgam"
     },
     "116": {
@@ -933,6 +1049,7 @@
         "goldTime": 42146,
         "nameRaw": "117",
         "silverTime": 47525,
+        "superTrackmasterTime": 38321,
         "uid": "CMPwpo6HyuVQF_Gc6XsTm9bckJl"
     },
     "117": {
@@ -941,6 +1058,7 @@
         "goldTime": 47486,
         "nameRaw": "118",
         "silverTime": 51966,
+        "superTrackmasterTime": 41623,
         "uid": "vRgJ2dDyan8TWsZ_S9hSj6Ec43k"
     },
     "118": {
@@ -949,6 +1067,7 @@
         "goldTime": 50582,
         "nameRaw": "119",
         "silverTime": 56565,
+        "superTrackmasterTime": 43591,
         "uid": "_6xGeek0C7AI1LwKjwK1BpTIbKb"
     },
     "119": {
@@ -957,6 +1076,7 @@
         "goldTime": 131396,
         "nameRaw": "120",
         "silverTime": 145878,
+        "superTrackmasterTime": 109967,
         "uid": "W4iaUP7IyYxcbDOjSXYVjs9On5g"
     },
     "120": {
@@ -965,6 +1085,7 @@
         "goldTime": 55091,
         "nameRaw": "121",
         "silverTime": 63270,
+        "superTrackmasterTime": 47733,
         "uid": "tKBMYOyD3Rapb8RDlJYdpx8APn4"
     },
     "121": {
@@ -973,6 +1094,7 @@
         "goldTime": 48063,
         "nameRaw": "122",
         "silverTime": 53981,
+        "superTrackmasterTime": 41406,
         "uid": "1R0bP4J39jbsO8gNlY3FdLUCcF7"
     },
     "122": {
@@ -981,6 +1103,7 @@
         "goldTime": 48568,
         "nameRaw": "123",
         "silverTime": 53888,
+        "superTrackmasterTime": 41237,
         "uid": "6kdKGzEKMWr5WxzHWalcMIxluxc"
     },
     "123": {
@@ -989,6 +1112,7 @@
         "goldTime": 48471,
         "nameRaw": "124",
         "silverTime": 55916,
+        "superTrackmasterTime": 41732,
         "uid": "jAAKFqE6TaWBEs46CxPrRIUxoVb"
     },
     "124": {
@@ -997,6 +1121,7 @@
         "goldTime": 200648,
         "nameRaw": "125",
         "silverTime": 227166,
+        "superTrackmasterTime": 175337,
         "uid": "Xs9DrZBjJRBJxB0u3A6r2oBZFI2"
     },
     "125": {
@@ -1005,6 +1130,7 @@
         "goldTime": 72097,
         "nameRaw": "126",
         "silverTime": 81403,
+        "superTrackmasterTime": 62093,
         "uid": "M6nANSdZpC4vw4g0gycc_S0AWsg"
     },
     "126": {
@@ -1013,6 +1139,7 @@
         "goldTime": 52967,
         "nameRaw": "127",
         "silverTime": 60960,
+        "superTrackmasterTime": 46805,
         "uid": "j5zlqFpy8Lown4u0nNc6SwJd8Ic"
     },
     "127": {
@@ -1021,6 +1148,7 @@
         "goldTime": 67450,
         "nameRaw": "128",
         "silverTime": 76678,
+        "superTrackmasterTime": 58673,
         "uid": "v_s57SqzQsCA12W5zobKGE4EQRj"
     },
     "128": {
@@ -1029,6 +1157,7 @@
         "goldTime": 66196,
         "nameRaw": "129",
         "silverTime": 75990,
+        "superTrackmasterTime": 55450,
         "uid": "HO_Zz7870O01sZAlJHzEsEwuXDi"
     },
     "129": {
@@ -1037,6 +1166,7 @@
         "goldTime": 198714,
         "nameRaw": "130",
         "silverTime": 221676,
+        "superTrackmasterTime": 170474,
         "uid": "2YGj98HUSuraSUO9Mvkn5WxIIea"
     },
     "130": {
@@ -1045,6 +1175,7 @@
         "goldTime": 63493,
         "nameRaw": "131",
         "silverTime": 72477,
+        "superTrackmasterTime": 56763,
         "uid": "95GEEYvptuvUUeB80veyvItKFkm"
     },
     "131": {
@@ -1053,6 +1184,7 @@
         "goldTime": 61022,
         "nameRaw": "132",
         "silverTime": 69728,
+        "superTrackmasterTime": 53963,
         "uid": "HVJkqdqkiCO6H6R_bDBm86Ndyog"
     },
     "132": {
@@ -1061,6 +1193,7 @@
         "goldTime": 65064,
         "nameRaw": "133",
         "silverTime": 75833,
+        "superTrackmasterTime": 55965,
         "uid": "IQDPlWiPHbYfoH7LpU7j3qw16hg"
     },
     "133": {
@@ -1069,6 +1202,7 @@
         "goldTime": 61925,
         "nameRaw": "134",
         "silverTime": 69257,
+        "superTrackmasterTime": 55638,
         "uid": "7X_JzSrO96GImIpjyacthDRymok"
     },
     "134": {
@@ -1077,6 +1211,7 @@
         "goldTime": 223557,
         "nameRaw": "135",
         "silverTime": 252100,
+        "superTrackmasterTime": 199010,
         "uid": "N7Ex1NP45Q6cBD_NYkfzSf7X0sl"
     },
     "135": {
@@ -1085,6 +1220,7 @@
         "goldTime": 57774,
         "nameRaw": "136",
         "silverTime": 66517,
+        "superTrackmasterTime": 51172,
         "uid": "7HP1tdkXl8ZMLGzw3csSkLVCsni"
     },
     "136": {
@@ -1093,6 +1229,7 @@
         "goldTime": 64448,
         "nameRaw": "137",
         "silverTime": 73002,
+        "superTrackmasterTime": 57908,
         "uid": "GZaxZgUMMRkj7VNnSetTPp4ccTk"
     },
     "137": {
@@ -1101,6 +1238,7 @@
         "goldTime": 65804,
         "nameRaw": "138",
         "silverTime": 73354,
+        "superTrackmasterTime": 56108,
         "uid": "Xr_g62st9RYzdspFFBU_upTg3Yh"
     },
     "138": {
@@ -1109,6 +1247,7 @@
         "goldTime": 60523,
         "nameRaw": "139",
         "silverTime": 68692,
+        "superTrackmasterTime": 52851,
         "uid": "I6Po_3kuiSpwoihp30JLERM5B9g"
     },
     "139": {
@@ -1117,6 +1256,7 @@
         "goldTime": 203962,
         "nameRaw": "140",
         "silverTime": 230200,
+        "superTrackmasterTime": 178056,
         "uid": "3SHnlC14e5tS_bA7RWvqawear_e"
     },
     "140": {
@@ -1125,6 +1265,7 @@
         "goldTime": 45190,
         "nameRaw": "141",
         "silverTime": 50943,
+        "superTrackmasterTime": 40934,
         "uid": "sMUGuODgGHV34seWn_kD5EUcs2c"
     },
     "141": {
@@ -1133,6 +1274,7 @@
         "goldTime": 42580,
         "nameRaw": "142",
         "silverTime": 48653,
+        "superTrackmasterTime": 38125,
         "uid": "rig31CU2M3VKnLPiq1C4I85zPkc"
     },
     "142": {
@@ -1141,6 +1283,7 @@
         "goldTime": 65515,
         "nameRaw": "143",
         "silverTime": 73828,
+        "superTrackmasterTime": 57123,
         "uid": "AbgK02nTIcpUcsN0JSOxDRPUCGk"
     },
     "143": {
@@ -1149,6 +1292,7 @@
         "goldTime": 66702,
         "nameRaw": "144",
         "silverTime": 76408,
+        "superTrackmasterTime": 58265,
         "uid": "lKGP2Ww2uZpI_xBZH5gyHYYgzX8"
     },
     "144": {
@@ -1157,6 +1301,7 @@
         "goldTime": 190533,
         "nameRaw": "145",
         "silverTime": 215591,
+        "superTrackmasterTime": 165998,
         "uid": "GZ26lCDCvjgBRj6d_ANl4fE5Iqf"
     },
     "145": {
@@ -1165,6 +1310,7 @@
         "goldTime": 54740,
         "nameRaw": "146",
         "silverTime": 61281,
+        "superTrackmasterTime": 47186,
         "uid": "1J_nideio5QbS3MbCVR8_yiDEK4"
     },
     "146": {
@@ -1173,6 +1319,7 @@
         "goldTime": 64142,
         "nameRaw": "147",
         "silverTime": 71448,
+        "superTrackmasterTime": 57283,
         "uid": "LRW7aJL2ZnupWCQfaGKBHCycbFh"
     },
     "147": {
@@ -1181,6 +1328,7 @@
         "goldTime": 61927,
         "nameRaw": "148",
         "silverTime": 74000,
+        "superTrackmasterTime": 55975,
         "uid": "j_YiZs_L0T9BXoIs1hLggtQCff"
     },
     "148": {
@@ -1189,6 +1337,7 @@
         "goldTime": 46697,
         "nameRaw": "149",
         "silverTime": 52618,
+        "superTrackmasterTime": 38970,
         "uid": "FxN8Yy1CHKMCmrNeGrELTVYJ2Vd"
     },
     "149": {
@@ -1197,6 +1346,7 @@
         "goldTime": 208721,
         "nameRaw": "150",
         "silverTime": 234805,
+        "superTrackmasterTime": 170115,
         "uid": "oqrrUzNlc3S6wz90XIt7qUl9282"
     },
     "150": {
@@ -1205,6 +1355,7 @@
         "goldTime": 56741,
         "nameRaw": "151",
         "silverTime": 64398,
+        "superTrackmasterTime": 49993,
         "uid": "OnGXOutJa6qgUs9HUt2lieWuqSd"
     },
     "151": {
@@ -1213,6 +1364,7 @@
         "goldTime": 45946,
         "nameRaw": "152",
         "silverTime": 54228,
+        "superTrackmasterTime": 40648,
         "uid": "CA3gAh1GsPIiiYjX7WpkSSXVdH2"
     },
     "152": {
@@ -1221,6 +1373,7 @@
         "goldTime": 44334,
         "nameRaw": "153",
         "silverTime": 49427,
+        "superTrackmasterTime": 38020,
         "uid": "xypQ7MiV05aoZYT1vL0iPCoEeWb"
     },
     "153": {
@@ -1229,6 +1382,7 @@
         "goldTime": 54087,
         "nameRaw": "154",
         "silverTime": 62531,
+        "superTrackmasterTime": 46956,
         "uid": "bM8rh9VI1pbXEek3x97PakR7sGd"
     },
     "154": {
@@ -1237,6 +1391,7 @@
         "goldTime": 143853,
         "nameRaw": "155",
         "silverTime": 164601,
+        "superTrackmasterTime": 121901,
         "uid": "3Nmo8NclUVIpuArHee1OJXd7q20"
     },
     "155": {
@@ -1245,6 +1400,7 @@
         "goldTime": 51988,
         "nameRaw": "156",
         "silverTime": 60592,
+        "superTrackmasterTime": 43024,
         "uid": "krRxqqA4Eh1iwKShrn5vRJ0M8H9"
     },
     "156": {
@@ -1253,6 +1409,7 @@
         "goldTime": 55134,
         "nameRaw": "157",
         "silverTime": 63305,
+        "superTrackmasterTime": 47192,
         "uid": "pi0FmvZmr4FT0EkL6fE34ZRZPVm"
     },
     "157": {
@@ -1261,6 +1418,7 @@
         "goldTime": 49040,
         "nameRaw": "158",
         "silverTime": 56338,
+        "superTrackmasterTime": 41696,
         "uid": "qDpi8mz5P2eCNVOkfvisn9Z_M9c"
     },
     "158": {
@@ -1269,6 +1427,7 @@
         "goldTime": 77675,
         "nameRaw": "159",
         "silverTime": 89085,
+        "superTrackmasterTime": 69210,
         "uid": "iIWN7PexPNxhGhCKkVmk9j3pNYk"
     },
     "159": {
@@ -1277,6 +1436,7 @@
         "goldTime": 197787,
         "nameRaw": "160",
         "silverTime": 226193,
+        "superTrackmasterTime": 172656,
         "uid": "dArDGtfYQPte819UFA_35c7Jpgh"
     },
     "160": {
@@ -1285,6 +1445,7 @@
         "goldTime": 76397,
         "nameRaw": "161",
         "silverTime": 87625,
+        "superTrackmasterTime": 65130,
         "uid": "EH4nf8VXv6fAXLdhGYOQz1LM3Tk"
     },
     "161": {
@@ -1293,6 +1454,7 @@
         "goldTime": 57817,
         "nameRaw": "162",
         "silverTime": 68748,
+        "superTrackmasterTime": 49308,
         "uid": "FMieDDGOAwpXVisGRaay18HPu70"
     },
     "162": {
@@ -1301,6 +1463,7 @@
         "goldTime": 50220,
         "nameRaw": "163",
         "silverTime": 57205,
+        "superTrackmasterTime": 41487,
         "uid": "KyAXpFpXuUVDZQncN24VLniyQH0"
     },
     "163": {
@@ -1309,6 +1472,7 @@
         "goldTime": 84440,
         "nameRaw": "164",
         "silverTime": 96700,
+        "superTrackmasterTime": 69908,
         "uid": "FhcfV_F66ez3v9zTIPJtZz_Qxte"
     },
     "164": {
@@ -1317,6 +1481,7 @@
         "goldTime": 228875,
         "nameRaw": "165",
         "silverTime": 257652,
+        "superTrackmasterTime": 203013,
         "uid": "fDUySVC83qgtyKd3tAKbyrUTCyf"
     },
     "165": {
@@ -1325,6 +1490,7 @@
         "goldTime": 84222,
         "nameRaw": "166",
         "silverTime": 95286,
+        "superTrackmasterTime": 70504,
         "uid": "eho1V0npoKPbLZMeqhT20WEXcx0"
     },
     "166": {
@@ -1333,6 +1499,7 @@
         "goldTime": 70211,
         "nameRaw": "167",
         "silverTime": 78111,
+        "superTrackmasterTime": 55993,
         "uid": "FIweya9BFNlLe4QayGvDZZeOJhj"
     },
     "167": {
@@ -1341,6 +1508,7 @@
         "goldTime": 64537,
         "nameRaw": "168",
         "silverTime": 72711,
+        "superTrackmasterTime": 54426,
         "uid": "0nJCC65KDq8wEnu9r488Z4KdZXd"
     },
     "168": {
@@ -1349,6 +1517,7 @@
         "goldTime": 116915,
         "nameRaw": "169",
         "silverTime": 132998,
+        "superTrackmasterTime": 97178,
         "uid": "MJHMdiyUVC68MNPVV5hwWE6CQX"
     },
     "169": {
@@ -1357,6 +1526,7 @@
         "goldTime": 150150,
         "nameRaw": "170",
         "silverTime": 168447,
+        "superTrackmasterTime": 121195,
         "uid": "ipm7ukiOrMineS1aHIxghCfkDA7"
     },
     "170": {
@@ -1365,6 +1535,7 @@
         "goldTime": 78449,
         "nameRaw": "171",
         "silverTime": 90316,
+        "superTrackmasterTime": 68698,
         "uid": "LyfHT_vqdDTeYPHlVeqcK0orbj1"
     },
     "171": {
@@ -1373,6 +1544,7 @@
         "goldTime": 67772,
         "nameRaw": "172",
         "silverTime": 76675,
+        "superTrackmasterTime": 57940,
         "uid": "bmJW8IhHoQiYAwoQW81chlQAr09"
     },
     "172": {
@@ -1381,6 +1553,7 @@
         "goldTime": 101634,
         "nameRaw": "173",
         "silverTime": 113511,
+        "superTrackmasterTime": 91104,
         "uid": "LsdRidAAMcDiipSpjRw1GuSRkr7"
     },
     "173": {
@@ -1389,6 +1562,7 @@
         "goldTime": 59027,
         "nameRaw": "174",
         "silverTime": 66278,
+        "superTrackmasterTime": 51804,
         "uid": "dCDzG1quVV66HoXU5kgsWNeML0l"
     },
     "174": {
@@ -1397,6 +1571,7 @@
         "goldTime": 234015,
         "nameRaw": "175",
         "silverTime": 265093,
+        "superTrackmasterTime": 198681,
         "uid": "F2X_qJtLTsr_Ybk7hSk7Vpt2_p9"
     },
     "175": {
@@ -1405,6 +1580,7 @@
         "goldTime": 105497,
         "nameRaw": "176",
         "silverTime": 118065,
+        "superTrackmasterTime": 93753,
         "uid": "Cj4TJm7Je2zJFxce3VArh35c35f"
     },
     "176": {
@@ -1413,6 +1589,7 @@
         "goldTime": 68707,
         "nameRaw": "177",
         "silverTime": 76604,
+        "superTrackmasterTime": 57396,
         "uid": "f_6_mQuDIqNeJLAlnIAlC9c45Og"
     },
     "177": {
@@ -1421,6 +1598,7 @@
         "goldTime": 99455,
         "nameRaw": "178",
         "silverTime": 115281,
+        "superTrackmasterTime": 85248,
         "uid": "uksTK9yxnXdE7aKnwKhJeoxYK7l"
     },
     "178": {
@@ -1429,6 +1607,7 @@
         "goldTime": 127712,
         "nameRaw": "179",
         "silverTime": 147490,
+        "superTrackmasterTime": 110975,
         "uid": "1SGJVgDg63R4pE3XWKrUsbc96Cb"
     },
     "179": {
@@ -1437,6 +1616,7 @@
         "goldTime": 119618,
         "nameRaw": "180",
         "silverTime": 139131,
+        "superTrackmasterTime": 105608,
         "uid": "Gdpm02uXTvSLhzbA2yAF3MGyrR7"
     },
     "180": {
@@ -1445,6 +1625,7 @@
         "goldTime": 73598,
         "nameRaw": "181",
         "silverTime": 81010,
+        "superTrackmasterTime": 64440,
         "uid": "tdSLUTsyERwEz5_kF89jZob1dnb"
     },
     "181": {
@@ -1453,6 +1634,7 @@
         "goldTime": 60715,
         "nameRaw": "182",
         "silverTime": 70305,
+        "superTrackmasterTime": 55444,
         "uid": "PwqKtpp9AeWdklb2e6n1FHi_Qyf"
     },
     "182": {
@@ -1461,6 +1643,7 @@
         "goldTime": 53601,
         "nameRaw": "183",
         "silverTime": 60635,
+        "superTrackmasterTime": 45348,
         "uid": "o_yd_otJJyiMXYJ1FTWCbPpVOPm"
     },
     "183": {
@@ -1469,6 +1652,7 @@
         "goldTime": 81873,
         "nameRaw": "184",
         "silverTime": 91342,
+        "superTrackmasterTime": 71743,
         "uid": "dZrC7tbSLf_gd9SLuVZlZoHYyKi"
     },
     "184": {
@@ -1477,6 +1661,7 @@
         "goldTime": 253015,
         "nameRaw": "185",
         "silverTime": 282190,
+        "superTrackmasterTime": 230435,
         "uid": "ub8B4iFEg6u7bXEuXOJQKxkcaVa"
     },
     "185": {
@@ -1485,6 +1670,7 @@
         "goldTime": 109825,
         "nameRaw": "186",
         "silverTime": 122253,
+        "superTrackmasterTime": 89356,
         "uid": "BBJ3GDjzvFRWOaD6lDSN1OfGnv"
     },
     "186": {
@@ -1493,6 +1679,7 @@
         "goldTime": 67983,
         "nameRaw": "187",
         "silverTime": 75115,
+        "superTrackmasterTime": 55472,
         "uid": "fDgNq0jTJJe_9uOwa3INVr1zGR9"
     },
     "187": {
@@ -1501,6 +1688,7 @@
         "goldTime": 122255,
         "nameRaw": "188",
         "silverTime": 138040,
+        "superTrackmasterTime": 105350,
         "uid": "VFiGxwPZT__VymNhHvzC7lSKsDc"
     },
     "188": {
@@ -1509,6 +1697,7 @@
         "goldTime": 73170,
         "nameRaw": "189",
         "silverTime": 83761,
+        "superTrackmasterTime": 65156,
         "uid": "CyzK3bS5J6lCY_RvQMORI4DPYvm"
     },
     "189": {
@@ -1517,6 +1706,7 @@
         "goldTime": 117862,
         "nameRaw": "190",
         "silverTime": 132070,
+        "superTrackmasterTime": 99295,
         "uid": "Ouw0TlRpJ7VSBmK1FgQowyVTAab"
     },
     "190": {
@@ -1525,6 +1715,7 @@
         "goldTime": 75564,
         "nameRaw": "191",
         "silverTime": 87135,
+        "superTrackmasterTime": 64588,
         "uid": "yl0KhVnZE_mrmnFzGaIX4XLpw42"
     },
     "191": {
@@ -1533,6 +1724,7 @@
         "goldTime": 64475,
         "nameRaw": "192",
         "silverTime": 73608,
+        "superTrackmasterTime": 54842,
         "uid": "zCi98ja74OipnR5GwwLokbV_nf1"
     },
     "192": {
@@ -1541,6 +1733,7 @@
         "goldTime": 55350,
         "nameRaw": "193",
         "silverTime": 62616,
+        "superTrackmasterTime": 49046,
         "uid": "UpYkn8JFC5kioxDgK9clHp_hERd"
     },
     "193": {
@@ -1549,6 +1742,7 @@
         "goldTime": 60545,
         "nameRaw": "194",
         "silverTime": 69818,
+        "superTrackmasterTime": 51141,
         "uid": "XCfmmnX_M_ctxfHt6anW_Ytukx5"
     },
     "194": {
@@ -1557,6 +1751,7 @@
         "goldTime": 215931,
         "nameRaw": "195",
         "silverTime": 244662,
+        "superTrackmasterTime": 194061,
         "uid": "C6QTj4DgTst8hekMPxMG3Sr9TF3"
     },
     "195": {
@@ -1565,6 +1760,7 @@
         "goldTime": 73676,
         "nameRaw": "196",
         "silverTime": 87330,
+        "superTrackmasterTime": 61857,
         "uid": "dTDcCij9duFSlYgAycE__0VkHu1"
     },
     "196": {
@@ -1573,6 +1769,7 @@
         "goldTime": 64215,
         "nameRaw": "197",
         "silverTime": 74063,
+        "superTrackmasterTime": 58548,
         "uid": "Iw89lemUd0HBXx2RAcOGiabSqm6"
     },
     "197": {
@@ -1581,6 +1778,7 @@
         "goldTime": 52921,
         "nameRaw": "198",
         "silverTime": 59624,
+        "superTrackmasterTime": 43971,
         "uid": "alILbsbtcdzR1bYJDDd36n26MGm"
     },
     "198": {
@@ -1589,6 +1787,7 @@
         "goldTime": 66809,
         "nameRaw": "199",
         "silverTime": 74714,
+        "superTrackmasterTime": 54698,
         "uid": "gXrH4ISiKX2nqFLn7xKdwe8u369"
     },
     "199": {
@@ -1597,6 +1796,7 @@
         "goldTime": 77525,
         "nameRaw": "200",
         "silverTime": 89135,
+        "superTrackmasterTime": 63776,
         "uid": "jV1HYr_Vp3uijy8jgaC5TkHkRs"
     }
 }
