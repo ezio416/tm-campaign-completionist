@@ -383,10 +383,9 @@ void SetNextMap() {
                 trace("next map: " + (S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ") + nextMap.nameClean);
 #elif MP4
                 trace("next map: " + nextMap.nameClean);
-        }
-    } else {
-        warn("no maps!");
 #endif
 
-    }
+        }
+    } else
+        warn("no maps!");
 }
