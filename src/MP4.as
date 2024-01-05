@@ -54,7 +54,7 @@ void GetMaps() {
 
     if (hasCanyon) {
         trace("loading Canyon maps");
-        @loadedCanyon = Json::FromFile("src/MapsMP4/canyon.json");
+        @loadedCanyon = Json::FromFile("src/Assets/canyon.json");
 
         for (uint i = 0; i < loadedCanyon.Length; i++) {
             string key = ZPad2(i);
@@ -66,7 +66,7 @@ void GetMaps() {
 
     if (hasStadium) {
         trace("loading Stadium maps");
-        @loadedStadium = Json::FromFile("src/MapsMP4/stadium.json");
+        @loadedStadium = Json::FromFile("src/Assets/stadium.json");
 
         for (uint i = 0; i < loadedStadium.Length; i++) {
             string key = ZPad2(i);
@@ -78,7 +78,7 @@ void GetMaps() {
 
     if (hasValley) {
         trace("loading Valley maps");
-        @loadedValley = Json::FromFile("src/MapsMP4/valley.json");
+        @loadedValley = Json::FromFile("src/Assets/valley.json");
 
         for (uint i = 0; i < loadedValley.Length; i++) {
             string key = ZPad2(i);
@@ -90,7 +90,7 @@ void GetMaps() {
 
     if (hasLagoon) {
         trace("loading Lagoon maps");
-        @loadedLagoon = Json::FromFile("src/MapsMP4/lagoon.json");
+        @loadedLagoon = Json::FromFile("src/Assets/lagoon.json");
 
         for (uint i = 0; i < loadedLagoon.Length; i++) {
             string key = ZPad2(i);
