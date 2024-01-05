@@ -27,46 +27,6 @@ Map@[]       mapsStadium;
 Map@[]       mapsValley;
 Map@[]       mapsLagoon;
 
-void GetTitlepacks() {
-    if (checkingTitlepacks)
-        return;
-
-    checkingTitlepacks = true;
-
-    CTrackMania@ App = cast<CTrackMania@>(GetApp());
-
-    while (App.ManiaTitles.Length == 0)
-        yield();
-
-    for (uint i = 0; i < App.ManiaTitles.Length; i++) {
-        CGameManiaTitle@ title = App.ManiaTitles[i];
-        if (title is null)
-            continue;
-
-        if (title.TitleId == "TMCanyon@nadeo") {
-            hasCanyon = true;
-            continue;
-        }
-
-        if (title.TitleId == "TMStadium@nadeo") {
-            hasStadium = true;
-            continue;
-        }
-
-        if (title.TitleId == "TMValley@nadeo") {
-            hasValley = true;
-            continue;
-        }
-
-        if (title.TitleId == "TMLagoon@nadeo") {
-            hasLagoon = true;
-            continue;
-        }
-    }
-
-    checkingTitlepacks = false;
-}
-
 void GetMaps() {
     if (gettingNow)
         return;
@@ -143,34 +103,41 @@ void GetMaps() {
     GetRecordsFromReplays();
 }
 
-void GetRecordsFromReplays() {
-    gettingNow = true;
+uint GetOpponentButtonIndex(uint length, const string &in uid) {
+    trace("getting opponent index");
 
-    trace("getting records from replays");
+    if (length == 5)
+        return S_OpponentSelection == OpponentSelection::None ? 4 : S_Target;
 
-    CTrackMania@ App = cast<CTrackMania@>(GetApp());
-
-    for (uint i = 0; i < App.ReplayRecordInfos.Length; i++) {
-        CGameCtnReplayRecordInfo@ Info = App.ReplayRecordInfos[i];
-        if (Info is null || Info.MapUid == "")
-            continue;
-
-        Map@ map = cast<Map@>(mapsByUid[Info.MapUid]);
-        if (map is null) {  // probably just not a Nadeo map
-            // warn("map not found: " + Info.MapUid);
-            continue;
-        }
-
-        progressCount++;
-
-        map.myTime = Info.BestTime;
-        map.CalcMedal();
+    if (!mapsByUid.Exists(uid)) {
+        warn("map not found! returning 0");
+        return 0;
     }
 
-    trace("getting records from replays done");
+    Map@ map = cast<Map@>(mapsByUid[uid]);
+    if (map is null) {
+        warn("map is null! returning 0");
+        return 0;
+    }
 
-    // GetRecordsFromLoadedCampaign();
-    gettingNow = false;
+    if (S_OpponentSelection == OpponentSelection::None) {
+        if (map.myMedals == 0)
+            return 4;
+
+        return 5;
+    } else {
+        bool targetAuthor = S_Target == TargetMedal::Author;
+        bool targetGold   = S_Target == TargetMedal::Gold;
+        bool targetSilver = S_Target == TargetMedal::Silver;
+
+        switch (map.myMedals) {
+            case 4:  return S_Target + 1;
+            case 3:  return targetAuthor ? 0 : S_Target + 1;
+            case 2:  return targetAuthor ? 0 : targetGold ? 1 : S_Target + 1;
+            case 1:  return targetAuthor ? 0 : targetGold ? 1 : targetSilver ? 2 : S_Target + 1;
+            default: return S_Target;
+        }
+    }
 }
 
 void GetRecordsFromLoadedCampaign(bool fromTitleSwitch = false) {
@@ -247,6 +214,76 @@ void GetRecordsFromLoadedCampaign(bool fromTitleSwitch = false) {
     trace("getting records from loaded campaign done");
 
     gettingNow = false;
+}
+
+void GetRecordsFromReplays() {
+    gettingNow = true;
+
+    trace("getting records from replays");
+
+    CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+    for (uint i = 0; i < App.ReplayRecordInfos.Length; i++) {
+        CGameCtnReplayRecordInfo@ Info = App.ReplayRecordInfos[i];
+        if (Info is null || Info.MapUid == "")
+            continue;
+
+        Map@ map = cast<Map@>(mapsByUid[Info.MapUid]);
+        if (map is null) {  // probably just not a Nadeo map
+            // warn("map not found: " + Info.MapUid);
+            continue;
+        }
+
+        progressCount++;
+
+        map.myTime = Info.BestTime;
+        map.CalcMedal();
+    }
+
+    trace("getting records from replays done");
+
+    // GetRecordsFromLoadedCampaign();
+    gettingNow = false;
+}
+
+void GetTitlepacks() {
+    if (checkingTitlepacks)
+        return;
+
+    checkingTitlepacks = true;
+
+    CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+    while (App.ManiaTitles.Length == 0)
+        yield();
+
+    for (uint i = 0; i < App.ManiaTitles.Length; i++) {
+        CGameManiaTitle@ title = App.ManiaTitles[i];
+        if (title is null)
+            continue;
+
+        if (title.TitleId == "TMCanyon@nadeo") {
+            hasCanyon = true;
+            continue;
+        }
+
+        if (title.TitleId == "TMStadium@nadeo") {
+            hasStadium = true;
+            continue;
+        }
+
+        if (title.TitleId == "TMValley@nadeo") {
+            hasValley = true;
+            continue;
+        }
+
+        if (title.TitleId == "TMLagoon@nadeo") {
+            hasLagoon = true;
+            continue;
+        }
+    }
+
+    checkingTitlepacks = false;
 }
 
 void LoadTitlepack() {
@@ -635,43 +672,6 @@ void SelectOpponentLocal() {
     } catch {
         NotifyWarn("Error selecting opponent, maybe it loaded in campaign mode?", false);
         warn("exception in selecting opponent: " + getExceptionInfo());
-    }
-}
-
-uint GetOpponentButtonIndex(uint length, const string &in uid) {
-    trace("getting opponent index");
-
-    if (length == 5)
-        return S_OpponentSelection == OpponentSelection::None ? 4 : S_Target;
-
-    if (!mapsByUid.Exists(uid)) {
-        warn("map not found! returning 0");
-        return 0;
-    }
-
-    Map@ map = cast<Map@>(mapsByUid[uid]);
-    if (map is null) {
-        warn("map is null! returning 0");
-        return 0;
-    }
-
-    if (S_OpponentSelection == OpponentSelection::None) {
-        if (map.myMedals == 0)
-            return 4;
-
-        return 5;
-    } else {
-        bool targetAuthor = S_Target == TargetMedal::Author;
-        bool targetGold   = S_Target == TargetMedal::Gold;
-        bool targetSilver = S_Target == TargetMedal::Silver;
-
-        switch (map.myMedals) {
-            case 4:  return S_Target + 1;
-            case 3:  return targetAuthor ? 0 : S_Target + 1;
-            case 2:  return targetAuthor ? 0 : targetGold ? 1 : S_Target + 1;
-            case 1:  return targetAuthor ? 0 : targetGold ? 1 : targetSilver ? 2 : S_Target + 1;
-            default: return S_Target;
-        }
     }
 }
 
