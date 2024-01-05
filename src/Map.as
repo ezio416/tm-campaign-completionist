@@ -275,6 +275,44 @@ class Map {
         return true;
     }
 
+#elif TURBO
+
+    void CheckPB() {
+        sleep(recordSleepTime);
+
+        CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+        CTrackManiaNetwork@ Network = cast<CTrackManiaNetwork@>(App.Network);
+        if (Network is null || App.Challenge is null)
+            return;
+
+        CTrackManiaRaceRules@ RaceRules = Network.TmRaceRules;
+
+        if (RaceRules is null)
+            return;
+
+        CGameDataManagerScript@ DataMgr = RaceRules.DataMgr;
+        if (DataMgr is null)
+            return;
+
+        DataMgr.RetrieveRecordsNoMedals(uid, DataMgr.MenuUserId);
+        yield();
+
+        if (!DataMgr.Ready)
+            return;
+
+        for (uint i = 0; i < DataMgr.Records.Length; i++) {
+            if (DataMgr.Records[i].GhostName == "Solo_BestGhost") {
+                if (myTime > 0 && myTime < DataMgr.Records[i].Time)
+                    return;
+
+                myTime = DataMgr.Records[i].Time;
+                CalcMedal();
+                break;
+            }
+        }
+    }
+
 #endif
 
 }

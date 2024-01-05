@@ -260,7 +260,11 @@ void RenderMenu() {
                 // for (uint i = 0; i < maps.Length; i++) {
                 //     Map@ map = maps[i];
 
-#if TMNEXT || MP4
+#if TURBO
+
+                    UI::MenuItem(map.nameClean, "", false, false);
+
+#else
 #if TMNEXT
 
                     if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapName ? map.nameColored : map.nameClean), "", false, !loadingMap))
@@ -430,14 +434,32 @@ void Loop() {
 
         || App.CurrentPlayground is null
         || App.CurrentPlayground.UIConfigs.Length == 0
-        // || App.CurrentPlayground.UIConfigs[0].UISequence != CGamePlaygroundUIConfig::EUISequence::EndRound
         || !nextMap.ThisSessionPB()
+
+#else
+
+        || App.Challenge is null
+        // || App.CurrentPlayground is null
+        // || App.CurrentPlayground.UIConfigs.Length == 0
+        // || App.CurrentPlayground.UIConfigs[0].UISequence != CGamePlaygroundUIConfig::EUISequence::EndRound
 
 #endif
 
     )
         return;
 
+#if TURBO
+
+    uint time = nextMap.myTime;
+
+    Meta::PluginCoroutine@ recordCoro = startnew(CoroutineFunc(nextMap.CheckPB));
+    while (recordCoro.IsRunning())
+        yield();
+
+    if (time == nextMap.myTime)
+        return;
+
+#endif
 #if TMNEXT
 
     CGameUserManagerScript@ UserMgr = App.Network.ClientManiaAppPlayground.UserMgr;
@@ -496,7 +518,16 @@ void SetNextMap() {
 
     metTargetTotal = 0;
     @nextMap = null;
+
+#if TMNEXT || MP4
+
     uint target = 4 - S_Target;
+
+#else
+
+    uint target = 8 - S_Target;
+
+#endif
 
     mapsRemaining.RemoveRange(0, mapsRemaining.Length);
 

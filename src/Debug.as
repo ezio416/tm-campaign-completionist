@@ -81,14 +81,11 @@ void Render() {
         return;
 
     UI::Begin(title + " debug", S_Debug);
-        if (UI::Button("ReturnToMenu"))
-            startnew(ReturnToMenu);
-
         if (UI::BeginTable("##table", 5)) {
             UI::TableSetupScrollFreeze(0, 1);
             UI::TableSetupColumn("map", UI::TableColumnFlags::WidthFixed, 120.0f);
             UI::TableSetupColumn("PB", UI::TableColumnFlags::WidthFixed, 100.0f);
-            UI::TableSetupColumn("stmTime", UI::TableColumnFlags::WidthFixed, 110.0f);
+            UI::TableSetupColumn("goldTime", UI::TableColumnFlags::WidthFixed, 110.0f);
             UI::TableSetupColumn("medals", UI::TableColumnFlags::WidthFixed, 70.0f);
             UI::TableSetupColumn("uid");
             UI::TableHeadersRow();
@@ -102,7 +99,7 @@ void Render() {
                 UI::Text(PosNegColor(maps[i].myTime));
 
                 UI::TableNextColumn();
-                UI::Text(PosNegColor(maps[i].superTrackmasterTime));
+                UI::Text(PosNegColor(maps[i].goldTime));
 
                 UI::TableNextColumn();
                 UI::Text(PosNegColor(maps[i].myMedals, false));
