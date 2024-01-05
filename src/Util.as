@@ -79,6 +79,7 @@ void ReturnToMenu() {
     while (!App.ManiaTitleFlowScriptAPI.IsReady)
 
 #endif
+
         yield();
 }
 
