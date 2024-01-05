@@ -53,6 +53,9 @@ enum OpponentSelection {
 [Setting category="General" name="Auto-opponent selection"]
 OpponentSelection S_OpponentSelection = OpponentSelection::None;
 
+[Setting category="General" name="Show debug window"]
+bool S_Debug = false;
+
 #elif TMNEXT
 
 [Setting category="Colors" name="Colored map name"]

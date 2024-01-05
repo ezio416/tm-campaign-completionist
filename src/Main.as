@@ -61,6 +61,18 @@ void Main() {
     }
 }
 
+#if MP4
+void Update(float) {
+    CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+    atTitleSelect = App.RootMap is null &&
+        App.ActiveMenus.Length > 0 &&
+        App.ActiveMenus[0] !is null &&
+        App.ActiveMenus[0].CurrentFrame !is null &&
+        App.ActiveMenus[0].CurrentFrame.Id.GetName() == "FrameManiaPlanetMain";
+}
+#endif
+
 void RenderMenu() {
     if (UI::BeginMenu(title)) {
         if (UI::MenuItem(Icons::Question + " Auto Switch Maps", "", S_AutoSwitch))
@@ -377,65 +389,4 @@ void SetNextMap() {
 #endif
 
     }
-}
-
-void Render() {
-    bool open = true;
-
-    UI::Begin(title + " debug", open);
-        if (UI::Button("back to main menu"))
-            startnew(ReturnToMenu);
-
-        UI::BeginDisabled(loadingTitlepack);
-        UI::SameLine();
-        if (UI::Button("back to title select"))
-            startnew(ReturnToTitleSelect);
-        UI::EndDisabled();
-
-        if (UI::BeginCombo("titlepack", tostring(S_Titlepack))) {
-            for (int i = -1; i < 4; i++) {
-                Titlepack selected = Titlepack(i);
-                if (UI::Selectable(tostring(selected), S_Titlepack == selected))
-                    S_Titlepack = selected;
-            }
-            UI::EndCombo();
-        }
-
-        UI::BeginDisabled(loadingTitlepack || S_Titlepack == Titlepack::None);
-        UI::SameLine();
-        if (UI::Button("Enter"))
-            startnew(LoadTitlepack);
-        UI::EndDisabled();
-
-        if (UI::BeginTable("##table", 6)) {
-            UI::TableSetupColumn("map", UI::TableColumnFlags::WidthFixed, 120.0f);
-            UI::TableSetupColumn("time", UI::TableColumnFlags::WidthFixed, 100.0f);
-            UI::TableSetupColumn("medalTime", UI::TableColumnFlags::WidthFixed, 100.0f);
-            UI::TableSetupColumn("medals", UI::TableColumnFlags::WidthFixed, 40.0f);
-            UI::TableSetupColumn("mxid", UI::TableColumnFlags::WidthFixed, 60.0f);
-
-            for (uint i = 0; i < maps.Length; i++) {
-                UI::TableNextRow();
-                UI::TableNextColumn();
-                UI::Text(maps[i].nameClean);
-
-                UI::TableNextColumn();
-                UI::Text(PosNegColor(maps[i].myTime));
-
-                UI::TableNextColumn();
-                UI::Text(PosNegColor(maps[i].goldTime));
-
-                UI::TableNextColumn();
-                UI::Text(PosNegColor(maps[i].myMedals, false));
-
-                UI::TableNextColumn();
-                UI::Text(PosNegColor(maps[i].mxid, false));
-
-                UI::TableNextColumn();
-                UI::Text(maps[i].uid);
-            }
-
-            UI::EndTable();
-        }
-    UI::End();
 }

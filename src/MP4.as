@@ -3,6 +3,7 @@
 
 #if MP4
 
+bool         atTitleSelect      = false;
 bool         checkingTitlepacks = false;
 string       colorCanyon;
 string       colorLoadedTitle;
