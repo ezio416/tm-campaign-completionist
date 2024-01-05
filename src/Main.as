@@ -15,7 +15,9 @@ string     currentUid;
 bool       gettingNow      = false;
 
 #if TMNEXT
+
 Mode       lastMode        = S_Mode;
+
 #endif
 
 Map@[]     maps;
@@ -35,7 +37,9 @@ uint       progressPercent = 0;
 string     title           = "\\$F82" + Icons::CalendarO + "\\$G Campaign Completionist";
 
 void Main() {
+
 #if TMNEXT
+
     if (!Permissions::PlayLocalMap()) {
         warn("plugin requires paid access to play maps");
         UI::ShowNotification(title, "Paid access (at least standard) is required to play maps", vec4(1.0f, 0.1f, 0.1f, 0.8f));
@@ -48,7 +52,9 @@ void Main() {
     NadeoServices::AddAudience(audienceCore);
     NadeoServices::AddAudience(audienceLive);
 #elif MP4
+
     GetTitlepacks();
+
 #endif
 
     playPermission = true;
@@ -62,6 +68,7 @@ void Main() {
 }
 
 #if MP4
+
 void Update(float) {
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
@@ -71,6 +78,7 @@ void Update(float) {
         App.ActiveMenus[0].CurrentFrame !is null &&
         App.ActiveMenus[0].CurrentFrame.Id.GetName() == "FrameManiaPlanetMain";
 }
+
 #endif
 
 void RenderMenu() {
@@ -79,6 +87,7 @@ void RenderMenu() {
             S_AutoSwitch = !S_AutoSwitch;
 
 #if TMNEXT
+
         if (UI::BeginMenu((S_Mode == Mode::NadeoCampaign ? "\\$1D4" : "\\$19F") + Icons::ArrowsH + " Mode: " + (S_Mode == Mode::NadeoCampaign ? "Nadeo Campaign" : "Track of the Day"), !gettingNow)) {
             if (UI::MenuItem("\\$1D4" + Icons::Kenney::Car + " Nadeo Campaign")) {
                 S_Mode = Mode::NadeoCampaign;
@@ -90,7 +99,9 @@ void RenderMenu() {
             }
             UI::EndMenu();
         }
+
 #elif MP4
+
         if (UI::BeginMenu(colorLoadedTitle + Icons::Download + " Titlepack: " + loadedTitleName, !loadingTitlepack)) {
             if (UI::MenuItem(colorCanyon + Icons::Road + " Canyon", "", false, loadedTitleName != "Canyon")) {
                 S_Titlepack = Titlepack::Canyon;
@@ -110,6 +121,7 @@ void RenderMenu() {
             }
             UI::EndMenu();
         }
+
 #endif
 
         if (UI::BeginMenu(colorTarget + Icons::Circle + " Target Medal: " + tostring(S_Target))) {
@@ -149,6 +161,7 @@ void RenderMenu() {
         );
 
 #if TMNEXT
+
         if (S_Mode == Mode::NadeoCampaign) {
             if (mapsCampaign.Length > 0)
                 progressPercent = uint(100.0f * float(progressCount) / float(2 * mapsCampaign.Length));
@@ -160,20 +173,29 @@ void RenderMenu() {
             else
                 progressPercent = 0;
         }
+
 #elif MP4
+
         progressPercent = uint(100.0f * float(progressCount) / 130.0f);
+
 #endif
 
         string nextText = "\\$0F0" + Icons::Play + "\\$G Next: ";
         if (gettingNow)
             nextText += "still getting data... (" + progressPercent + "%)";
         else if (nextMap !is null) {
+
 #if TMNEXT
+
             nextText += S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ";
             nextText += S_ColorMapName ? nextMap.nameColored : nextMap.nameClean;
+
 #elif MP4
+
             nextText += nextMap.nameClean;
+
 #endif
+
             nextText += nextMap.uid == currentUid ? " (current)" : "";
         } else
             nextText += "you're done!";
@@ -189,9 +211,13 @@ void RenderMenu() {
                 //     Map@ map = maps[i];
 
 #if TMNEXT
+
                     if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapName ? map.nameColored : map.nameClean), "", false, !loadingMap))
+
 #elif MP4
+
                     if (UI::MenuItem(map.nameClean, "", false, !loadingMap))
+
 #endif
 
                         startnew(CoroutineFunc(map.Play));
@@ -206,11 +232,14 @@ void RenderMenu() {
 }
 
 void OnSettingsChanged() {
+
 #if TMNEXT
+
     if (lastMode != S_Mode) {
         lastMode = S_Mode;
         startnew(GetMaps);
     }
+
 #endif
 
     colorMedalAuthor = "\\" + Text::FormatGameColor(S_ColorMedalAuthor);
@@ -220,7 +249,9 @@ void OnSettingsChanged() {
     colorMedalNone   = "\\" + Text::FormatGameColor(S_ColorMedalNone);
 
 #if MP4
+
     SetMP4Colors();
+
 #endif
 
     switch (S_Target) {
@@ -236,6 +267,7 @@ void Loop() {
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
 #if MP4
+
     if (App.LoadedManiaTitle is null) {
         loadedTitle = -1;
         loadedTitleName = "None";
@@ -273,36 +305,57 @@ void Loop() {
         GetRecordsFromLoadedCampaign(true);
         SetNextMap();
     }
+
 #endif
+
+    if (!S_AutoSwitch || loadingMap)
+        return;
+
+#if TMNEXT || MP4
 
     if (App.RootMap is null || App.RootMap.MapInfo is null) {
         currentUid = "";
         return;
     }
 
-    if (!S_AutoSwitch || loadingMap)
-        return;
-
     currentUid = App.RootMap.MapInfo.MapUid;
+
+#else
+
+    if (App.Challenge is null || App.Challenge.MapInfo is null) {
+        currentUid = "";
+        return;
+    }
+
+    currentUid = App.Challenge.MapInfo.MapUid;
+
+#endif
 
     if (
         nextMap is null
         || nextMap.uid != currentUid
+
 #if TMNEXT
+
         || App.Network is null
         || App.Network.ClientManiaAppPlayground is null
         || App.Network.ClientManiaAppPlayground.UI is null
         || App.Network.ClientManiaAppPlayground.UI.UISequence != CGamePlaygroundUIConfig::EUISequence::Finish
+
 #elif MP4
+
         || App.CurrentPlayground is null
         || App.CurrentPlayground.UIConfigs.Length == 0
         // || App.CurrentPlayground.UIConfigs[0].UISequence != CGamePlaygroundUIConfig::EUISequence::EndRound
         || !nextMap.ThisSessionPB()
+
 #endif
+
     )
         return;
 
 #if TMNEXT
+
     CGameUserManagerScript@ UserMgr = App.Network.ClientManiaAppPlayground.UserMgr;
     if (UserMgr is null)
         return;
@@ -321,6 +374,7 @@ void Loop() {
 
     nextMap.myTime = ScoreMgr.Map_GetRecord_v2(userId, currentUid, "PersonalBest", "", "TimeAttack", "");
     nextMap.myMedals = ScoreMgr.Map_GetMedal(userId, currentUid, "PersonalBest", "", "TimeAttack", "");
+
 #endif
 
     Meta::PluginCoroutine@ coro = startnew(SetNextMap);
@@ -335,11 +389,14 @@ void Loop() {
 }
 
 void SetNextMap() {
+
 #if MP4
+
     if (loadedTitle == -1) {
         // warn("no titlepack loaded, can't set next map");
         return;
     }
+
 #endif
 
     while (gettingNow)
@@ -380,9 +437,13 @@ void SetNextMap() {
             if (nextMap !is null)
 
 #if TMNEXT
+
                 trace("next map: " + (S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ") + nextMap.nameClean);
-#elif MP4
+
+#elif MP4 || TURBO
+
                 trace("next map: " + nextMap.nameClean);
+
 #endif
 
         }

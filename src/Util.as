@@ -61,12 +61,24 @@ string PosNegColor(uint u, bool format = true) {
 void ReturnToMenu() {
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
+#if TMNEXT || MP4
+
     if (App.Network.PlaygroundClientScriptAPI.IsInGameMenuDisplayed)
         App.Network.PlaygroundInterfaceScriptHandler.CloseInGameMenu(CGameScriptHandlerPlaygroundInterface::EInGameMenuResult::Quit);
 
+#endif
+
     App.BackToMainMenu();
 
+#if TMNEXT || MP4
+
     while (!App.ManiaTitleControlScriptAPI.IsReady)
+
+#else
+
+    while (!App.ManiaTitleFlowScriptAPI.IsReady)
+
+#endif
         yield();
 }
 

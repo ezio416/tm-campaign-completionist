@@ -5,6 +5,7 @@
 bool S_AutoSwitch = true;
 
 #if TMNEXT
+
 enum Mode {
     NadeoCampaign,
     TrackOfTheDay
@@ -14,6 +15,7 @@ enum Mode {
 Mode S_Mode = Mode::NadeoCampaign;
 
 #elif MP4
+
 enum Titlepack {
     None = -1,
     Canyon,
@@ -24,6 +26,7 @@ enum Titlepack {
 
 [Setting hidden]
 Titlepack S_Titlepack = Titlepack::None;
+
 #endif
 
 enum TargetMedal {
@@ -42,6 +45,7 @@ TargetMedal S_Target = TargetMedal::Author;
 bool S_AllMapsInMenu = false;
 
 #if MP4
+
 [Setting category="General" name="Select opponent automatically when joining map" description="Only works when loading a map in 'local' mode. I'm not sure how to load it that way consistently, so this won't always work."]
 bool S_AutoOpponent = true;
 
@@ -53,6 +57,9 @@ enum OpponentSelection {
 [Setting category="General" name="Auto-opponent selection"]
 OpponentSelection S_OpponentSelection = OpponentSelection::None;
 
+#endif
+#if MP4 || TURBO
+
 [Setting category="General" name="Show debug window"]
 bool S_Debug = false;
 
@@ -60,6 +67,7 @@ bool S_Debug = false;
 
 [Setting category="Colors" name="Colored map name"]
 bool S_ColorMapName = false;
+
 #endif
 
 [Setting category="Colors" name="Author medal" color]
@@ -78,6 +86,7 @@ vec3 S_ColorMedalBronze = vec3(0.69f, 0.5f, 0.0f);
 vec3 S_ColorMedalNone = vec3(1.0f, 0.0f, 1.0f);
 
 #if MP4
+
 [Setting category="Colors" name="Canyon" color]
 vec3 S_ColorCanyon = vec3(0.8f, 0.5f, 0.1f);
 
@@ -89,4 +98,5 @@ vec3 S_ColorValley = vec3(0.1f, 0.8f, 0.1f);
 
 [Setting category="Colors" name="Lagoon" color]
 vec3 S_ColorLagoon = vec3(0.1f, 0.8f, 0.8f);
+
 #endif
