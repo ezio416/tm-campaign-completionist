@@ -216,6 +216,10 @@ void RenderMenu() {
 
         progressPercent = uint(100.0f * float(progressCount) / 130.0f);
 
+#else
+
+        progressPercent = uint(100.0f * float(progressCount) / 400.0f);
+
 #endif
 
         string nextText = "\\$0F0" + Icons::Play + "\\$G Next: ";
@@ -256,6 +260,7 @@ void RenderMenu() {
                 // for (uint i = 0; i < maps.Length; i++) {
                 //     Map@ map = maps[i];
 
+#if TMNEXT || MP4
 #if TMNEXT
 
                     if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapName ? map.nameColored : map.nameClean), "", false, !loadingMap))
@@ -267,6 +272,9 @@ void RenderMenu() {
 #endif
 
                         startnew(CoroutineFunc(map.Play));
+
+#endif
+
                 }
 
                 UI::EndMenu();
@@ -459,7 +467,13 @@ void Loop() {
 
     if (nextMap.uid != currentUid) {
         Notify();
+
+#if TMNEXT || MP4
+
         startnew(CoroutineFunc(nextMap.Play));
+
+#endif
+
         sleep(10000);
     }
 }

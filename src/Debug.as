@@ -84,10 +84,35 @@ void Render() {
         if (UI::Button("ReturnToMenu"))
             startnew(ReturnToMenu);
 
-        // UI::Text(colorMedalSuperTrackmaster.Replace("\\$", ""));
-        // UI::Text(colorMedalSuperGold.Replace("\\$", ""));
-        // UI::Text(colorMedalSuperSilver.Replace("\\$", ""));
-        // UI::Text(colorMedalSuperBronze.Replace("\\$", ""));
+        if (UI::BeginTable("##table", 6)) {
+            UI::TableSetupScrollFreeze(0, 1);
+            UI::TableSetupColumn("map", UI::TableColumnFlags::WidthFixed, 120.0f);
+            UI::TableSetupColumn("PB", UI::TableColumnFlags::WidthFixed, 100.0f);
+            UI::TableSetupColumn("stmTime", UI::TableColumnFlags::WidthFixed, 110.0f);
+            UI::TableSetupColumn("medals", UI::TableColumnFlags::WidthFixed, 70.0f);
+            UI::TableSetupColumn("uid");
+            UI::TableHeadersRow();
+
+            for (uint i = 0; i < maps.Length; i++) {
+                UI::TableNextRow();
+                UI::TableNextColumn();
+                UI::Text(maps[i].nameClean);
+
+                UI::TableNextColumn();
+                UI::Text(PosNegColor(maps[i].myTime));
+
+                UI::TableNextColumn();
+                UI::Text(PosNegColor(maps[i].superTrackmasterTime));
+
+                UI::TableNextColumn();
+                UI::Text(PosNegColor(maps[i].myMedals, false));
+
+                UI::TableNextColumn();
+                UI::Text(maps[i].uid);
+            }
+
+            UI::EndTable();
+        }
     UI::End();
 }
 

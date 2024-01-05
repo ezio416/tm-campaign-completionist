@@ -21,6 +21,9 @@ class Map {
     string uid;
 
     Map() { }
+
+#if TMNEXT
+
     Map(Json::Value@ map) {  // campaign
         uid = map["mapUid"];
     }
@@ -29,7 +32,11 @@ class Map {
         uid = map["mapUid"];
     }
 
-#if MP4
+#elif MP4
+
+    uint group;
+    uint groupIndex;
+
     Map(Json::Value@ map, int titlepack) {
         authorTime = map["authorTime"];
         bronzeTime = map["bronzeTime"];
@@ -54,14 +61,71 @@ class Map {
         nameQuoted = "\"" + nameClean + "\"";
     }
 
-    uint group;
-    uint groupIndex;
+#else
+
+    uint superBronzeTime;
+    uint superGoldTime;
+    uint superSilverTime;
+    uint superTrackmasterTime;
+    uint trackmasterTime;
+
+    Map(Json::Value@ map) {
+        bronzeTime           = map["bronzeTime"];
+        goldTime             = map["goldTime"];
+        nameRaw              = map["nameRaw"];
+        silverTime           = map["silverTime"];
+        superTrackmasterTime = map["superTrackmasterTime"];
+        trackmasterTime      = map["trackmasterTime"];
+        uid                  = map["uid"];
+
+        nameClean = nameRaw;
+        nameColored = nameRaw;
+        nameQuoted = "\"" + nameClean + "\"";
+
+        int delta = trackmasterTime - superTrackmasterTime;
+
+        superGoldTime   = superTrackmasterTime + (delta + 4) / 8;
+        superSilverTime = superTrackmasterTime + (delta + 2) / 4;
+        superBronzeTime = superTrackmasterTime + (delta + 1) / 2;
+    }
+
+#endif
+#if MP4 || TURBO
 
     void CalcMedal() {
+
+#if TURBO
+
+        if (myTime < superTrackmasterTime) {
+            myMedals = 8;
+            return;
+        }
+        if (myTime < superGoldTime) {
+            myMedals = 7;
+            return;
+        }
+        if (myTime < superSilverTime) {
+            myMedals = 6;
+            return;
+        }
+        if (myTime < superBronzeTime) {
+            myMedals = 5;
+            return;
+        }
+        if (myTime < trackmasterTime) {
+            myMedals = 4;
+            return;
+        }
+
+#else
+
         if (myTime < authorTime) {
             myMedals = 4;
             return;
         }
+
+#endif
+
         if (myTime < goldTime) {
             myMedals = 3;
             return;
@@ -76,7 +140,9 @@ class Map {
         }
         myMedals = 0;
     }
+
 #endif
+#if TMNEXT || MP4
 
     // courtesy of "Play Map" plugin - https://github.com/XertroV/tm-play-map
     void Play() {
@@ -90,10 +156,14 @@ class Map {
         ReturnToMenu();
 
 #if TMNEXT
+
         CTrackMania@ App = cast<CTrackMania@>(GetApp());
         App.ManiaTitleControlScriptAPI.PlayMap(downloadUrl, "TrackMania/TM_PlayMap_Local", "");
+
 #elif MP4
+
         FindAndPlayFromCampaign();
+
 #endif
 
         const uint64 waitToPlayAgain = 5000;
@@ -105,7 +175,9 @@ class Map {
         loadingMap = false;
     }
 
+#endif
 #if MP4
+
     void FindAndPlayFromCampaign() {
         CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
@@ -202,6 +274,7 @@ class Map {
 
         return true;
     }
+
 #endif
 
 }

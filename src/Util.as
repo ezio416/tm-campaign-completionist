@@ -142,3 +142,7 @@ void ReturnToMenu() {
 string ZPad2(int num) {
     return (num < 10 ? "0" : "") + num;
 }
+
+string ZPad3(int num) {
+    return (num < 10 ? "00" : num < 100 ? "0" : "") + num;
+}
