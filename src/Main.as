@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-01-03
+// m 2024-01-04
 
 string accountId;
 bool allTarget = false;
@@ -28,7 +28,7 @@ Map@ nextMap;
 bool playPermission = false;
 uint progressCount = 0;
 uint progressPercent = 0;
-string title = "\\$F82" + Icons::CalendarO + "\\$G Campaign Completionist";
+string title = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
 
 void Main() {
     if (!Permissions::PlayLocalMap()) {
@@ -211,6 +211,8 @@ void Loop() {
 
     trace("run finished, getting PB on current map");
 
+    uint prevTime = nextMap.myTime;
+
     nextMap.myTime = ScoreMgr.Map_GetRecord_v2(userId, currentUid, "PersonalBest", "", "TimeAttack", "");
     nextMap.myMedals = ScoreMgr.Map_GetMedal(userId, currentUid, "PersonalBest", "", "TimeAttack", "");
 
@@ -222,6 +224,14 @@ void Loop() {
         Notify();
         startnew(CoroutineFunc(nextMap.Play));
         sleep(10000);
+    } else {
+        bool pb = prevTime == 0 || nextMap.myTime < prevTime;
+
+        print(nextMap.myTime + " ; " + prevTime);
+        print("pb: " + pb);
+
+        if (S_NotifyEveryRun || (S_NotifyAfterPB && pb))
+            NotifyDifference(pb);
     }
 }
 

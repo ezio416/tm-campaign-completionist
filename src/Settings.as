@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-03
+// m 2024-01-04
 
 enum Mode {
     NadeoCampaign,
@@ -28,9 +28,18 @@ TargetMedal S_Target = TargetMedal::Author;
 [Setting category="General" name="Show a list of all remaining maps"]
 bool S_AllMapsInMenu = false;
 
+[Setting category="General" name="After a PB, notify of the difference still needed"]
+bool S_NotifyAfterPB = false;
+
+[Setting category="General" name="After any finish, notify of the difference still needed"]
+bool S_NotifyEveryRun = false;
+
 
 [Setting category="Colors" name="Colored map name"]
 bool S_ColorMapName = false;
+
+[Setting category="Colors" name="Difference notification" color]
+vec3 S_ColorNotQuite = vec3(1.0f, 0.1f, 0.5f);
 
 [Setting category="Colors" name="Author medal" color]
 vec3 S_ColorMedalAuthor = vec3(0.17f, 0.75f, 0.0f);
