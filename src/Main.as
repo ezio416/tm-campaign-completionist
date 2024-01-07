@@ -1,34 +1,34 @@
 // c 2024-01-01
-// m 2024-01-06
+// m 2024-01-07
 
-string accountId;
-bool allTarget = false;
-string audienceCore = "NadeoServices";
-string audienceLive = "NadeoLiveServices";
-string colorMedalAuthor;
-string colorMedalBronze;
-string colorMedalGold;
-string colorMedalNone;
-string colorMedalSilver;
-string colorTarget;
-string currentUid;
-bool gettingNow = false;
-Mode lastMode = S_Mode;
-Map@[] maps;
+string     accountId;
+bool       allTarget       = false;
+string     audienceCore    = "NadeoServices";
+string     audienceLive    = "NadeoLiveServices";
+string     colorMedalAuthor;
+string     colorMedalBronze;
+string     colorMedalGold;
+string     colorMedalNone;
+string     colorMedalSilver;
+string     colorTarget;
+string     currentUid;
+bool       gettingNow      = false;
+Mode       lastMode        = S_Mode;
+Map@[]     maps;
 dictionary mapsByUid;
-Map@[] mapsCampaign;
+Map@[]     mapsCampaign;
 dictionary mapsCampaignById;
 dictionary mapsCampaignByUid;
-Map@[] mapsRemaining;
-Map@[] mapsTotd;
+Map@[]     mapsRemaining;
+Map@[]     mapsTotd;
 dictionary mapsTotdById;
 dictionary mapsTotdByUid;
-uint metTargetTotal = 0;
-Map@ nextMap;
-bool playPermission = false;
-uint progressCount = 0;
-uint progressPercent = 0;
-string title = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
+uint       metTargetTotal  = 0;
+Map@       nextMap;
+bool       playPermission  = false;
+uint       progressCount   = 0;
+uint       progressPercent = 0;
+string     title           = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
 
 void Main() {
     if (!Permissions::PlayLocalMap()) {
@@ -58,8 +58,8 @@ void Main() {
 
 void RenderMenu() {
     if (UI::BeginMenu(title)) {
-        if (UI::MenuItem(Icons::Question + " Auto Switch Maps", "", S_Enabled))
-            S_Enabled = !S_Enabled;
+        if (UI::MenuItem(Icons::Question + " Auto Switch Maps", "", S_AutoSwitch))
+            S_AutoSwitch = !S_AutoSwitch;
 
         if (UI::BeginMenu((S_Mode == Mode::NadeoCampaign ? "\\$1D4" : "\\$19F") + Icons::ArrowsH + " Mode: " + (S_Mode == Mode::NadeoCampaign ? "Nadeo Campaign" : "Track of the Day"), !gettingNow)) {
             if (UI::MenuItem("\\$1D4" + Icons::Kenney::Car + " Nadeo Campaign")) {
@@ -122,11 +122,12 @@ void RenderMenu() {
         }
 
         string nextText = "\\$0F0" + Icons::Play + "\\$G Next: ";
+
         if (gettingNow)
             nextText += "still getting data... (" + progressPercent + "%)";
         else if (nextMap !is null) {
             nextText += S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ";
-            nextText += S_ColorMapName ? nextMap.nameColored : nextMap.nameClean;
+            nextText += S_ColorMapNames ? nextMap.nameColored : nextMap.nameClean;
             nextText += nextMap.uid == currentUid ? " (current)" : "";
         } else
             nextText += "you're done!";
@@ -139,7 +140,7 @@ void RenderMenu() {
                 for (uint i = 0; i < mapsRemaining.Length; i++) {
                     Map@ map = mapsRemaining[i];
 
-                    if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameRaw : map.date + ": " + (S_ColorMapName ? map.nameColored : map.nameClean), ""))
+                    if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameRaw : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean), ""))
                         startnew(CoroutineFunc(map.Play));
                 }
 
@@ -180,7 +181,7 @@ void Loop() {
         return;
     }
 
-    if (!S_Enabled || loadingMap)
+    if (loadingMap)
         return;
 
     currentUid = App.RootMap.MapInfo.MapUid;
@@ -211,8 +212,10 @@ void Loop() {
 
     trace("run finished, getting PB on current map");
 
+    uint prevTime = nextMap.myTime;
+
     nextMap.myTime = ScoreMgr.Map_GetRecord_v2(userId, currentUid, "PersonalBest", "", "TimeAttack", "");
-    nextMap.myMedals = ScoreMgr.Map_GetMedal(userId, currentUid, "PersonalBest", "", "TimeAttack", "");
+    nextMap.GetMedals();
 
     Meta::PluginCoroutine@ coro = startnew(SetNextMap);
     while (coro.IsRunning())
@@ -220,8 +223,22 @@ void Loop() {
 
     if (nextMap.uid != currentUid) {
         Notify();
-        startnew(CoroutineFunc(nextMap.Play));
-        sleep(10000);
+
+        if (S_AutoSwitch) {
+            startnew(CoroutineFunc(nextMap.Play));
+            sleep(10000);  // give some time for next map to load before checking again
+        }
+    } else
+        NotifyTimeNeeded(prevTime == 0 || nextMap.myTime < prevTime);
+
+    try {
+        while (
+            App.Network.ClientManiaAppPlayground.UI.UISequence == CGamePlaygroundUIConfig::EUISequence::Finish ||
+            App.Network.ClientManiaAppPlayground.UI.UISequence == CGamePlaygroundUIConfig::EUISequence::EndRound
+        )
+            yield();
+    } catch {
+        return;
     }
 }
 

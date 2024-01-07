@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-02
+// m 2024-01-06
 
 bool loadingMap = false;
 
@@ -11,7 +11,7 @@ class Map {
     uint   goldTime;
     string id;
     uint   myMedals = 0;
-    uint   myTime;
+    uint   myTime   = 0;
     string nameClean;
     string nameColored;
     string nameQuoted;
@@ -26,6 +26,30 @@ class Map {
     Map(int year, int month, Json::Value@ day) {  // TOTD
         date = year + "-" + ZPad2(month) + "-" + ZPad2(day["monthDay"]);
         uid = day["mapUid"];
+    }
+
+    void GetMedals() {
+        if (myTime == 0) {
+            myMedals = 0;
+            return;
+        }
+        if (myTime < authorTime) {
+            myMedals = 4;
+            return;
+        }
+        if (myTime < goldTime) {
+            myMedals = 3;
+            return;
+        }
+        if (myTime < silverTime) {
+            myMedals = 2;
+            return;
+        }
+        if (myTime < bronzeTime) {
+            myMedals = 1;
+            return;
+        }
+        myMedals = 0;
     }
 
     // courtesy of "Play Map" plugin - https://github.com/XertroV/tm-play-map

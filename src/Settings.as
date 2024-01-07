@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-03
+// m 2024-01-07
 
 enum Mode {
     NadeoCampaign,
@@ -16,7 +16,7 @@ enum TargetMedal {
 
 
 [Setting hidden]
-bool S_Enabled = true;
+bool S_AutoSwitch = true;
 
 [Setting hidden]
 Mode S_Mode = Mode::NadeoCampaign;
@@ -28,9 +28,21 @@ TargetMedal S_Target = TargetMedal::Author;
 [Setting category="General" name="Show a list of all remaining maps"]
 bool S_AllMapsInMenu = false;
 
+enum NotifyAfterRun {
+    Never,
+    OnlyAfterPB,
+    Always
+}
 
-[Setting category="Colors" name="Colored map name"]
-bool S_ColorMapName = false;
+[Setting category="General" name="Notify of time still needed after a run"]
+NotifyAfterRun S_NotifyAfterRun = NotifyAfterRun::OnlyAfterPB;
+
+
+[Setting category="Colors" name="Colored map names"]
+bool S_ColorMapNames = false;
+
+[Setting category="Colors" name="'Time still needed' notification" color]
+vec3 S_ColorTimeNeeded = vec3(1.0f, 0.1f, 0.5f);
 
 [Setting category="Colors" name="Author medal" color]
 vec3 S_ColorMedalAuthor = vec3(0.17f, 0.75f, 0.0f);
