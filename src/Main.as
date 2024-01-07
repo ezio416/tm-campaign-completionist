@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-01-04
+// m 2024-01-06
 
 string accountId;
 bool allTarget = false;
@@ -211,8 +211,6 @@ void Loop() {
 
     trace("run finished, getting PB on current map");
 
-    uint prevTime = nextMap.myTime;
-
     nextMap.myTime = ScoreMgr.Map_GetRecord_v2(userId, currentUid, "PersonalBest", "", "TimeAttack", "");
     nextMap.myMedals = ScoreMgr.Map_GetMedal(userId, currentUid, "PersonalBest", "", "TimeAttack", "");
 
@@ -224,14 +222,6 @@ void Loop() {
         Notify();
         startnew(CoroutineFunc(nextMap.Play));
         sleep(10000);
-    } else {
-        bool pb = prevTime == 0 || nextMap.myTime < prevTime;
-
-        print(nextMap.myTime + " ; " + prevTime);
-        print("pb: " + pb);
-
-        if (S_NotifyEveryRun || (S_NotifyAfterPB && pb))
-            NotifyDifference(pb);
     }
 }
 

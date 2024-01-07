@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-03
+// m 2024-01-06
 
 uint64 latestNandoRequest = 0;
 
@@ -68,6 +68,9 @@ void GetMaps() {
             for (uint j = 0; j < playlist.Length; j++) {
                 Map@ map = Map(playlist[j]);
 
+                if (mapsCampaignByUid.Exists(map.uid))
+                    continue;  // should never happen but who knows at this point
+
                 mapsCampaign.InsertLast(map);
                 mapsCampaignByUid.Set(map.uid, @map);
             }
@@ -82,6 +85,9 @@ void GetMaps() {
                 Map@ map = Map(monthList[i]["year"], monthList[i]["month"], days[j]);
 
                 if (map.uid.Length > 0) {
+                    if (mapsTotdByUid.Exists(map.uid))
+                        continue;  // should never happen, but it did on 2024-01-06 so ¯\_(ツ)_/¯
+
                     mapsTotd.InsertLast(map);
                     mapsTotdByUid.Set(map.uid, @map);
                 }
