@@ -278,7 +278,7 @@ void MapsToJson() {
         mapsForJson[ZPad4(i)] = mapJson;
     }
 
-    Json::ToFile(IO::FromDataFolder("/Plugins/CampaignCompletionist/next_" + (S_Mode == Mode::NadeoCampaign ? "campaign" : "totd") + "s_raw.json"), mapsForJson);
+    Json::ToFile(IO::FromDataFolder("/Plugins/CampaignCompletionist/next_" + (S_Mode == Mode::NadeoCampaign ? "campaign" : "totd") + "_raw.json"), mapsForJson);
 
     trace("MapsToJson: done");
 }

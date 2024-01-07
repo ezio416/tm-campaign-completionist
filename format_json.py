@@ -1,15 +1,13 @@
 import json
 
 
-with open('next_campaigns_raw.json', 'r', encoding='utf8') as f:
-    j = json.loads(f.read())
+for name in ('next_campaign', 'next_totd'):
+    try:
+        with open(f'{name}_raw.json', 'r', encoding='utf8') as f:
+            j = json.loads(f.read())
 
-with open('next_campaigns.json', 'w', encoding='utf8') as f:
-    json.dump(j, f, indent=4, sort_keys=True)
+        with open(f'{name}.json', 'w', encoding='utf8') as f:
+            json.dump(j, f, indent=4, sort_keys=True)
 
-
-with open('next_totds_raw.json', 'r', encoding='utf8') as f:
-    j = json.loads(f.read())
-
-with open('next_totds.json', 'w', encoding='utf8') as f:
-    json.dump(j, f, indent=4, sort_keys=True)
+    except Exception as e:
+        print(e)
