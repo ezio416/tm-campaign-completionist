@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-02
+// m 2024-01-07
 
 void Notify() {
     switch (S_Target) {
@@ -46,4 +46,8 @@ void ReturnToMenu() {
 
 string ZPad2(int num) {
     return (num < 10 ? "0" : "") + num;
+}
+
+string ZPad4(int num) {
+    return (num < 10 ? "000" : num < 100 ? "00" : num < 1000 ? "0" : "") + num;
 }

@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-06
+// m 2024-01-07
 
 uint64 latestNandoRequest = 0;
 
@@ -170,6 +170,8 @@ void GetMapInfo() {
 
     trace("getting " + (S_Mode == Mode::NadeoCampaign ? "campaign" : "TOTD") + " map info done");
 
+    // MapsToJson();
+
     GetRecords();
 }
 
@@ -237,4 +239,46 @@ void GetRecords() {
     gettingNow = false;
 
     SetNextMap();
+}
+
+void MapsToJson() {
+    if (S_Mode == Mode::NadeoCampaign) {
+        if (mapsCampaign.Length == 0) {
+            warn("MapsToJson: no campaign maps!");
+            return;
+        }
+    } else {
+        if (mapsTotd.Length == 0) {
+            warn("MapsToJson: no TOTD maps!");
+            return;
+        }
+    }
+
+    Json::Value@ mapsForJson = Json::Object();
+
+    Map@[]@ mapsToSave = S_Mode == Mode::NadeoCampaign ? mapsCampaign : mapsTotd;
+
+    for (uint i = 0; i < mapsToSave.Length; i++) {
+        Map@ map = mapsToSave[i];
+
+        Json::Value@ mapJson = Json::Object();
+
+        mapJson["authorTime"]  = map.authorTime;
+        mapJson["bronzeTime"]  = map.bronzeTime;
+        mapJson["downloadUrl"] = map.downloadUrl;
+        mapJson["goldTime"]    = map.goldTime;
+        mapJson["id"]          = map.id;
+        mapJson["nameRaw"]     = map.nameRaw;
+        mapJson["silverTime"]  = map.silverTime;
+        mapJson["uid"]         = map.uid;
+
+        if (S_Mode == Mode::TrackOfTheDay)
+            mapJson["date"]    = map.date;
+
+        mapsForJson[ZPad4(i)] = mapJson;
+    }
+
+    Json::ToFile(IO::FromDataFolder("/Plugins/CampaignCompletionist/next_" + (S_Mode == Mode::NadeoCampaign ? "campaign" : "totd") + "s_raw.json"), mapsForJson);
+
+    trace("MapsToJson: done");
 }
