@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-07
+// m 2024-01-08
 
 uint64 latestNandoRequest = 0;
 
@@ -16,6 +16,9 @@ void NandoRequestWait() {
 }
 
 void GetMaps() {
+    if (!club && !S_OnlyCurrentCampaign)
+        S_OnlyCurrentCampaign = true;
+
     if (gettingNow)
         return;
 
@@ -29,6 +32,9 @@ void GetMaps() {
     Meta::PluginCoroutine@ coro = startnew(NandoRequestWait);
     while (coro.IsRunning())
         yield();
+
+    if (!club && S_Mode == Mode::TrackOfTheDay)
+        S_Mode = Mode::NadeoCampaign;
 
     trace("getting " + (S_Mode == Mode::NadeoCampaign ? "campaign" : "TOTD") + " maps");
 

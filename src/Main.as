@@ -25,19 +25,20 @@ dictionary mapsTotdById;
 dictionary mapsTotdByUid;
 uint       metTargetTotal  = 0;
 Map@       nextMap;
-bool       playPermission  = false;
+bool       club            = false;
 uint       progressCount   = 0;
 uint       progressPercent = 0;
 string     title           = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
 
 void Main() {
-    if (!Permissions::PlayLocalMap()) {
-        warn("plugin requires paid access to play maps");
-        UI::ShowNotification(title, "Club access is required to play maps", vec4(1.0f, 0.1f, 0.1f, 0.8f));
-        return;
-    }
+    if (Permissions::PlayLocalMap())
+        club = true;
+    else {
+        warn("Club access required to play maps");
 
-    playPermission = true;
+        if (S_NotifyStarter)
+            UI::ShowNotification(title, "Club access is required to play maps, but you can still track your progress", vec4(1.0f, 0.1f, 0.1f, 0.8f));
+    }
 
     OnSettingsChanged();
 
@@ -58,19 +59,26 @@ void Main() {
 
 void RenderMenu() {
     if (UI::BeginMenu(title)) {
-        if (UI::MenuItem(Icons::Question + " Auto Switch Maps", "", S_AutoSwitch))
-            S_AutoSwitch = !S_AutoSwitch;
+        if (club) {
+            if (UI::MenuItem(Icons::Question + " Auto Switch Maps", "", S_AutoSwitch))
+                S_AutoSwitch = !S_AutoSwitch;
 
-        if (UI::BeginMenu((S_Mode == Mode::NadeoCampaign ? "\\$1D4" : "\\$19F") + Icons::ArrowsH + " Mode: " + (S_Mode == Mode::NadeoCampaign ? "Nadeo Campaign" : "Track of the Day"), !gettingNow)) {
-            if (UI::MenuItem("\\$1D4" + Icons::Kenney::Car + " Nadeo Campaign")) {
+            if (UI::BeginMenu((S_Mode == Mode::NadeoCampaign ? "\\$1D4" : "\\$19F") + Icons::ArrowsH + " Mode: " + (S_Mode == Mode::NadeoCampaign ? "Nadeo Campaign" : "Track of the Day"), !gettingNow)) {
+                if (UI::MenuItem("\\$1D4" + Icons::Kenney::Car + " Nadeo Campaign")) {
+                    S_Mode = Mode::NadeoCampaign;
+                    OnSettingsChanged();
+                }
+                if (UI::MenuItem("\\$19F" + Icons::Calendar + " Track of the Day")) {
+                    S_Mode = Mode::TrackOfTheDay;
+                    OnSettingsChanged();
+                }
+                UI::EndMenu();
+            }
+        } else {
+            UI::MenuItem("\\$1D4" + Icons::ArrowsH + " Mode: Nadeo Campaign", "", false, false);
+
+            if (S_Mode == Mode::TrackOfTheDay)
                 S_Mode = Mode::NadeoCampaign;
-                OnSettingsChanged();
-            }
-            if (UI::MenuItem("\\$19F" + Icons::Calendar + " Track of the Day")) {
-                S_Mode = Mode::TrackOfTheDay;
-                OnSettingsChanged();
-            }
-            UI::EndMenu();
         }
 
         if (UI::BeginMenu(colorTarget + Icons::Circle + " Target Medal: " + tostring(S_Target))) {
@@ -132,15 +140,15 @@ void RenderMenu() {
         } else
             nextText += "you're done!";
 
-        if (UI::MenuItem(nextText, "", false, playPermission && !gettingNow && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid))
+        if (UI::MenuItem(nextText, "", false, club && !gettingNow && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid))
             startnew(CoroutineFunc(nextMap.Play));
 
         if (S_AllMapsInMenu) {
-            if (UI::BeginMenu(Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow)) {
+            if (UI::BeginMenu(Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow && mapsRemaining.Length > 0)) {
                 for (uint i = 0; i < mapsRemaining.Length; i++) {
                     Map@ map = mapsRemaining[i];
 
-                    if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameRaw : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean), ""))
+                    if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameRaw : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean), "", false, club))
                         startnew(CoroutineFunc(map.Play));
                 }
 
@@ -174,6 +182,9 @@ void OnSettingsChanged() {
 }
 
 void Loop() {
+    if (!club && !S_OnlyCurrentCampaign)
+        S_OnlyCurrentCampaign = true;
+
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
     if (App.RootMap is null || App.RootMap.MapInfo is null) {
@@ -186,36 +197,23 @@ void Loop() {
 
     currentUid = App.RootMap.MapInfo.MapUid;
 
-    if (
-        nextMap is null ||
-        nextMap.uid != currentUid ||
-        App.Network is null ||
-        App.Network.ClientManiaAppPlayground is null ||
-        App.Network.ClientManiaAppPlayground.UI is null ||
-        App.Network.ClientManiaAppPlayground.UI.UISequence != CGamePlaygroundUIConfig::EUISequence::Finish
+    if (nextMap is null
+        || nextMap.uid != currentUid
+        || App.Network is null
+        || App.Network.ClientManiaAppPlayground is null
+        || App.Network.ClientManiaAppPlayground.ScoreMgr is null
+        || App.Network.ClientManiaAppPlayground.UI is null
+        || App.Network.ClientManiaAppPlayground.UI.UISequence != CGamePlaygroundUIConfig::EUISequence::Finish
+        || App.UserManagerScript is null
     )
-        return;
-
-    CGameUserManagerScript@ UserMgr = App.Network.ClientManiaAppPlayground.UserMgr;
-    if (UserMgr is null)
-        return;
-
-    MwId userId;
-    if (UserMgr.Users.Length > 0)
-        userId = UserMgr.Users[0].Id;
-    else
-        userId.Value = uint(-1);
-
-    CGameScoreAndLeaderBoardManagerScript@ ScoreMgr = App.Network.ClientManiaAppPlayground.ScoreMgr;
-    if (ScoreMgr is null)
         return;
 
     trace("run finished, getting PB on current map");
 
     uint prevTime = nextMap.myTime;
 
-    nextMap.myTime = ScoreMgr.Map_GetRecord_v2(userId, currentUid, "PersonalBest", "", "TimeAttack", "");
-    nextMap.GetMedals();
+    nextMap.myTime = App.Network.ClientManiaAppPlayground.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, currentUid, "PersonalBest", "", "TimeAttack", "");
+    nextMap.SetMedals();
 
     Meta::PluginCoroutine@ coro = startnew(SetNextMap);
     while (coro.IsRunning())
@@ -224,7 +222,7 @@ void Loop() {
     if (nextMap.uid != currentUid) {
         Notify();
 
-        if (S_AutoSwitch) {
+        if (S_AutoSwitch && club) {
             startnew(CoroutineFunc(nextMap.Play));
             sleep(10000);  // give some time for next map to load before checking again
         }
@@ -253,6 +251,9 @@ void SetNextMap() {
     uint target = 4 - S_Target;
 
     mapsRemaining.RemoveRange(0, mapsRemaining.Length);
+
+    if (S_OnlyCurrentCampaign && maps.Length >= 25)
+        maps.RemoveRange(0, maps.Length - 25);
 
     for (uint i = 0; i < maps.Length; i++) {
         if (S_Target == TargetMedal::None) {

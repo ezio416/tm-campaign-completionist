@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-06
+// m 2024-01-08
 
 bool loadingMap = false;
 
@@ -54,7 +54,7 @@ class Map {
 
     // courtesy of "Play Map" plugin - https://github.com/XertroV/tm-play-map
     void Play() {
-        if (loadingMap || !playPermission)
+        if (loadingMap || !club)
             return;
 
         loadingMap = true;
@@ -74,5 +74,20 @@ class Map {
             yield();
 
         loadingMap = false;
+    }
+
+    void SetMedals() {
+        if (myTime == 0)
+            myMedals = 0;
+        else if (myTime < authorTime)
+            myMedals = 4;
+        else if (myTime < goldTime)
+            myMedals = 3;
+        else if (myTime < silverTime)
+            myMedals = 2;
+        else if (myTime < bronzeTime)
+            myMedals = 1;
+        else
+            myMedals = 0;
     }
 }
