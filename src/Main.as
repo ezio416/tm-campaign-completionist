@@ -186,36 +186,23 @@ void Loop() {
 
     currentUid = App.RootMap.MapInfo.MapUid;
 
-    if (
-        nextMap is null ||
-        nextMap.uid != currentUid ||
-        App.Network is null ||
-        App.Network.ClientManiaAppPlayground is null ||
-        App.Network.ClientManiaAppPlayground.UI is null ||
-        App.Network.ClientManiaAppPlayground.UI.UISequence != CGamePlaygroundUIConfig::EUISequence::Finish
+    if (nextMap is null
+        || nextMap.uid != currentUid
+        || App.Network is null
+        || App.Network.ClientManiaAppPlayground is null
+        || App.Network.ClientManiaAppPlayground.ScoreMgr is null
+        || App.Network.ClientManiaAppPlayground.UI is null
+        || App.Network.ClientManiaAppPlayground.UI.UISequence != CGamePlaygroundUIConfig::EUISequence::Finish
+        || App.UserManagerScript is null
     )
-        return;
-
-    CGameUserManagerScript@ UserMgr = App.Network.ClientManiaAppPlayground.UserMgr;
-    if (UserMgr is null)
-        return;
-
-    MwId userId;
-    if (UserMgr.Users.Length > 0)
-        userId = UserMgr.Users[0].Id;
-    else
-        userId.Value = uint(-1);
-
-    CGameScoreAndLeaderBoardManagerScript@ ScoreMgr = App.Network.ClientManiaAppPlayground.ScoreMgr;
-    if (ScoreMgr is null)
         return;
 
     trace("run finished, getting PB on current map");
 
     uint prevTime = nextMap.myTime;
 
-    nextMap.myTime = ScoreMgr.Map_GetRecord_v2(userId, currentUid, "PersonalBest", "", "TimeAttack", "");
-    nextMap.GetMedals();
+    nextMap.myTime = App.Network.ClientManiaAppPlayground.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, currentUid, "PersonalBest", "", "TimeAttack", "");
+    nextMap.SetMedals();
 
     Meta::PluginCoroutine@ coro = startnew(SetNextMap);
     while (coro.IsRunning())
