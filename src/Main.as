@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-01-07
+// m 2024-01-08
 
 string     accountId;
 bool       allTarget       = false;
@@ -33,7 +33,7 @@ string     title           = "\\$0F0" + Icons::Check + "\\$G Campaign Completion
 void Main() {
     if (!Permissions::PlayLocalMap()) {
         warn("plugin requires paid access to play maps");
-        UI::ShowNotification(title, "Paid access (at least standard) is required to play maps", vec4(1.0f, 0.1f, 0.1f, 0.8f));
+        UI::ShowNotification(title, "Club access is required to play maps", vec4(1.0f, 0.1f, 0.1f, 0.8f));
         return;
     }
 
