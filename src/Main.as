@@ -252,7 +252,7 @@ void SetNextMap() {
 
     mapsRemaining.RemoveRange(0, mapsRemaining.Length);
 
-    if (S_OnlyCurrentCampaign && maps.Length >= 25)
+    if (S_Mode == Mode::NadeoCampaign && S_OnlyCurrentCampaign && maps.Length >= 25)
         maps.RemoveRange(0, maps.Length - 25);
 
     for (uint i = 0; i < maps.Length; i++) {
