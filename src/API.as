@@ -227,6 +227,8 @@ void GetRecords() {
 
     trace("getting records done");
 
+    gettingNow = false;
+
     SetNextMap();
 }
 
