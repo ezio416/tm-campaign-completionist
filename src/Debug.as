@@ -84,6 +84,8 @@ void Tab_MapsDebug(Map@[]@ mapsDebug, Mode mode) {
 }
 
 void MapsToJson(Mode mode) {
+    trace("MapsToJson: starting");
+
     if (mode == Mode::NadeoCampaign) {
         if (mapsCampaign.Length == 0) {
             warn("MapsToJson: no campaign maps!");
