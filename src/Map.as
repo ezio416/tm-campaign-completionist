@@ -28,30 +28,6 @@ class Map {
         uid = day["mapUid"];
     }
 
-    void GetMedals() {
-        if (myTime == 0) {
-            myMedals = 0;
-            return;
-        }
-        if (myTime < authorTime) {
-            myMedals = 4;
-            return;
-        }
-        if (myTime < goldTime) {
-            myMedals = 3;
-            return;
-        }
-        if (myTime < silverTime) {
-            myMedals = 2;
-            return;
-        }
-        if (myTime < bronzeTime) {
-            myMedals = 1;
-            return;
-        }
-        myMedals = 0;
-    }
-
     // courtesy of "Play Map" plugin - https://github.com/XertroV/tm-play-map
     void Play() {
         if (loadingMap || !club)
@@ -89,5 +65,11 @@ class Map {
             myMedals = 1;
         else
             myMedals = 0;
+    }
+
+    void SetNames() {
+        nameClean   = StripFormatCodes(nameRaw).Trim();
+        nameColored = ColoredString(nameRaw).Trim();
+        nameQuoted  = "\"" + nameClean + "\"";
     }
 }
