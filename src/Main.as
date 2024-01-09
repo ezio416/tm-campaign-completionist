@@ -5,6 +5,7 @@ string     accountId;
 bool       allTarget       = false;
 string     audienceCore    = "NadeoServices";
 string     audienceLive    = "NadeoLiveServices";
+bool       club            = false;
 string     colorMedalAuthor;
 string     colorMedalBronze;
 string     colorMedalGold;
@@ -25,9 +26,6 @@ dictionary mapsTotdById;
 dictionary mapsTotdByUid;
 uint       metTargetTotal  = 0;
 Map@       nextMap;
-bool       club            = false;
-uint       progressCount   = 0;
-uint       progressPercent = 0;
 string     title           = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
 
 void Main() {
@@ -117,22 +115,10 @@ void RenderMenu() {
             false
         );
 
-        if (S_Mode == Mode::NadeoCampaign) {
-            if (mapsCampaign.Length > 0)
-                progressPercent = uint(100.0f * float(progressCount) / float(2 * mapsCampaign.Length));
-            else
-                progressPercent = 0;
-        } else {
-            if (mapsTotd.Length > 0)
-                progressPercent = uint(100.0f * float(progressCount) / float(2 * mapsTotd.Length));
-            else
-                progressPercent = 0;
-        }
-
         string nextText = "\\$0F0" + Icons::Play + "\\$G Next: ";
 
         if (gettingNow)
-            nextText += "still getting data... (" + progressPercent + "%)";
+            nextText += "\\$AAAstill getting data...";
         else if (nextMap !is null) {
             nextText += S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ";
             nextText += S_ColorMapNames ? nextMap.nameColored : nextMap.nameClean;

@@ -24,8 +24,6 @@ void GetMaps() {
 
     gettingNow = true;
 
-    progressCount = 0;
-
     while (!NadeoServices::IsAuthenticated(audienceLive))
         yield();
 
@@ -120,7 +118,6 @@ void GetMapInfo() {
 
         for (uint i = index; i < mapsToCheck.Length; i++) {
             index = i;
-            progressCount++;
 
             if (url.Length < 8192)
                 url += mapsToCheck[i].uid + ",";
@@ -192,7 +189,6 @@ void GetRecords() {
 
         for (uint i = index; i < mapsToCheck.Length; i++) {
             index = i;
-            progressCount++;
 
             if (url.Length < 8183)
                 url += mapsToCheck[i].id + ",";
