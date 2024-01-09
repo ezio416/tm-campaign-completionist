@@ -1,7 +1,9 @@
 // c 2024-01-02
 // m 2024-01-08
 
-uint64 latestNandoRequest = 0;
+uint64       latestNandoRequest   = 0;
+Json::Value@ mapsCampaignFromFile = Json::Object();
+Json::Value@ mapsTotdFromFile     = Json::Object();
 
 void NandoRequestWait() {
     if (latestNandoRequest == 0) {
@@ -16,51 +18,58 @@ void NandoRequestWait() {
 }
 
 void GetMaps() {
-    if (!club && !S_OnlyCurrentCampaign)
-        S_OnlyCurrentCampaign = true;
-
     if (gettingNow)
         return;
 
     gettingNow = true;
 
+    mapsCampaign.RemoveRange(0, mapsCampaign.Length);
+    mapsCampaignById.DeleteAll();
+    mapsCampaignByUid.DeleteAll();
+
+    mapsTotd.RemoveRange(0, mapsTotd.Length);
+    mapsTotdById.DeleteAll();
+    mapsTotdByUid.DeleteAll();
+
+    GetMapsFromApi(Mode::NadeoCampaign);
+    GetMapsFromApi(Mode::TrackOfTheDay);
+    GetMapsFromFiles();
+    GetMapInfoFromApi(Mode::NadeoCampaign);
+    GetMapInfoFromApi(Mode::TrackOfTheDay);
+    GetRecordsFromApi(Mode::NadeoCampaign);
+    GetRecordsFromApi(Mode::TrackOfTheDay);
+    SetNextMap();
+}
+
+void GetMapsFromApi(Mode mode) {
+    yield();
+
     while (!NadeoServices::IsAuthenticated(audienceLive))
         yield();
+
+    string modeName = tostring(mode);
+
+    trace("getting " + modeName + " maps from API...");
 
     Meta::PluginCoroutine@ coro = startnew(NandoRequestWait);
     while (coro.IsRunning())
         yield();
 
-    if (!club && S_Mode == Mode::TrackOfTheDay)
-        S_Mode = Mode::NadeoCampaign;
-
-    trace("getting " + (S_Mode == Mode::NadeoCampaign ? "campaign" : "TOTD") + " maps");
-
-    if (S_Mode == Mode::NadeoCampaign) {
-        mapsCampaign.RemoveRange(0, mapsCampaign.Length);
-        mapsCampaignById.DeleteAll();
-        mapsCampaignByUid.DeleteAll();
-    } else {
-        mapsTotd.RemoveRange(0, mapsTotd.Length);
-        mapsTotdById.DeleteAll();
-        mapsTotdByUid.DeleteAll();
-    }
-
     Net::HttpRequest@ req = NadeoServices::Get(
         audienceLive,
-        NadeoServices::BaseURLLive() + "/api/token/campaign/" + (S_Mode == Mode::NadeoCampaign ? "official" : "month") + "?length=99&offset=0"
-    );  // length 99 will work until 2029 (TOTD) or 2045 (campaign)
+        NadeoServices::BaseURLLive() + "/api/token/campaign/" + (mode == Mode::NadeoCampaign ? "official" : "month") + "?length=99&offset=0"
+    );  // length 99 will work until 2045 (campaign) or 2029 (TOTD)
     req.Start();
     while (!req.Finished())
         yield();
 
     int code = req.ResponseCode();
     if (code != 200) {
-        warn("error getting " + (S_Mode == Mode::NadeoCampaign ? "campaign" : "TOTD") + " maps: " + code + "; " + req.Error() + "; " + req.String());
+        warn("error getting " + modeName + " maps from API: " + code + "; " + req.Error() + "; " + req.String());
         return;
     }
 
-    if (S_Mode == Mode::NadeoCampaign) {
+    if (mode == Mode::NadeoCampaign) {
         Json::Value@ campaignList = Json::Parse(req.String())["campaignList"];
 
         for (int i = campaignList.Length - 1; i >= 0; i--) {
@@ -96,28 +105,105 @@ void GetMaps() {
         }
     }
 
-    trace("getting " + (S_Mode == Mode::NadeoCampaign ? "campaign" : "TOTD") + " maps done");
-
-    GetMapInfo();
+    trace("getting " + modeName + " maps from API done");
 }
 
-void GetMapInfo() {
+void GetMapsFromFiles() {
+    yield();
+
+    trace("getting maps from files...");
+
+    if (mapsCampaignFromFile.Length == 0) {
+        @mapsCampaignFromFile = Json::FromFile("src/Assets/next_campaign.json");
+
+        for (uint i = 0; i < mapsCampaignFromFile.Length; i++) {
+            Json::Value@ mapFromFile = mapsCampaignFromFile[ZPad4(i)];
+            string uid = mapFromFile["uid"];
+
+            Map@ map = cast<Map@>(mapsCampaignByUid[uid]);
+
+            if (map is null) {
+                warn("GetMapsFromFiles: null Campaign map " + uid);
+                continue;
+            }
+
+            map.authorTime  = mapFromFile["authorTime"];
+            map.bronzeTime  = mapFromFile["bronzeTime"];
+            map.downloadUrl = mapFromFile["downloadUrl"];
+            map.goldTime    = mapFromFile["goldTime"];
+            map.id          = mapFromFile["id"];
+            map.nameRaw     = mapFromFile["nameRaw"];
+            map.silverTime  = mapFromFile["silverTime"];
+
+            map.SetNames();
+
+            mapsCampaignById.Set(map.id, @map);
+        }
+    }
+
+    if (mapsTotdFromFile.Length == 0) {
+        @mapsTotdFromFile = Json::FromFile("src/Assets/next_totd.json");
+
+        for (uint i = 0; i < mapsTotdFromFile.Length; i++) {
+            Json::Value@ mapFromFile = mapsTotdFromFile[ZPad4(i)];
+            string uid = mapFromFile["uid"];
+
+            Map@ map = cast<Map@>(mapsTotdByUid[uid]);
+
+            if (map is null) {
+                warn("GetMapsFromFiles: null TOTD map " + uid);
+                continue;
+            }
+
+            map.authorTime  = mapFromFile["authorTime"];
+            map.bronzeTime  = mapFromFile["bronzeTime"];
+            map.date        = mapFromFile["date"];
+            map.downloadUrl = mapFromFile["downloadUrl"];
+            map.goldTime    = mapFromFile["goldTime"];
+            map.id          = mapFromFile["id"];
+            map.nameRaw     = mapFromFile["nameRaw"];
+            map.silverTime  = mapFromFile["silverTime"];
+
+            map.SetNames();
+
+            mapsTotdById.Set(map.id, @map);
+        }
+    }
+
+    trace("getting maps from files done");
+}
+
+void GetMapInfoFromApi(Mode mode) {
+    yield();
+
     while (!NadeoServices::IsAuthenticated(audienceCore))
         yield();
+
+    string modeName = tostring(mode);
+
+    trace("getting " + modeName + " map info from API...");
 
     uint index = 0;
     string url;
 
-    Map@[] mapsToCheck = S_Mode == Mode::NadeoCampaign ? mapsCampaign : mapsTotd;
+    Map@[] mapsStillNeedInfo;
+    Map@[]@ mapsToCheck = mode == Mode::NadeoCampaign ? mapsCampaign : mapsTotd;
 
-    while (index < mapsToCheck.Length - 1) {
+    for (uint i = 0; i < mapsToCheck.Length; i++) {
+        Map@ map = mapsToCheck[i];
+
+        if (map.nameRaw.Length == 0)
+            mapsStillNeedInfo.InsertLast(map);
+    }
+
+    while (mapsStillNeedInfo.Length > 0 && index < mapsStillNeedInfo.Length - 1) {
         url = NadeoServices::BaseURLCore() + "/maps/?mapUidList=";
 
-        for (uint i = index; i < mapsToCheck.Length; i++) {
+        for (uint i = index; i < mapsStillNeedInfo.Length; i++) {
             index = i;
 
             if (url.Length < 8192)
-                url += mapsToCheck[i].uid + ",";
+                url += mapsStillNeedInfo[i].uid + ",";
             else
                 break;
         }
@@ -126,7 +212,7 @@ void GetMapInfo() {
         while (coro.IsRunning())
             yield();
 
-        trace("getting " + (S_Mode == Mode::NadeoCampaign ? "campaign" : "TOTD") + " map info (" + (index + 1) + "/" + mapsToCheck.Length + ")");
+        trace("getting " + modeName + " map info from API (" + (index + 1) + "/" + mapsStillNeedInfo.Length + ")");
 
         Net::HttpRequest@ req = NadeoServices::Get(audienceCore, url);
         req.Start();
@@ -135,51 +221,66 @@ void GetMapInfo() {
 
         int code = req.ResponseCode();
         if (code != 200) {
-            warn("error getting " + (S_Mode == Mode::NadeoCampaign ? "campaign" : "TOTD") + " map info: " + code + "; " + req.Error() + "; " + req.String());
+            warn("error getting " + modeName + " map info from API: " + code + "; " + req.Error() + "; " + req.String());
             return;
         }
 
         Json::Value@ mapInfo = Json::Parse(req.String());
 
         for (uint i = 0; i < mapInfo.Length; i++) {
-            Map@ map;
+            string uid = mapInfo[i]["mapUid"];
 
-            if (S_Mode == Mode::NadeoCampaign)
-                @map = cast<Map@>(mapsCampaignByUid[mapInfo[i]["mapUid"]]);
+            Map@ map;
+            if (mode == Mode::NadeoCampaign)
+                @map = cast<Map@>(mapsCampaignByUid[uid]);
             else
-                @map = cast<Map@>(mapsTotdByUid[mapInfo[i]["mapUid"]]);
+                @map = cast<Map@>(mapsTotdByUid[uid]);
+
+            if (map is null) {
+                warn("GetMapInfoFromApi: null " + modeName + " map " + uid);
+                continue;
+            }
 
             map.authorTime  = mapInfo[i]["authorScore"];
             map.bronzeTime  = mapInfo[i]["bronzeScore"];
             map.downloadUrl = mapInfo[i]["fileUrl"];
             map.goldTime    = mapInfo[i]["goldScore"];
             map.id          = mapInfo[i]["mapId"];
-            map.nameRaw     = string(mapInfo[i]["name"]).Trim();
+            map.nameRaw     = mapInfo[i]["name"];
             map.silverTime  = mapInfo[i]["silverScore"];
 
-            map.nameClean = StripFormatCodes(map.nameRaw);
-            map.nameColored = ColoredString(map.nameRaw);
-            map.nameQuoted = "\"" + map.nameClean + "\"";
+            map.SetNames();
 
-            if (S_Mode == Mode::NadeoCampaign)
+            if (mode == Mode::NadeoCampaign && !mapsCampaignById.Exists(map.id))
                 mapsCampaignById.Set(map.id, @map);
-            else
+
+            else if (mode == Mode::TrackOfTheDay && !mapsTotdById.Exists(map.id))
                 mapsTotdById.Set(map.id, @map);
         }
     }
 
-    trace("getting " + (S_Mode == Mode::NadeoCampaign ? "campaign" : "TOTD") + " map info done");
+    trace("getting " + modeName + " map info from API done");
 
-    // MapsToJson();
-
-    GetRecords();
+    // MapsToJson(Mode::NadeoCampaign);
+    // MapsToJson(Mode::TrackOfTheDay);
 }
 
-void GetRecords() {
+void GetRecordsFromApi(Mode mode) {
+    if (!club && mode == Mode::TrackOfTheDay)
+        return;
+
+    gettingNow = true;
+
+    yield();
+
+    string modeName = tostring(mode);
+
+    trace("getting " + modeName + " records from API...");
+
     uint index = 0;
     string url;
 
-    Map@[] mapsToCheck = S_Mode == Mode::NadeoCampaign ? mapsCampaign : mapsTotd;
+    Map@[]@ mapsToCheck = mode == Mode::NadeoCampaign ? mapsCampaign : mapsTotd;
 
     while (index < mapsToCheck.Length - 1) {
         url = NadeoServices::BaseURLCore() + "/mapRecords/?accountIdList=" + accountId + "&mapIdList=";
@@ -193,11 +294,11 @@ void GetRecords() {
                 break;
         }
 
+        trace("getting " + modeName + " records (" + (index + 1) + "/" + mapsToCheck.Length + ")");
+
         Meta::PluginCoroutine@ coro = startnew(NandoRequestWait);
         while (coro.IsRunning())
             yield();
-
-        trace("getting " + (S_Mode == Mode::NadeoCampaign ? "campaign" : "TOTD") + " records (" + (index + 1) + "/" + mapsToCheck.Length + ")");
 
         Net::HttpRequest@ req = NadeoServices::Get(audienceCore, url.SubStr(0, url.Length - 1));
         req.Start();
@@ -206,70 +307,37 @@ void GetRecords() {
 
         int code = req.ResponseCode();
         if (code != 200) {
-            warn("error getting " + (S_Mode == Mode::NadeoCampaign ? "campaign" : "TOTD") + " records: " + code + "; " + req.Error() + "; " + req.String());
+            warn("error getting " + modeName + " records: " + code + "; " + req.Error() + "; " + req.String());
+            gettingNow = false;
             return;
         }
 
         Json::Value@ records = Json::Parse(req.String());
 
         for (uint i = 0; i < records.Length; i++) {
-            Map@ map;
+            string id = records[i]["mapId"];
 
-            if (S_Mode == Mode::NadeoCampaign)
-                @map = cast<Map@>(mapsCampaignById[records[i]["mapId"]]);
+            Map@ map;
+            if (mode == Mode::NadeoCampaign)
+                @map = cast<Map@>(mapsCampaignById[id]);
             else
-                @map = cast<Map@>(mapsTotdById[records[i]["mapId"]]);
+                @map = cast<Map@>(mapsTotdById[id]);
+
+            if (map is null) {
+                warn("GetRecordsFromApi: null " + modeName + " map " + id);
+                continue;
+            }
 
             map.myMedals = records[i]["medal"];
             map.myTime = records[i]["recordScore"]["time"];
         }
     }
 
-    trace("getting records done");
+    trace("getting " + modeName + " records done");
 
     gettingNow = false;
-
-    SetNextMap();
 }
 
-void MapsToJson() {
-    if (S_Mode == Mode::NadeoCampaign) {
-        if (mapsCampaign.Length == 0) {
-            warn("MapsToJson: no campaign maps!");
-            return;
-        }
-    } else {
-        if (mapsTotd.Length == 0) {
-            warn("MapsToJson: no TOTD maps!");
-            return;
-        }
-    }
-
-    Json::Value@ mapsForJson = Json::Object();
-
-    Map@[]@ mapsToSave = S_Mode == Mode::NadeoCampaign ? mapsCampaign : mapsTotd;
-
-    for (uint i = 0; i < mapsToSave.Length; i++) {
-        Map@ map = mapsToSave[i];
-
-        Json::Value@ mapJson = Json::Object();
-
-        mapJson["authorTime"]  = map.authorTime;
-        mapJson["bronzeTime"]  = map.bronzeTime;
-        mapJson["downloadUrl"] = map.downloadUrl;
-        mapJson["goldTime"]    = map.goldTime;
-        mapJson["id"]          = map.id;
-        mapJson["nameRaw"]     = map.nameRaw;
-        mapJson["silverTime"]  = map.silverTime;
-        mapJson["uid"]         = map.uid;
-
-        if (S_Mode == Mode::TrackOfTheDay)
-            mapJson["date"]    = map.date;
-
-        mapsForJson[ZPad4(i)] = mapJson;
-    }
-
-    Json::ToFile(IO::FromDataFolder("/Plugins/CampaignCompletionist/next_" + (S_Mode == Mode::NadeoCampaign ? "campaign" : "totd") + "s_raw.json"), mapsForJson);
-
-    trace("MapsToJson: done");
+void RefreshRecords() {
+    GetRecordsFromApi(S_Mode);
 }

@@ -34,15 +34,13 @@ void Main() {
         warn("Club access required to play maps");
 
         if (S_NotifyStarter)
-            UI::ShowNotification(title, "Club access is required to play maps, but you can still track your progress", vec4(1.0f, 0.1f, 0.1f, 0.8f));
+            UI::ShowNotification(title, "Club access is required to play maps, but you can still track your progress on the current Nadeo Campaign", vec4(1.0f, 0.1f, 0.1f, 0.8f));
     }
 
     lastMode = S_Mode;
     OnSettingsChanged();
 
-    CTrackMania@ App = cast<CTrackMania@>(GetApp());
-
-    accountId = App.LocalPlayerInfo.WebServicesUserId;
+    accountId = GetApp().LocalPlayerInfo.WebServicesUserId;
 
     NadeoServices::AddAudience(audienceCore);
     NadeoServices::AddAudience(audienceLive);
@@ -81,6 +79,9 @@ void RenderMenu() {
             if (S_Mode == Mode::TrackOfTheDay)
                 S_Mode = Mode::NadeoCampaign;
         }
+
+        if (UI::MenuItem(Icons::Refresh + " Refresh Records", "", false, !gettingNow))
+            startnew(RefreshRecords);
 
         if (UI::BeginMenu(colorTarget + Icons::Circle + " Target Medal: " + tostring(S_Target))) {
             if (UI::MenuItem(colorMedalAuthor + Icons::Circle + " Author", "")) {
@@ -132,8 +133,8 @@ void RenderMenu() {
         if (UI::MenuItem(nextText, "", false, club && !gettingNow && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid))
             startnew(CoroutineFunc(nextMap.Play));
 
-        if (S_AllMapsInMenu) {
-            if (UI::BeginMenu(Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow && mapsRemaining.Length > 0)) {
+        if (S_AllMapsInMenu && mapsRemaining.Length > 0) {
+            if (UI::BeginMenu(Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow)) {
                 for (uint i = 0; i < mapsRemaining.Length; i++) {
                     Map@ map = mapsRemaining[i];
 
@@ -156,7 +157,7 @@ void Render() {
 void OnSettingsChanged() {
     if (lastMode != S_Mode) {
         lastMode = S_Mode;
-        startnew(GetMaps);
+        startnew(SetNextMap);
     }
 
     colorMedalAuthor = "\\" + Text::FormatGameColor(S_ColorMedalAuthor);
@@ -175,8 +176,13 @@ void OnSettingsChanged() {
 }
 
 void Loop() {
-    if (!club && !S_OnlyCurrentCampaign)
-        S_OnlyCurrentCampaign = true;
+    if (!club) {
+        if (S_Mode == Mode::TrackOfTheDay)
+            S_Mode = Mode::NadeoCampaign;
+
+        if (!S_OnlyCurrentCampaign)
+            S_OnlyCurrentCampaign = true;
+    }
 
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
