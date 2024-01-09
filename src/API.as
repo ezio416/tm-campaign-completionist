@@ -24,8 +24,6 @@ void GetMaps() {
 
     gettingNow = true;
 
-    progressCount = 0;
-
     while (!NadeoServices::IsAuthenticated(audienceLive))
         yield();
 
@@ -37,9 +35,6 @@ void GetMaps() {
         S_Mode = Mode::NadeoCampaign;
 
     trace("getting " + (S_Mode == Mode::NadeoCampaign ? "campaign" : "TOTD") + " maps");
-
-    maps.RemoveRange(0, maps.Length);
-    mapsByUid.DeleteAll();
 
     if (S_Mode == Mode::NadeoCampaign) {
         mapsCampaign.RemoveRange(0, mapsCampaign.Length);
@@ -120,7 +115,6 @@ void GetMapInfo() {
 
         for (uint i = index; i < mapsToCheck.Length; i++) {
             index = i;
-            progressCount++;
 
             if (url.Length < 8192)
                 url += mapsToCheck[i].uid + ",";
@@ -192,7 +186,6 @@ void GetRecords() {
 
         for (uint i = index; i < mapsToCheck.Length; i++) {
             index = i;
-            progressCount++;
 
             if (url.Length < 8183)
                 url += mapsToCheck[i].id + ",";
@@ -233,16 +226,6 @@ void GetRecords() {
     }
 
     trace("getting records done");
-
-    if (S_Mode == Mode::NadeoCampaign) {
-        maps = mapsCampaign;
-        mapsByUid = mapsCampaignByUid;
-    } else {
-        maps = mapsTotd;
-        mapsByUid = mapsTotdByUid;
-    }
-
-    gettingNow = false;
 
     SetNextMap();
 }

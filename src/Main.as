@@ -5,6 +5,7 @@ string     accountId;
 bool       allTarget       = false;
 string     audienceCore    = "NadeoServices";
 string     audienceLive    = "NadeoLiveServices";
+bool       club            = false;
 string     colorMedalAuthor;
 string     colorMedalBronze;
 string     colorMedalGold;
@@ -15,7 +16,6 @@ string     currentUid;
 bool       gettingNow      = false;
 Mode       lastMode        = S_Mode;
 Map@[]     maps;
-dictionary mapsByUid;
 Map@[]     mapsCampaign;
 dictionary mapsCampaignById;
 dictionary mapsCampaignByUid;
@@ -25,9 +25,6 @@ dictionary mapsTotdById;
 dictionary mapsTotdByUid;
 uint       metTargetTotal  = 0;
 Map@       nextMap;
-bool       club            = false;
-uint       progressCount   = 0;
-uint       progressPercent = 0;
 string     title           = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
 
 void Main() {
@@ -40,6 +37,7 @@ void Main() {
             UI::ShowNotification(title, "Club access is required to play maps, but you can still track your progress", vec4(1.0f, 0.1f, 0.1f, 0.8f));
     }
 
+    lastMode = S_Mode;
     OnSettingsChanged();
 
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
@@ -117,22 +115,10 @@ void RenderMenu() {
             false
         );
 
-        if (S_Mode == Mode::NadeoCampaign) {
-            if (mapsCampaign.Length > 0)
-                progressPercent = uint(100.0f * float(progressCount) / float(2 * mapsCampaign.Length));
-            else
-                progressPercent = 0;
-        } else {
-            if (mapsTotd.Length > 0)
-                progressPercent = uint(100.0f * float(progressCount) / float(2 * mapsTotd.Length));
-            else
-                progressPercent = 0;
-        }
-
         string nextText = "\\$0F0" + Icons::Play + "\\$G Next: ";
 
         if (gettingNow)
-            nextText += "still getting data... (" + progressPercent + "%)";
+            nextText += "\\$AAAstill getting data...";
         else if (nextMap !is null) {
             nextText += S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ";
             nextText += S_ColorMapNames ? nextMap.nameColored : nextMap.nameClean;
@@ -148,7 +134,7 @@ void RenderMenu() {
                 for (uint i = 0; i < mapsRemaining.Length; i++) {
                     Map@ map = mapsRemaining[i];
 
-                    if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameRaw : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean), "", false, club))
+                    if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean), "", false, club))
                         startnew(CoroutineFunc(map.Play));
                 }
 
@@ -251,6 +237,8 @@ void SetNextMap() {
     uint target = 4 - S_Target;
 
     mapsRemaining.RemoveRange(0, mapsRemaining.Length);
+
+    maps = S_Mode == Mode::NadeoCampaign ? mapsCampaign : mapsTotd;
 
     if (S_Mode == Mode::NadeoCampaign && S_OnlyCurrentCampaign && maps.Length >= 25)
         maps.RemoveRange(0, maps.Length - 25);
