@@ -198,6 +198,7 @@ void Loop() {
         || App.Network.ClientManiaAppPlayground.UI is null
         || App.Network.ClientManiaAppPlayground.UI.UISequence != CGamePlaygroundUIConfig::EUISequence::Finish
         || App.UserManagerScript is null
+        || App.UserManagerScript.Users.Length < 1
     )
         return;
 
