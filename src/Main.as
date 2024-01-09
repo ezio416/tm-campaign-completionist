@@ -134,7 +134,7 @@ void RenderMenu() {
                 for (uint i = 0; i < mapsRemaining.Length; i++) {
                     Map@ map = mapsRemaining[i];
 
-                    if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameRaw : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean), "", false, club))
+                    if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean), "", false, club))
                         startnew(CoroutineFunc(map.Play));
                 }
 
