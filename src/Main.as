@@ -36,6 +36,7 @@ void Main() {
 
     club = true;
 
+    lastMode = S_Mode;
     OnSettingsChanged();
 
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
