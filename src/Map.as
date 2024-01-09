@@ -66,4 +66,10 @@ class Map {
         else
             myMedals = 0;
     }
+
+    void SetNames() {
+        nameClean   = StripFormatCodes(nameRaw).Trim();
+        nameColored = ColoredString(nameRaw).Trim();
+        nameQuoted  = "\"" + nameClean + "\"";
+    }
 }
