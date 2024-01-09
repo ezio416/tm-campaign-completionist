@@ -84,7 +84,7 @@ void Tab_MapsDebug(Map@[]@ mapsDebug, Mode mode) {
 }
 
 void MapsToJson(Mode mode) {
-    trace("MapsToJson: starting");
+    trace("MapsToJson: " + tostring(mode) + " starting");
 
     if (mode == Mode::NadeoCampaign) {
         if (mapsCampaign.Length == 0) {
@@ -124,5 +124,5 @@ void MapsToJson(Mode mode) {
 
     Json::ToFile(IO::FromDataFolder("/Plugins/CampaignCompletionist/next_" + (mode == Mode::NadeoCampaign ? "campaign" : "totd") + "_raw.json"), mapsForJson);
 
-    trace("MapsToJson: done");
+    trace("MapsToJson: " + tostring(mode) + " done");
 }
