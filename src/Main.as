@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-01-08
+// m 2024-01-09
 
 string     accountId;
 bool       allTarget       = false;
@@ -14,7 +14,6 @@ string     colorMedalSilver;
 string     colorTarget;
 string     currentUid;
 bool       gettingNow      = false;
-Mode       lastMode        = S_Mode;
 Map@[]     maps;
 Map@[]     mapsCampaign;
 dictionary mapsCampaignById;
@@ -38,6 +37,7 @@ void Main() {
     }
 
     lastMode = S_Mode;
+    lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
     OnSettingsChanged();
 
     accountId = GetApp().LocalPlayerInfo.WebServicesUserId;
@@ -56,7 +56,7 @@ void Main() {
 void RenderMenu() {
     if (UI::BeginMenu(title)) {
         if (club) {
-            if (UI::MenuItem(Icons::Question + " Auto Switch Maps", "", S_AutoSwitch))
+            if (S_MenuAutoSwitch && UI::MenuItem(Icons::Question + " Auto Switch Maps", "", S_AutoSwitch))
                 S_AutoSwitch = !S_AutoSwitch;
 
             if (UI::MenuItem(
@@ -69,7 +69,7 @@ void RenderMenu() {
                 OnSettingsChanged();
             }
 
-            if (S_Mode == Mode::NadeoCampaign && UI::MenuItem(Icons::ClockO + " Only Current Campaign", "", S_OnlyCurrentCampaign)) {
+            if (S_MenuOnlyCurrentCampaign && S_Mode == Mode::NadeoCampaign && UI::MenuItem(Icons::ClockO + " Only Current Campaign", "", S_OnlyCurrentCampaign)) {
                 S_OnlyCurrentCampaign = !S_OnlyCurrentCampaign;
                 startnew(SetNextMap);
             }
@@ -80,7 +80,7 @@ void RenderMenu() {
                 S_Mode = Mode::NadeoCampaign;
         }
 
-        if (UI::MenuItem(Icons::Refresh + " Refresh Records", "", false, !gettingNow))
+        if (S_MenuRefresh && UI::MenuItem(Icons::Refresh + " Refresh Records", "", false, !gettingNow))
             startnew(RefreshRecords);
 
         if (UI::BeginMenu(colorTarget + Icons::Circle + " Target Medal: " + tostring(S_Target))) {
@@ -133,7 +133,7 @@ void RenderMenu() {
         if (UI::MenuItem(nextText, "", false, club && !gettingNow && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid))
             startnew(CoroutineFunc(nextMap.Play));
 
-        if (S_AllMapsInMenu && mapsRemaining.Length > 0) {
+        if (S_MenuAllMaps && mapsRemaining.Length > 0) {
             if (UI::BeginMenu(Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow)) {
                 for (uint i = 0; i < mapsRemaining.Length; i++) {
                     Map@ map = mapsRemaining[i];
@@ -155,8 +155,9 @@ void Render() {
 }
 
 void OnSettingsChanged() {
-    if (lastMode != S_Mode) {
+    if (lastMode != S_Mode || lastOnlyCurrentCampaign != S_OnlyCurrentCampaign) {
         lastMode = S_Mode;
+        lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
         startnew(SetNextMap);
     }
 
@@ -177,6 +178,9 @@ void OnSettingsChanged() {
 
 void Loop() {
     if (!club) {
+        if (S_AutoSwitch)
+            S_AutoSwitch = false;
+
         if (S_Mode == Mode::TrackOfTheDay)
             S_Mode = Mode::NadeoCampaign;
 
