@@ -66,6 +66,16 @@ void ReturnToMenu() {
         yield();
 }
 
+string TimeFormatColored(uint u, bool format = true) {
+    if (u > 0)
+        return "\\$0F0" + (format ? Time::Format(u) : tostring(u));
+
+    if (u < 0)
+        return "\\$F00" + (format ? Time::Format(Math::Abs(u)) : tostring(Math::Abs(u)));
+
+    return "\\$G0" + (format ? ":00.000" : "");
+}
+
 string ZPad2(int num) {
     return (num < 10 ? "0" : "") + num;
 }
