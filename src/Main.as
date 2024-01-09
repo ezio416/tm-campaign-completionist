@@ -157,6 +157,10 @@ void RenderMenu() {
     }
 }
 
+void Render() {
+    RenderDebug();
+}
+
 void OnSettingsChanged() {
     if (lastMode != S_Mode) {
         lastMode = S_Mode;
