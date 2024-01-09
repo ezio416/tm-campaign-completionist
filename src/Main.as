@@ -238,6 +238,9 @@ void SetNextMap() {
 
     @maps = S_Mode == Mode::NadeoCampaign ? mapsCampaign : mapsTotd;
 
+    if (S_OnlyCurrentCampaign && maps.Length >= 25)
+        maps.RemoveRange(0, maps.Length - 25);
+
     for (uint i = 0; i < maps.Length; i++) {
         if (S_Target == TargetMedal::None) {
             if (maps[i].myTime > 0) {
