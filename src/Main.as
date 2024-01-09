@@ -14,8 +14,7 @@ string     colorTarget;
 string     currentUid;
 bool       gettingNow      = false;
 Mode       lastMode        = S_Mode;
-Map@[]     maps;
-dictionary mapsByUid;
+Map@[]@    maps;
 Map@[]     mapsCampaign;
 dictionary mapsCampaignById;
 dictionary mapsCampaignByUid;
@@ -25,9 +24,7 @@ dictionary mapsTotdById;
 dictionary mapsTotdByUid;
 uint       metTargetTotal  = 0;
 Map@       nextMap;
-bool       playPermission  = false;
-uint       progressCount   = 0;
-uint       progressPercent = 0;
+bool       club            = false;
 string     title           = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
 
 void Main() {
@@ -37,7 +34,7 @@ void Main() {
         return;
     }
 
-    playPermission = true;
+    club = true;
 
     OnSettingsChanged();
 
@@ -109,22 +106,10 @@ void RenderMenu() {
             false
         );
 
-        if (S_Mode == Mode::NadeoCampaign) {
-            if (mapsCampaign.Length > 0)
-                progressPercent = uint(100.0f * float(progressCount) / float(2 * mapsCampaign.Length));
-            else
-                progressPercent = 0;
-        } else {
-            if (mapsTotd.Length > 0)
-                progressPercent = uint(100.0f * float(progressCount) / float(2 * mapsTotd.Length));
-            else
-                progressPercent = 0;
-        }
-
         string nextText = "\\$0F0" + Icons::Play + "\\$G Next: ";
 
         if (gettingNow)
-            nextText += "still getting data... (" + progressPercent + "%)";
+            nextText += "\\$AAAstill getting data...";
         else if (nextMap !is null) {
             nextText += S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ";
             nextText += S_ColorMapNames ? nextMap.nameColored : nextMap.nameClean;
@@ -132,7 +117,7 @@ void RenderMenu() {
         } else
             nextText += "you're done!";
 
-        if (UI::MenuItem(nextText, "", false, playPermission && !gettingNow && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid))
+        if (UI::MenuItem(nextText, "", false, club && !gettingNow && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid))
             startnew(CoroutineFunc(nextMap.Play));
 
         if (S_AllMapsInMenu) {
@@ -140,13 +125,16 @@ void RenderMenu() {
                 for (uint i = 0; i < mapsRemaining.Length; i++) {
                     Map@ map = mapsRemaining[i];
 
-                    if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameRaw : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean), ""))
+                    if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean), ""))
                         startnew(CoroutineFunc(map.Play));
                 }
 
                 UI::EndMenu();
             }
         }
+
+        if (UI::MenuItem(Icons::Refresh + " Refresh Records", "", false, !gettingNow))
+            startnew(RefreshRecords);
 
         UI::EndMenu();
     }
@@ -159,7 +147,7 @@ void Render() {
 void OnSettingsChanged() {
     if (lastMode != S_Mode) {
         lastMode = S_Mode;
-        startnew(GetMaps);
+        startnew(SetNextMap);
     }
 
     colorMedalAuthor = "\\" + Text::FormatGameColor(S_ColorMedalAuthor);
@@ -245,6 +233,8 @@ void SetNextMap() {
     uint target = 4 - S_Target;
 
     mapsRemaining.RemoveRange(0, mapsRemaining.Length);
+
+    @maps = S_Mode == Mode::NadeoCampaign ? mapsCampaign : mapsTotd;
 
     for (uint i = 0; i < maps.Length; i++) {
         if (S_Target == TargetMedal::None) {

@@ -25,11 +25,6 @@ void GetMaps() {
 
     gettingNow = true;
 
-    progressCount = 0;
-
-    maps.RemoveRange(0, maps.Length);
-    mapsByUid.DeleteAll();
-
     mapsCampaign.RemoveRange(0, mapsCampaign.Length);
     mapsCampaignById.DeleteAll();
     mapsCampaignByUid.DeleteAll();
@@ -46,8 +41,6 @@ void GetMaps() {
     GetRecordsFromApi(Mode::NadeoCampaign);
     GetRecordsFromApi(Mode::TrackOfTheDay);
     SetNextMap();
-
-    gettingNow = false;
 }
 
 void GetMapsFromApi(Mode mode) {
@@ -210,7 +203,6 @@ void GetMapInfoFromApi(Mode mode) {
 
         for (uint i = index; i < mapsStillNeedInfo.Length; i++) {
             index = i;
-            progressCount++;
 
             if (url.Length < 8192)
                 url += mapsStillNeedInfo[i].uid + ",";
@@ -291,7 +283,6 @@ void GetRecordsFromApi(Mode mode) {
 
         for (uint i = index; i < mapsToCheck.Length; i++) {
             index = i;
-            progressCount++;
 
             if (url.Length < 8183)
                 url += mapsToCheck[i].id + ",";
@@ -340,13 +331,11 @@ void GetRecordsFromApi(Mode mode) {
 
     trace("getting " + modeName + " records done");
 
-    if (mode == Mode::NadeoCampaign) {
-        maps = mapsCampaign;
-        mapsByUid = mapsCampaignByUid;
-    } else {
-        maps = mapsTotd;
-        mapsByUid = mapsTotdByUid;
-    }
+    gettingNow = false;
+}
+
+void RefreshRecords() {
+    GetRecordsFromApi(S_Mode);
 }
 
 #endif
