@@ -5,6 +5,7 @@ string     accountId;
 bool       allTarget       = false;
 string     audienceCore    = "NadeoServices";
 string     audienceLive    = "NadeoLiveServices";
+bool       club            = false;
 string     colorMedalAuthor;
 string     colorMedalBronze;
 string     colorMedalGold;
@@ -24,17 +25,17 @@ dictionary mapsTotdById;
 dictionary mapsTotdByUid;
 uint       metTargetTotal  = 0;
 Map@       nextMap;
-bool       club            = false;
 string     title           = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
 
 void Main() {
-    if (!Permissions::PlayLocalMap()) {
-        warn("plugin requires paid access to play maps");
-        UI::ShowNotification(title, "Paid access (at least standard) is required to play maps", vec4(1.0f, 0.1f, 0.1f, 0.8f));
-        return;
-    }
+    if (Permissions::PlayLocalMap())
+        club = true;
+    else {
+        warn("Club access required to play maps");
 
-    club = true;
+        if (S_NotifyStarter)
+            UI::ShowNotification(title, "Club access is required to play maps, but you can still track your progress", vec4(1.0f, 0.1f, 0.1f, 0.8f));
+    }
 
     lastMode = S_Mode;
     OnSettingsChanged();
