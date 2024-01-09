@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-01-07
+// m 2024-01-08
 
 string     accountId;
 bool       allTarget       = false;
@@ -150,6 +150,10 @@ void RenderMenu() {
 
         UI::EndMenu();
     }
+}
+
+void Render() {
+    RenderDebug();
 }
 
 void OnSettingsChanged() {

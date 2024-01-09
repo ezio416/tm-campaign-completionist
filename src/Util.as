@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-07
+// m 2024-01-08
 
 void Notify() {
     switch (S_Target) {
@@ -64,6 +64,16 @@ void ReturnToMenu() {
 
     while (!App.ManiaTitleControlScriptAPI.IsReady)
         yield();
+}
+
+string TimeFormatColored(uint u, bool format = true) {
+    if (u > 0)
+        return "\\$0F0" + (format ? Time::Format(u) : tostring(u));
+
+    if (u < 0)
+        return "\\$F00" + (format ? Time::Format(Math::Abs(u)) : tostring(Math::Abs(u)));
+
+    return "\\$G0" + (format ? ":00.000" : "");
 }
 
 string ZPad2(int num) {

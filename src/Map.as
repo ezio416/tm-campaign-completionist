@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-07
+// m 2024-01-08
 
 bool loadingMap = false;
 
@@ -68,8 +68,8 @@ class Map {
     }
 
     void SetNames() {
-        nameClean   = StripFormatCodes(nameRaw);
-        nameColored = ColoredString(nameRaw);
+        nameClean   = StripFormatCodes(nameRaw).Trim();
+        nameColored = ColoredString(nameRaw).Trim();
         nameQuoted  = "\"" + nameClean + "\"";
     }
 }

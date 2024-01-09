@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-07
+// m 2024-01-08
 
 enum Mode {
     NadeoCampaign,
@@ -58,3 +58,7 @@ vec3 S_ColorMedalBronze = vec3(0.69f, 0.5f, 0.0f);
 
 [Setting category="Colors" name="No medal" color]
 vec3 S_ColorMedalNone = vec3(1.0f, 0.0f, 1.0f);
+
+
+[Setting category="Debug" name="Show debug window"]
+bool S_Debug = false;
