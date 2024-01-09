@@ -14133,5 +14133,27 @@
         "nameRaw": "$ADE Bing Chilling",
         "silverTime": 52000,
         "uid": "rykHtVvsKZ9v9fo1pxGBWiAL2T8"
+    },
+    "1285": {
+        "authorTime": 47706,
+        "bronzeTime": 64000,
+        "date": "2024-01-07",
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/46db3e77-b42d-498f-9f0b-3acfdac7ed4d",
+        "goldTime": 50000,
+        "id": "755e4398-3147-4da1-8cb9-44a623b1bae7",
+        "nameRaw": "$3C0Mt' $39FI$57Bn$858v$A24e$C00r$C00sion",
+        "silverTime": 56000,
+        "uid": "AbdEN0S24Ht6S4vMyBAwTI_aROl"
+    },
+    "1286": {
+        "authorTime": 43000,
+        "bronzeTime": 65000,
+        "date": "2024-01-08",
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/5bf00617-3a1e-49ba-ba45-bf78b4bacefa",
+        "goldTime": 46000,
+        "id": "21909658-2302-400b-9564-56338fae781a",
+        "nameRaw": "$o$n$F63AKKI $cccft Vayq",
+        "silverTime": 52000,
+        "uid": "XY8IFmsPqH5s4HggUC55T5TNSi1"
     }
 }

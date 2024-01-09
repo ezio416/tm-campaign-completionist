@@ -3498,5 +3498,255 @@
         "nameRaw": "Fall 2023 - 25",
         "silverTime": 87000,
         "uid": "eWWM_jh1vY2pOuzNYx7fXvFJpn5"
+    },
+    "0350": {
+        "authorTime": 27195,
+        "bronzeTime": 41000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/2da60b64-ea2b-43a7-b952-dd4220e85112",
+        "goldTime": 29000,
+        "id": "be4acd7d-1ddc-48a8-875a-dbbe1ff0996e",
+        "nameRaw": "Winter 2024 - 01",
+        "silverTime": 33000,
+        "uid": "JtxsQPcGS9fs7lrl0xVPaMwVN97"
+    },
+    "0351": {
+        "authorTime": 27993,
+        "bronzeTime": 42000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/201fd874-754c-43a2-9825-f30130e7b55c",
+        "goldTime": 30000,
+        "id": "7ce3acd8-494b-4caa-9e0e-b7352f9afde1",
+        "nameRaw": "Winter 2024 - 02",
+        "silverTime": 34000,
+        "uid": "KebGGKlfHOKiYtNfjIudPqWVMF2"
+    },
+    "0352": {
+        "authorTime": 24911,
+        "bronzeTime": 38000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/eb92117a-38dc-46db-99e3-0b0b8ce7f356",
+        "goldTime": 27000,
+        "id": "93cd9f9e-7075-4a55-8b08-e8a0db416d97",
+        "nameRaw": "Winter 2024 - 03",
+        "silverTime": 30000,
+        "uid": "2oBvffN0RB9MU9LUmN7ankEJYVi"
+    },
+    "0353": {
+        "authorTime": 29232,
+        "bronzeTime": 44000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/708c4143-a8b7-462c-b78c-9901ff9a6509",
+        "goldTime": 31000,
+        "id": "523e5ff7-08c5-49a7-a939-d3aac1a74e61",
+        "nameRaw": "Winter 2024 - 04",
+        "silverTime": 36000,
+        "uid": "uDXS9TWeQKzIUjWUOTgBYV8N5Z6"
+    },
+    "0354": {
+        "authorTime": 26727,
+        "bronzeTime": 41000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/f436be98-d9d9-4e93-a4b4-27b20c56a647",
+        "goldTime": 29000,
+        "id": "d7086b25-9d94-4d0f-84fb-b11a99c0de99",
+        "nameRaw": "Winter 2024 - 05",
+        "silverTime": 33000,
+        "uid": "nyEFLISrfRkRiG2wISsQnYm9G5j"
+    },
+    "0355": {
+        "authorTime": 29122,
+        "bronzeTime": 44000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/c2f58045-0934-4b92-8eef-bc06ae628e34",
+        "goldTime": 31000,
+        "id": "2e49324b-c83c-45ef-8a2c-7172f3653427",
+        "nameRaw": "Winter 2024 - 06",
+        "silverTime": 35000,
+        "uid": "Alv8kG1jjhK2Il1C4JDxiygeZMa"
+    },
+    "0356": {
+        "authorTime": 35435,
+        "bronzeTime": 54000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/3d241233-f890-47c2-bffc-93b8e779fc0c",
+        "goldTime": 38000,
+        "id": "2cf0ce4d-82f8-48f7-b92a-4dc8e179dda7",
+        "nameRaw": "Winter 2024 - 07",
+        "silverTime": 43000,
+        "uid": "XkgUqpjBfzZzxj7n3aAy0Kr2nd6"
+    },
+    "0357": {
+        "authorTime": 26903,
+        "bronzeTime": 41000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/6cd27577-0f42-4c6d-bb83-bce34e0695a7",
+        "goldTime": 29000,
+        "id": "936ec2e4-e14c-4d91-9c93-3e3f5ac53491",
+        "nameRaw": "Winter 2024 - 08",
+        "silverTime": 33000,
+        "uid": "whR4gqrgMwfXSnAElMli0d16J7h"
+    },
+    "0358": {
+        "authorTime": 34999,
+        "bronzeTime": 53000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/4665e062-a09e-4b6f-8fab-95fb3e9580fe",
+        "goldTime": 38000,
+        "id": "76416c30-70c5-49c1-98e1-aa0f4b4bc476",
+        "nameRaw": "Winter 2024 - 09",
+        "silverTime": 42000,
+        "uid": "Kg1nVgGp8bfVc4kbqz9aLcUBny8"
+    },
+    "0359": {
+        "authorTime": 31010,
+        "bronzeTime": 47000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/10b24ff2-f82a-40ac-82b4-0c53d5a0271b",
+        "goldTime": 33000,
+        "id": "66b37789-ecf9-4f02-b402-cdd508e7b086",
+        "nameRaw": "Winter 2024 - 10",
+        "silverTime": 38000,
+        "uid": "n7dH8uHp2WCJRAuiIZCpuuNU6El"
+    },
+    "0360": {
+        "authorTime": 34611,
+        "bronzeTime": 52000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/65b4aaf5-0970-4a95-b8f4-8d07121a760a",
+        "goldTime": 37000,
+        "id": "2e2a5334-4f2d-4e78-9047-9f01c98837ba",
+        "nameRaw": "Winter 2024 - 11",
+        "silverTime": 42000,
+        "uid": "bDRcLIsxEbbac0eEtHn7qnvgJpd"
+    },
+    "0361": {
+        "authorTime": 34144,
+        "bronzeTime": 52000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/f7959f26-e6a8-4d3e-be73-0437b182bd7a",
+        "goldTime": 37000,
+        "id": "e1566153-df51-43ca-992f-364d50eb5a43",
+        "nameRaw": "Winter 2024 - 12",
+        "silverTime": 41000,
+        "uid": "bHFtKTGKAmSiUzngSzrGnEhgRzj"
+    },
+    "0362": {
+        "authorTime": 34671,
+        "bronzeTime": 53000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/20d20a38-0e4f-47f7-9e6c-168fbe54ddbb",
+        "goldTime": 37000,
+        "id": "3a59493f-be45-4e6e-beaa-d9afe48db2f2",
+        "nameRaw": "Winter 2024 - 13",
+        "silverTime": 42000,
+        "uid": "OsaDprWoMJSbmNVGSVz9_W7ue0d"
+    },
+    "0363": {
+        "authorTime": 35464,
+        "bronzeTime": 54000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/935bc380-d27e-42c9-a1d8-ae1045b270c2",
+        "goldTime": 38000,
+        "id": "a8eb1c95-07b8-460c-aafb-cf883b50113a",
+        "nameRaw": "Winter 2024 - 14",
+        "silverTime": 43000,
+        "uid": "bNPnIE33nZ_1ac4XPqkY5VOjAig"
+    },
+    "0364": {
+        "authorTime": 43111,
+        "bronzeTime": 65000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/56bdedd3-b1e0-4de4-b04f-6bc919ec8203",
+        "goldTime": 46000,
+        "id": "0d4ae83b-0f08-4408-a2e5-2deb6779c371",
+        "nameRaw": "Winter 2024 - 15",
+        "silverTime": 52000,
+        "uid": "dnZLVBGMEC3md0SmyADmGqeIS57"
+    },
+    "0365": {
+        "authorTime": 50318,
+        "bronzeTime": 76000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/9842c224-1cfa-4a31-ae39-20dc23f0593f",
+        "goldTime": 54000,
+        "id": "1cf76023-71c7-4d44-a25c-f7d443f7d687",
+        "nameRaw": "Winter 2024 - 16",
+        "silverTime": 61000,
+        "uid": "88MGs3oHHcZOWMqtH0R2H8eet0l"
+    },
+    "0366": {
+        "authorTime": 46564,
+        "bronzeTime": 70000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/f3e2694c-c5fb-46f5-85b2-96a16a0c84dc",
+        "goldTime": 50000,
+        "id": "233d2044-c403-47d8-90f4-734a61f9ab48",
+        "nameRaw": "Winter 2024 - 17",
+        "silverTime": 56000,
+        "uid": "DLcN1MPPJRiLaySQiMBA4fIuO2k"
+    },
+    "0367": {
+        "authorTime": 49282,
+        "bronzeTime": 74000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/b1e82715-1c57-4cf9-b8a7-9cff025764e7",
+        "goldTime": 53000,
+        "id": "0227cb0a-bd61-42dd-b607-d2abf837e805",
+        "nameRaw": "Winter 2024 - 18",
+        "silverTime": 60000,
+        "uid": "_E3Sz1q7h_C47Izc3B5rT_uczB7"
+    },
+    "0368": {
+        "authorTime": 47188,
+        "bronzeTime": 71000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/5cb6c948-9c80-4631-9be9-3b9717180f49",
+        "goldTime": 51000,
+        "id": "ce583a45-840d-495c-ab04-e5cc25571898",
+        "nameRaw": "Winter 2024 - 19",
+        "silverTime": 57000,
+        "uid": "uLXbj48kuVsXNgASzQPLddCjoO4"
+    },
+    "0369": {
+        "authorTime": 53854,
+        "bronzeTime": 81000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/3768f0da-4d3c-4194-aa84-7fe193b7782d",
+        "goldTime": 58000,
+        "id": "874d81b1-9c1a-48c4-91ae-75767fbb358e",
+        "nameRaw": "Winter 2024 - 20",
+        "silverTime": 65000,
+        "uid": "89HH5AU8tkeCgj7_wws0tbS9YR7"
+    },
+    "0370": {
+        "authorTime": 49589,
+        "bronzeTime": 75000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/2fa06e04-85cb-455e-b61d-6e810e61ee2e",
+        "goldTime": 53000,
+        "id": "e1f60c7c-1381-4251-a9a1-21fdf961be3d",
+        "nameRaw": "Winter 2024 - 21",
+        "silverTime": 60000,
+        "uid": "kbQzVZrNRr_nXizHH1xWGgR_yYk"
+    },
+    "0371": {
+        "authorTime": 69896,
+        "bronzeTime": 105000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/a769b1db-3e3e-45a4-b9a5-2330ab6a5f39",
+        "goldTime": 75000,
+        "id": "5090446c-7166-494e-8fa1-ce01e5abce48",
+        "nameRaw": "Winter 2024 - 22",
+        "silverTime": 84000,
+        "uid": "2fpMM3kIYqi1hN2PgdKqNQ4G962"
+    },
+    "0372": {
+        "authorTime": 42598,
+        "bronzeTime": 64000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/de9b6e18-9e8c-4624-82d9-a30fb6d2ee4d",
+        "goldTime": 46000,
+        "id": "26325150-622f-45f4-acd8-e43c01591843",
+        "nameRaw": "Winter 2024 - 23",
+        "silverTime": 52000,
+        "uid": "blqenheIuLxhUSUXNRp1iSc1jfh"
+    },
+    "0373": {
+        "authorTime": 56489,
+        "bronzeTime": 85000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/cdfd1da5-3861-4845-ae1e-7db1b412920e",
+        "goldTime": 60000,
+        "id": "6e2bde26-d560-4f06-a33a-67424a5924d3",
+        "nameRaw": "Winter 2024 - 24",
+        "silverTime": 68000,
+        "uid": "8AAJstK0fIhQO0_AO8RkRgQCzB3"
+    },
+    "0374": {
+        "authorTime": 61996,
+        "bronzeTime": 93000,
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/47319bb8-1899-4eaa-a65e-7d0729754f59",
+        "goldTime": 66000,
+        "id": "28f675f8-0cfa-4f4a-9c95-d64d369fbe7e",
+        "nameRaw": "Winter 2024 - 25",
+        "silverTime": 75000,
+        "uid": "V0HLAzazg1MRNvFaUJiff_X_jo0"
     }
 }
