@@ -22,14 +22,14 @@ bool S_AutoSwitch = true;
 Mode S_Mode = Mode::NadeoCampaign;
 
 [Setting hidden]
+bool S_OnlyCurrentCampaign = false;
+
+[Setting hidden]
 TargetMedal S_Target = TargetMedal::Author;
 
 
 [Setting category="General" name="Notify when starter access is detected"]
 bool S_NotifyStarter = true;
-
-[Setting category="General" name="Only show the current 25 Nadeo Campaign maps" description="Always true for starter access"]
-bool S_OnlyCurrentCampaign = false;
 
 [Setting category="General" name="Show a list of all remaining maps"]
 bool S_AllMapsInMenu = false;

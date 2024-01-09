@@ -62,15 +62,26 @@ void RenderMenu() {
                 S_AutoSwitch = !S_AutoSwitch;
 
             if (UI::BeginMenu((S_Mode == Mode::NadeoCampaign ? "\\$1D4" : "\\$19F") + Icons::ArrowsH + " Mode: " + (S_Mode == Mode::NadeoCampaign ? "Nadeo Campaign" : "Track of the Day"), !gettingNow)) {
+                UI::BeginDisabled(S_Mode == Mode::NadeoCampaign);
                 if (UI::MenuItem("\\$1D4" + Icons::Kenney::Car + " Nadeo Campaign")) {
                     S_Mode = Mode::NadeoCampaign;
                     OnSettingsChanged();
                 }
+                UI::EndDisabled();
+
+                UI::BeginDisabled(S_Mode == Mode::TrackOfTheDay);
                 if (UI::MenuItem("\\$19F" + Icons::Calendar + " Track of the Day")) {
                     S_Mode = Mode::TrackOfTheDay;
                     OnSettingsChanged();
                 }
+                UI::EndDisabled();
+
                 UI::EndMenu();
+            }
+
+            if (S_Mode == Mode::NadeoCampaign && UI::MenuItem(Icons::ClockO + " Only Current Campaign", "", S_OnlyCurrentCampaign)) {
+                S_OnlyCurrentCampaign = !S_OnlyCurrentCampaign;
+                startnew(SetNextMap);
             }
         } else {
             UI::MenuItem("\\$1D4" + Icons::ArrowsH + " Mode: Nadeo Campaign", "", false, false);
