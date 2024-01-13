@@ -14155,5 +14155,49 @@
         "nameRaw": "$o$n$F63AKKI $cccft Vayq",
         "silverTime": 52000,
         "uid": "XY8IFmsPqH5s4HggUC55T5TNSi1"
+    },
+    "1287": {
+        "authorTime": 50838,
+        "bronzeTime": 77000,
+        "date": "2024-01-09",
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/9b35af35-382b-4bf9-a503-c114ef166023",
+        "goldTime": 54000,
+        "id": "a8df1110-5017-498c-8907-debb2c5efab7",
+        "nameRaw": "$s$39FY$fffuki$39FM$fffarimo $39ff$ffft' $39fK$fffcedus",
+        "silverTime": 62000,
+        "uid": "NcRj_UlLzTQw_S_AyJAKTg2GvY3"
+    },
+    "1288": {
+        "authorTime": 41792,
+        "bronzeTime": 63000,
+        "date": "2024-01-10",
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/00a0fced-4b3e-45ea-a650-69fa09c9079f",
+        "goldTime": 45000,
+        "id": "e62022d3-50b8-42ed-8737-7014cbbc95a2",
+        "nameRaw": "$o$s$FFCE$FDAr$FB8o$F96s$F96i$FB8o$FC9n $z$ift' Clearvision",
+        "silverTime": 51000,
+        "uid": "8LYs_IP3pQ4GvhUBHftfw2IGf73"
+    },
+    "1289": {
+        "authorTime": 40546,
+        "bronzeTime": 61000,
+        "date": "2024-01-11",
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/1f11c4be-6fc7-4043-b023-ee36baae0473",
+        "goldTime": 43000,
+        "id": "495244df-756e-4e8b-8f25-2bb264a0bdb1",
+        "nameRaw": "$F93M$F94o$F95l$F96e$F96n$F97a$F98a$F99r",
+        "silverTime": 49000,
+        "uid": "fixqengMLkxyVjPYQEfRCpmSCD8"
+    },
+    "1290": {
+        "authorTime": 43644,
+        "bronzeTime": 66000,
+        "date": "2024-01-12",
+        "downloadUrl": "https://core.trackmania.nadeo.live/storageObjects/2b784f85-af48-462e-9d88-ce7bf3126bb4",
+        "goldTime": 47000,
+        "id": "51586a34-7e5c-4a05-9781-0b76a5ae0c56",
+        "nameRaw": "OutCast",
+        "silverTime": 53000,
+        "uid": "NsYykV6cf8ZKFDLVtDl0AD8tQl6"
     }
 }
