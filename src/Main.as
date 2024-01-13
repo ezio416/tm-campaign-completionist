@@ -1,10 +1,11 @@
 // c 2024-01-01
-// m 2024-01-08
+// m 2024-01-09
 
 string     accountId;
 bool       allTarget       = false;
 string     audienceCore    = "NadeoServices";
 string     audienceLive    = "NadeoLiveServices";
+bool       club            = false;
 string     colorMedalAuthor;
 string     colorMedalBronze;
 string     colorMedalGold;
@@ -13,9 +14,7 @@ string     colorMedalSilver;
 string     colorTarget;
 string     currentUid;
 bool       gettingNow      = false;
-Mode       lastMode        = S_Mode;
 Map@[]     maps;
-dictionary mapsByUid;
 Map@[]     mapsCampaign;
 dictionary mapsCampaignById;
 dictionary mapsCampaignByUid;
@@ -25,9 +24,6 @@ dictionary mapsTotdById;
 dictionary mapsTotdByUid;
 uint       metTargetTotal  = 0;
 Map@       nextMap;
-bool       club            = false;
-uint       progressCount   = 0;
-uint       progressPercent = 0;
 string     title           = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
 
 void Main() {
@@ -37,14 +33,14 @@ void Main() {
         warn("Club access required to play maps");
 
         if (S_NotifyStarter)
-            UI::ShowNotification(title, "Club access is required to play maps, but you can still track your progress", vec4(1.0f, 0.1f, 0.1f, 0.8f));
+            UI::ShowNotification(title, "Club access is required to play maps, but you can still track your progress on the current Nadeo Campaign", vec4(1.0f, 0.1f, 0.1f, 0.8f));
     }
 
+    lastMode = S_Mode;
+    lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
     OnSettingsChanged();
 
-    CTrackMania@ App = cast<CTrackMania@>(GetApp());
-
-    accountId = App.LocalPlayerInfo.WebServicesUserId;
+    accountId = GetApp().LocalPlayerInfo.WebServicesUserId;
 
     NadeoServices::AddAudience(audienceCore);
     NadeoServices::AddAudience(audienceLive);
@@ -60,19 +56,22 @@ void Main() {
 void RenderMenu() {
     if (UI::BeginMenu(title)) {
         if (club) {
-            if (UI::MenuItem(Icons::Question + " Auto Switch Maps", "", S_AutoSwitch))
+            if (S_MenuAutoSwitch && UI::MenuItem(Icons::Question + " Auto Switch Maps", "", S_AutoSwitch))
                 S_AutoSwitch = !S_AutoSwitch;
 
-            if (UI::BeginMenu((S_Mode == Mode::NadeoCampaign ? "\\$1D4" : "\\$19F") + Icons::ArrowsH + " Mode: " + (S_Mode == Mode::NadeoCampaign ? "Nadeo Campaign" : "Track of the Day"), !gettingNow)) {
-                if (UI::MenuItem("\\$1D4" + Icons::Kenney::Car + " Nadeo Campaign")) {
-                    S_Mode = Mode::NadeoCampaign;
-                    OnSettingsChanged();
-                }
-                if (UI::MenuItem("\\$19F" + Icons::Calendar + " Track of the Day")) {
-                    S_Mode = Mode::TrackOfTheDay;
-                    OnSettingsChanged();
-                }
-                UI::EndMenu();
+            if (UI::MenuItem(
+                S_Mode == Mode::NadeoCampaign ? "\\$1D4" + Icons::Kenney::Car + " Mode: Nadeo Campaign" : "\\$19F" + Icons::Calendar + " Mode: Track of the Day",
+                "",
+                false,
+                !gettingNow
+            )) {
+                S_Mode = S_Mode == Mode::NadeoCampaign ? Mode::TrackOfTheDay : Mode::NadeoCampaign;
+                OnSettingsChanged();
+            }
+
+            if (S_MenuOnlyCurrentCampaign && S_Mode == Mode::NadeoCampaign && UI::MenuItem(Icons::ClockO + " Only Current Campaign", "", S_OnlyCurrentCampaign)) {
+                S_OnlyCurrentCampaign = !S_OnlyCurrentCampaign;
+                startnew(SetNextMap);
             }
         } else {
             UI::MenuItem("\\$1D4" + Icons::ArrowsH + " Mode: Nadeo Campaign", "", false, false);
@@ -80,6 +79,9 @@ void RenderMenu() {
             if (S_Mode == Mode::TrackOfTheDay)
                 S_Mode = Mode::NadeoCampaign;
         }
+
+        if (S_MenuRefresh && UI::MenuItem(Icons::Refresh + " Refresh Records", "", false, !gettingNow))
+            startnew(RefreshRecords);
 
         if (UI::BeginMenu(colorTarget + Icons::Circle + " Target Medal: " + tostring(S_Target))) {
             if (UI::MenuItem(colorMedalAuthor + Icons::Circle + " Author", "")) {
@@ -117,22 +119,10 @@ void RenderMenu() {
             false
         );
 
-        if (S_Mode == Mode::NadeoCampaign) {
-            if (mapsCampaign.Length > 0)
-                progressPercent = uint(100.0f * float(progressCount) / float(2 * mapsCampaign.Length));
-            else
-                progressPercent = 0;
-        } else {
-            if (mapsTotd.Length > 0)
-                progressPercent = uint(100.0f * float(progressCount) / float(2 * mapsTotd.Length));
-            else
-                progressPercent = 0;
-        }
-
         string nextText = "\\$0F0" + Icons::Play + "\\$G Next: ";
 
         if (gettingNow)
-            nextText += "still getting data... (" + progressPercent + "%)";
+            nextText += "\\$AAAstill getting data...";
         else if (nextMap !is null) {
             nextText += S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ";
             nextText += S_ColorMapNames ? nextMap.nameColored : nextMap.nameClean;
@@ -143,12 +133,12 @@ void RenderMenu() {
         if (UI::MenuItem(nextText, "", false, club && !gettingNow && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid))
             startnew(CoroutineFunc(nextMap.Play));
 
-        if (S_AllMapsInMenu) {
-            if (UI::BeginMenu(Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow && mapsRemaining.Length > 0)) {
+        if (S_MenuAllMaps && mapsRemaining.Length > 0) {
+            if (UI::BeginMenu(Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow)) {
                 for (uint i = 0; i < mapsRemaining.Length; i++) {
                     Map@ map = mapsRemaining[i];
 
-                    if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameRaw : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean), "", false, club))
+                    if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean), "", false, club))
                         startnew(CoroutineFunc(map.Play));
                 }
 
@@ -160,10 +150,15 @@ void RenderMenu() {
     }
 }
 
+void Render() {
+    RenderDebug();
+}
+
 void OnSettingsChanged() {
-    if (lastMode != S_Mode) {
+    if (lastMode != S_Mode || lastOnlyCurrentCampaign != S_OnlyCurrentCampaign) {
         lastMode = S_Mode;
-        startnew(GetMaps);
+        lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
+        startnew(SetNextMap);
     }
 
     colorMedalAuthor = "\\" + Text::FormatGameColor(S_ColorMedalAuthor);
@@ -182,8 +177,16 @@ void OnSettingsChanged() {
 }
 
 void Loop() {
-    if (!club && !S_OnlyCurrentCampaign)
-        S_OnlyCurrentCampaign = true;
+    if (!club) {
+        if (S_AutoSwitch)
+            S_AutoSwitch = false;
+
+        if (S_Mode == Mode::TrackOfTheDay)
+            S_Mode = Mode::NadeoCampaign;
+
+        if (!S_OnlyCurrentCampaign)
+            S_OnlyCurrentCampaign = true;
+    }
 
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
@@ -251,6 +254,8 @@ void SetNextMap() {
     uint target = 4 - S_Target;
 
     mapsRemaining.RemoveRange(0, mapsRemaining.Length);
+
+    maps = S_Mode == Mode::NadeoCampaign ? mapsCampaign : mapsTotd;
 
     if (S_Mode == Mode::NadeoCampaign && S_OnlyCurrentCampaign && maps.Length >= 25)
         maps.RemoveRange(0, maps.Length - 25);
