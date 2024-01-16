@@ -1,0 +1,652 @@
+{
+    "00": {
+        "authorTime": 26018,
+        "bronzeTime": 40838,
+        "goldTime": 28278,
+        "group": 0,
+        "groupIndex": 0,
+        "nameRaw": "$fff$sA01",
+        "silverTime": 32412,
+        "uid": "NrnZpfRPTjYxh6wSJ6DSLN7Oq2n"
+    },
+    "01": {
+        "authorTime": 24594,
+        "bronzeTime": 40473,
+        "goldTime": 26658,
+        "group": 0,
+        "groupIndex": 1,
+        "nameRaw": "$fff$sA02",
+        "silverTime": 31514,
+        "uid": "og0DgEXIZaDqxrRmUL92KPqd8mc"
+    },
+    "02": {
+        "authorTime": 18405,
+        "bronzeTime": 30697,
+        "goldTime": 19957,
+        "group": 0,
+        "groupIndex": 2,
+        "nameRaw": "$fff$sA03",
+        "silverTime": 23641,
+        "uid": "rTkSXf2iGBlgViZ2jNAQcljypG8"
+    },
+    "03": {
+        "authorTime": 23408,
+        "bronzeTime": 35422,
+        "goldTime": 25486,
+        "group": 0,
+        "groupIndex": 3,
+        "nameRaw": "$fff$sA04",
+        "silverTime": 28880,
+        "uid": "VsiUDfgg1jHDs8RI1aVj60t2ilc"
+    },
+    "04": {
+        "authorTime": 56505,
+        "bronzeTime": 85993,
+        "goldTime": 60974,
+        "group": 0,
+        "groupIndex": 4,
+        "nameRaw": "$fff$sA05",
+        "silverTime": 69138,
+        "uid": "9VfZl5YARtOH5BbsAoYzdbpdO4d"
+    },
+    "05": {
+        "authorTime": 21988,
+        "bronzeTime": 38047,
+        "goldTime": 24701,
+        "group": 0,
+        "groupIndex": 5,
+        "nameRaw": "$fff$sA06",
+        "silverTime": 28913,
+        "uid": "Q6uqoYVUQatwlcTextxDrZMCXj8"
+    },
+    "06": {
+        "authorTime": 29761,
+        "bronzeTime": 45375,
+        "goldTime": 32748,
+        "group": 0,
+        "groupIndex": 6,
+        "nameRaw": "$fff$sA07",
+        "silverTime": 37410,
+        "uid": "sq9Z7rvI4uqAuzSDtvo0ipPUfX7"
+    },
+    "07": {
+        "authorTime": 20545,
+        "bronzeTime": 35466,
+        "goldTime": 22342,
+        "group": 0,
+        "groupIndex": 7,
+        "nameRaw": "$fff$sA08",
+        "silverTime": 26233,
+        "uid": "IXcLSPvzH5nBoxVtQ33fqe_CHfe"
+    },
+    "08": {
+        "authorTime": 28714,
+        "bronzeTime": 45002,
+        "goldTime": 31992,
+        "group": 0,
+        "groupIndex": 8,
+        "nameRaw": "$fff$sA09",
+        "silverTime": 37277,
+        "uid": "b9ttXfSMwUbAr5aFxOQDW_ulsy5"
+    },
+    "09": {
+        "authorTime": 92004,
+        "bronzeTime": 142201,
+        "goldTime": 100050,
+        "group": 0,
+        "groupIndex": 9,
+        "nameRaw": "$fff$sA10",
+        "silverTime": 113686,
+        "uid": "5pJavKg7wJlWhnvZns_qC5TvHt5"
+    },
+    "10": {
+        "authorTime": 27548,
+        "bronzeTime": 42617,
+        "goldTime": 29731,
+        "group": 0,
+        "groupIndex": 10,
+        "nameRaw": "$fff$sA11",
+        "silverTime": 34370,
+        "uid": "_hZtOB2oaE4lBRHnWYNNMmw1U30"
+    },
+    "11": {
+        "authorTime": 32542,
+        "bronzeTime": 53985,
+        "goldTime": 35790,
+        "group": 0,
+        "groupIndex": 11,
+        "nameRaw": "$fff$sA12",
+        "silverTime": 42114,
+        "uid": "HoLfRqsOipHD7tsdVw3W6cdNrw5"
+    },
+    "12": {
+        "authorTime": 19556,
+        "bronzeTime": 32658,
+        "goldTime": 21478,
+        "group": 0,
+        "groupIndex": 12,
+        "nameRaw": "$fff$sA13",
+        "silverTime": 25299,
+        "uid": "wsgnUWuVdZTUaHBIgp7ac0NFtJa"
+    },
+    "13": {
+        "authorTime": 30298,
+        "bronzeTime": 47528,
+        "goldTime": 33082,
+        "group": 0,
+        "groupIndex": 13,
+        "nameRaw": "$fff$sA14",
+        "silverTime": 38193,
+        "uid": "mxvNiRD1I5AwTM9vZ3mc7ZcJrg5"
+    },
+    "14": {
+        "authorTime": 108420,
+        "bronzeTime": 169678,
+        "goldTime": 119692,
+        "group": 0,
+        "groupIndex": 14,
+        "nameRaw": "$fff$sA15",
+        "silverTime": 135599,
+        "uid": "G9XQEyPcJvyfnd64M7AEW67WFl2"
+    },
+    "15": {
+        "authorTime": 32195,
+        "bronzeTime": 50648,
+        "goldTime": 34915,
+        "group": 1,
+        "groupIndex": 0,
+        "nameRaw": "$fff$sB01",
+        "silverTime": 40353,
+        "uid": "nEm6djdYeSrGj2raWQ8QBvSeJEh"
+    },
+    "16": {
+        "authorTime": 34652,
+        "bronzeTime": 55571,
+        "goldTime": 37768,
+        "group": 1,
+        "groupIndex": 1,
+        "nameRaw": "$fff$sB02",
+        "silverTime": 44227,
+        "uid": "JNDnboltOprJ19O2d2OQCJrC1Sk"
+    },
+    "17": {
+        "authorTime": 24658,
+        "bronzeTime": 41789,
+        "goldTime": 27479,
+        "group": 1,
+        "groupIndex": 2,
+        "nameRaw": "$fff$sB03",
+        "silverTime": 32030,
+        "uid": "jqBPD0wLDjkBlFHX6w3D0eOL1fd"
+    },
+    "18": {
+        "authorTime": 33388,
+        "bronzeTime": 53386,
+        "goldTime": 36569,
+        "group": 1,
+        "groupIndex": 3,
+        "nameRaw": "$fff$sB04",
+        "silverTime": 42957,
+        "uid": "8TzI_Dkk8yrDJKDq0YP6YrhXQCa"
+    },
+    "19": {
+        "authorTime": 128178,
+        "bronzeTime": 197742,
+        "goldTime": 140958,
+        "group": 1,
+        "groupIndex": 4,
+        "nameRaw": "$fff$sB05",
+        "silverTime": 157737,
+        "uid": "zhMPgkCB0hztLGySe2A7l_K9Z_5"
+    },
+    "20": {
+        "authorTime": 34986,
+        "bronzeTime": 55546,
+        "goldTime": 38376,
+        "group": 1,
+        "groupIndex": 5,
+        "nameRaw": "$fff$sB06",
+        "silverTime": 43680,
+        "uid": "V0fXt16dyvBrDDOVreY25REgky0"
+    },
+    "21": {
+        "authorTime": 34586,
+        "bronzeTime": 57140,
+        "goldTime": 37362,
+        "group": 1,
+        "groupIndex": 6,
+        "nameRaw": "$fff$sB07",
+        "silverTime": 43967,
+        "uid": "9_fa7mSq5dMRykhA4NLEr379qx3"
+    },
+    "22": {
+        "authorTime": 34565,
+        "bronzeTime": 56862,
+        "goldTime": 37997,
+        "group": 1,
+        "groupIndex": 7,
+        "nameRaw": "$fff$sB08",
+        "silverTime": 44182,
+        "uid": "f60UDPlW2mqfbhwCGUuclCIYQj2"
+    },
+    "23": {
+        "authorTime": 33007,
+        "bronzeTime": 51522,
+        "goldTime": 36883,
+        "group": 1,
+        "groupIndex": 8,
+        "nameRaw": "$fff$sB09",
+        "silverTime": 43218,
+        "uid": "uC7XgQXNborPbrlxoLRcopp13c2"
+    },
+    "24": {
+        "authorTime": 66047,
+        "bronzeTime": 102697,
+        "goldTime": 72426,
+        "group": 1,
+        "groupIndex": 9,
+        "nameRaw": "$fff$sB10",
+        "silverTime": 82580,
+        "uid": "JzmsaXEcj75pScDDytnsydSXSu1"
+    },
+    "25": {
+        "authorTime": 35654,
+        "bronzeTime": 57174,
+        "goldTime": 39769,
+        "group": 1,
+        "groupIndex": 10,
+        "nameRaw": "$fff$sB11",
+        "silverTime": 46920,
+        "uid": "OIKAhlu1_pjJnj0kxZwLbj5fWoa"
+    },
+    "26": {
+        "authorTime": 38255,
+        "bronzeTime": 60115,
+        "goldTime": 41387,
+        "group": 1,
+        "groupIndex": 11,
+        "nameRaw": "$fff$sB12",
+        "silverTime": 48414,
+        "uid": "Be22BRodz4fwBAXhWTOxoJpemyf"
+    },
+    "27": {
+        "authorTime": 28480,
+        "bronzeTime": 44895,
+        "goldTime": 31308,
+        "group": 1,
+        "groupIndex": 12,
+        "nameRaw": "$fff$sB13",
+        "silverTime": 35840,
+        "uid": "FgDXJzMDIgQU3Ttf0xhkEYK8z3i"
+    },
+    "28": {
+        "authorTime": 37859,
+        "bronzeTime": 61849,
+        "goldTime": 41830,
+        "group": 1,
+        "groupIndex": 13,
+        "nameRaw": "$fff$sB14",
+        "silverTime": 47644,
+        "uid": "MwVGxon4pMxhHiPRexq_whfee5e"
+    },
+    "29": {
+        "authorTime": 87533,
+        "bronzeTime": 137371,
+        "goldTime": 96063,
+        "group": 1,
+        "groupIndex": 14,
+        "nameRaw": "$fff$sB15",
+        "silverTime": 110206,
+        "uid": "vciVkOoJfCYH5HbQR2FjnneXTd0"
+    },
+    "30": {
+        "authorTime": 44358,
+        "bronzeTime": 68965,
+        "goldTime": 48461,
+        "group": 2,
+        "groupIndex": 0,
+        "nameRaw": "$fff$sC01",
+        "silverTime": 55391,
+        "uid": "tQFSbvuJEzLFbvQ1duajyVced89"
+    },
+    "31": {
+        "authorTime": 46912,
+        "bronzeTime": 74484,
+        "goldTime": 51188,
+        "group": 2,
+        "groupIndex": 1,
+        "nameRaw": "$fff$sC02",
+        "silverTime": 59253,
+        "uid": "y3OZIdQMBFUFO5xnu4eV2LK8mE5"
+    },
+    "32": {
+        "authorTime": 38780,
+        "bronzeTime": 59663,
+        "goldTime": 43895,
+        "group": 2,
+        "groupIndex": 2,
+        "nameRaw": "$fff$sC03",
+        "silverTime": 50099,
+        "uid": "UaibG0F70a4jYKqCivc_4lg_LNj"
+    },
+    "33": {
+        "authorTime": 41505,
+        "bronzeTime": 66457,
+        "goldTime": 45705,
+        "group": 2,
+        "groupIndex": 3,
+        "nameRaw": "$fff$sC04",
+        "silverTime": 52291,
+        "uid": "keNzZVEYPJqdNWDrjA0Wn9_jop2"
+    },
+    "34": {
+        "authorTime": 131531,
+        "bronzeTime": 200253,
+        "goldTime": 143894,
+        "group": 2,
+        "groupIndex": 4,
+        "nameRaw": "$fff$sC05",
+        "silverTime": 162723,
+        "uid": "nQo1RXtRFQD6Qx0a2JrZwqk3N1a"
+    },
+    "35": {
+        "authorTime": 51778,
+        "bronzeTime": 80138,
+        "goldTime": 56479,
+        "group": 2,
+        "groupIndex": 5,
+        "nameRaw": "$fff$sC06",
+        "silverTime": 64731,
+        "uid": "SopCFUCDC8JqkHUEjTH_fkZhJMf"
+    },
+    "36": {
+        "authorTime": 44720,
+        "bronzeTime": 70148,
+        "goldTime": 48357,
+        "group": 2,
+        "groupIndex": 6,
+        "nameRaw": "$fff$sC07",
+        "silverTime": 55342,
+        "uid": "l7qwMbj6hesDHnFk7fBX_wdHyce"
+    },
+    "37": {
+        "authorTime": 29353,
+        "bronzeTime": 47221,
+        "goldTime": 33244,
+        "group": 2,
+        "groupIndex": 7,
+        "nameRaw": "$fff$sC08",
+        "silverTime": 37334,
+        "uid": "Kydgtjo8SoCYlDgBGo2iJec951l"
+    },
+    "38": {
+        "authorTime": 46179,
+        "bronzeTime": 73793,
+        "goldTime": 50923,
+        "group": 2,
+        "groupIndex": 8,
+        "nameRaw": "$fff$sC09",
+        "silverTime": 59301,
+        "uid": "P7IvfYE2nkOgbHRMl0umoMArJei"
+    },
+    "39": {
+        "authorTime": 114597,
+        "bronzeTime": 173182,
+        "goldTime": 125397,
+        "group": 2,
+        "groupIndex": 9,
+        "nameRaw": "$fff$sC10",
+        "silverTime": 142916,
+        "uid": "2hsaNBzxddpfuq42W6_qDM2tltm"
+    },
+    "40": {
+        "authorTime": 44561,
+        "bronzeTime": 70150,
+        "goldTime": 50962,
+        "group": 2,
+        "groupIndex": 10,
+        "nameRaw": "$fff$sC11",
+        "silverTime": 57321,
+        "uid": "okvxR4463SxhxEzrdP_nw0LVHH4"
+    },
+    "41": {
+        "authorTime": 47433,
+        "bronzeTime": 74010,
+        "goldTime": 52677,
+        "group": 2,
+        "groupIndex": 11,
+        "nameRaw": "$fff$sC12",
+        "silverTime": 59442,
+        "uid": "GPDzSciq7ZzEiyF3z8gTMdWKrtm"
+    },
+    "42": {
+        "authorTime": 32674,
+        "bronzeTime": 54395,
+        "goldTime": 36446,
+        "group": 2,
+        "groupIndex": 12,
+        "nameRaw": "$fff$sC13",
+        "silverTime": 42810,
+        "uid": "hGqPnucpepPFuR39zdpDgkm2Vx1"
+    },
+    "43": {
+        "authorTime": 50744,
+        "bronzeTime": 77943,
+        "goldTime": 56644,
+        "group": 2,
+        "groupIndex": 13,
+        "nameRaw": "$fff$sC14",
+        "silverTime": 64436,
+        "uid": "XpfMoys6rQlAEaE1BZm_KbKaMy3"
+    },
+    "44": {
+        "authorTime": 175862,
+        "bronzeTime": 267154,
+        "goldTime": 192045,
+        "group": 2,
+        "groupIndex": 14,
+        "nameRaw": "$fff$sC15",
+        "silverTime": 215279,
+        "uid": "ibJ5tQWOmPich9X4GSNwZc1fdT2"
+    },
+    "45": {
+        "authorTime": 66005,
+        "bronzeTime": 101595,
+        "goldTime": 71865,
+        "group": 3,
+        "groupIndex": 0,
+        "nameRaw": "$fff$sD01",
+        "silverTime": 82343,
+        "uid": "o67WiIeYB3YTV_9uBza6gWNoP9c"
+    },
+    "46": {
+        "authorTime": 60065,
+        "bronzeTime": 89527,
+        "goldTime": 66044,
+        "group": 3,
+        "groupIndex": 1,
+        "nameRaw": "$fff$sD02",
+        "silverTime": 73956,
+        "uid": "YhpbWiS1RDnHPWJiqKeoQZqGdId"
+    },
+    "47": {
+        "authorTime": 32988,
+        "bronzeTime": 52432,
+        "goldTime": 36044,
+        "group": 3,
+        "groupIndex": 2,
+        "nameRaw": "$fff$sD03",
+        "silverTime": 42200,
+        "uid": "CbTXYS88PitVI5bFNtzdCnqJfsm"
+    },
+    "48": {
+        "authorTime": 63066,
+        "bronzeTime": 100463,
+        "goldTime": 69156,
+        "group": 3,
+        "groupIndex": 3,
+        "nameRaw": "$fff$sD04",
+        "silverTime": 79006,
+        "uid": "PVZxbXntjeomzP_hsM1jm5nDNEf"
+    },
+    "49": {
+        "authorTime": 124154,
+        "bronzeTime": 188838,
+        "goldTime": 136040,
+        "group": 3,
+        "groupIndex": 4,
+        "nameRaw": "$fff$sD05",
+        "silverTime": 153404,
+        "uid": "yR3LpPRzEWDA7s9R0WNnAIPvhw4"
+    },
+    "50": {
+        "authorTime": 61707,
+        "bronzeTime": 94244,
+        "goldTime": 67884,
+        "group": 3,
+        "groupIndex": 5,
+        "nameRaw": "$fff$sD06",
+        "silverTime": 76686,
+        "uid": "z8iPup1URnUA01uxE1H9g5E5Oc9"
+    },
+    "51": {
+        "authorTime": 53637,
+        "bronzeTime": 85333,
+        "goldTime": 58414,
+        "group": 3,
+        "groupIndex": 6,
+        "nameRaw": "$fff$sD07",
+        "silverTime": 67991,
+        "uid": "M_2nsZl8W_OO44B7Mem774A8zjf"
+    },
+    "52": {
+        "authorTime": 42785,
+        "bronzeTime": 66687,
+        "goldTime": 46967,
+        "group": 3,
+        "groupIndex": 7,
+        "nameRaw": "$fff$sD08",
+        "silverTime": 55675,
+        "uid": "0k2PIDFkv2yn77nPqStgBnhfaja"
+    },
+    "53": {
+        "authorTime": 74154,
+        "bronzeTime": 113556,
+        "goldTime": 82795,
+        "group": 3,
+        "groupIndex": 8,
+        "nameRaw": "$fff$sD09",
+        "silverTime": 94431,
+        "uid": "wPlDjuMiUjjyN8TAyFlgASQbAt5"
+    },
+    "54": {
+        "authorTime": 314344,
+        "bronzeTime": 477038,
+        "goldTime": 339361,
+        "group": 3,
+        "groupIndex": 9,
+        "nameRaw": "$fff$sD10",
+        "silverTime": 382657,
+        "uid": "Zaxkjwmz7pgMDiZOmG8eW38yCl7"
+    },
+    "55": {
+        "authorTime": 67009,
+        "bronzeTime": 107368,
+        "goldTime": 74571,
+        "group": 3,
+        "groupIndex": 10,
+        "nameRaw": "$fff$sD11",
+        "silverTime": 86728,
+        "uid": "1HZ9C1z8irtGGVh2Cql_USQcuVd"
+    },
+    "56": {
+        "authorTime": 63507,
+        "bronzeTime": 99108,
+        "goldTime": 68401,
+        "group": 3,
+        "groupIndex": 11,
+        "nameRaw": "$fff$sD12",
+        "silverTime": 79594,
+        "uid": "tXK6caF7AfmLsi5iak5Kb2bVxbc"
+    },
+    "57": {
+        "authorTime": 56620,
+        "bronzeTime": 89505,
+        "goldTime": 61924,
+        "group": 3,
+        "groupIndex": 12,
+        "nameRaw": "$fff$sD13",
+        "silverTime": 72673,
+        "uid": "vv3CNa_s50SlRnimkioLqqzLxIg"
+    },
+    "58": {
+        "authorTime": 74696,
+        "bronzeTime": 115784,
+        "goldTime": 83804,
+        "group": 3,
+        "groupIndex": 13,
+        "nameRaw": "$fff$sD14",
+        "silverTime": 92760,
+        "uid": "BliRNsLQlHJ661CBno_CtLOoI8g"
+    },
+    "59": {
+        "authorTime": 461712,
+        "bronzeTime": 704710,
+        "goldTime": 495890,
+        "group": 3,
+        "groupIndex": 14,
+        "nameRaw": "$fff$sD15",
+        "silverTime": 563225,
+        "uid": "VcIxqAIdYUCOlvMNK4MJa9TpF_9"
+    },
+    "60": {
+        "authorTime": 109482,
+        "bronzeTime": 175983,
+        "goldTime": 125092,
+        "group": 4,
+        "groupIndex": 0,
+        "nameRaw": "$fff$sE01",
+        "silverTime": 144433,
+        "uid": "2jJnMOt_X34Wm5mNunGCkBP13n3"
+    },
+    "61": {
+        "authorTime": 79373,
+        "bronzeTime": 116212,
+        "goldTime": 86876,
+        "group": 4,
+        "groupIndex": 1,
+        "nameRaw": "$fff$sE02",
+        "silverTime": 98153,
+        "uid": "aqu1FZw3c3JAgt5iVNJJAANSNng"
+    },
+    "62": {
+        "authorTime": 137530,
+        "bronzeTime": 227543,
+        "goldTime": 154466,
+        "group": 4,
+        "groupIndex": 2,
+        "nameRaw": "$fff$sE03",
+        "silverTime": 178218,
+        "uid": "16KRJRoK99aBV10oJYcJ1BSZSDl"
+    },
+    "63": {
+        "authorTime": 117334,
+        "bronzeTime": 182166,
+        "goldTime": 128402,
+        "group": 4,
+        "groupIndex": 3,
+        "nameRaw": "$fff$sE04",
+        "silverTime": 146838,
+        "uid": "RJC5nY676FLzKEluZX1XMuUz6T4"
+    },
+    "64": {
+        "authorTime": 1159423,
+        "bronzeTime": 1745792,
+        "goldTime": 1240378,
+        "group": 4,
+        "groupIndex": 4,
+        "nameRaw": "$fff$sE05",
+        "silverTime": 1412184,
+        "uid": "wmUgyO8PHChYJeH5azScFuhrzl"
+    }
+}
