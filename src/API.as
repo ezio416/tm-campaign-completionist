@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-08
+// m 2024-01-13
 
 uint64       latestNandoRequest   = 0;
 Json::Value@ mapsCampaignFromFile = Json::Object();
@@ -237,7 +237,7 @@ void GetMapInfoFromApi(Mode mode) {
                 @map = cast<Map@>(mapsTotdByUid[uid]);
 
             if (map is null) {
-                warn("GetMapInfoFromApi: null " + modeName + " map " + uid);
+                warn("GetMapInfoFromApi: null " + modeName + " map: " + uid);
                 continue;
             }
 

@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-01-09
+// m 2024-01-15
 
 string     accountId;
 bool       allTarget       = false;
@@ -126,7 +126,7 @@ void RenderMenu() {
         else if (nextMap !is null) {
             nextText += S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ";
             nextText += S_ColorMapNames ? nextMap.nameColored : nextMap.nameClean;
-            nextText += nextMap.uid == currentUid ? " (current)" : "";
+            nextText += nextMap.uid == currentUid ? "\\$G (current)" : "";
         } else
             nextText += "you're done!";
 
@@ -214,6 +214,9 @@ void Loop() {
     trace("run finished, getting PB on current map");
 
     uint prevTime = nextMap.myTime;
+
+    for (uint i = 0; i < 10; i++)
+        yield();  // allow game to process PB
 
     nextMap.myTime = App.Network.ClientManiaAppPlayground.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, currentUid, "PersonalBest", "", "TimeAttack", "");
     nextMap.SetMedals();
