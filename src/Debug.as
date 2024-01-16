@@ -1,5 +1,5 @@
 // c 2024-01-08
-// m 2024-01-08
+// m 2024-01-15
 
 void RenderDebug() {
     if (!S_Debug)
@@ -7,12 +7,17 @@ void RenderDebug() {
 
     UI::Begin(title + " Debug", S_Debug, UI::WindowFlags::None);
         UI::BeginTabBar("##tabs");
+#if TMNEXT
             Tab_MapsDebug(mapsCampaign, Mode::NadeoCampaign);
             Tab_MapsDebug(mapsTotd,     Mode::TrackOfTheDay);
+#elif MP4
+            Tab_MapsDebug(maps);
+#endif
         UI::EndTabBar();
     UI::End();
 }
 
+#if TMNEXT
 void Tab_MapsDebug(Map@[]@ mapsDebug, Mode mode) {
     if (!UI::BeginTabItem(mode == Mode::NadeoCampaign ? "Campaign" : "TOTD"))
         return;
@@ -126,3 +131,10 @@ void MapsToJson(Mode mode) {
 
     trace("MapsToJson: " + tostring(mode) + " done");
 }
+
+#elif MP4
+    void Tab_MapsDebug(Map@[]@ mapsDebug) {
+        ;
+    }
+
+#endif

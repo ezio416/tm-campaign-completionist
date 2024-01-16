@@ -27,6 +27,8 @@ Map@       nextMap;
 string     title           = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
 
 void Main() {
+
+#if TMNEXT
     if (Permissions::PlayLocalMap())
         club = true;
     else {
@@ -38,12 +40,18 @@ void Main() {
 
     lastMode = S_Mode;
     lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
-    OnSettingsChanged();
 
     accountId = GetApp().LocalPlayerInfo.WebServicesUserId;
 
     NadeoServices::AddAudience(audienceCore);
     NadeoServices::AddAudience(audienceLive);
+
+#elif MP4
+    club = true;
+    GetTitlepacks();
+#endif
+
+    OnSettingsChanged();
 
     GetMaps();
 
@@ -55,10 +63,15 @@ void Main() {
 
 void RenderMenu() {
     if (UI::BeginMenu(title)) {
+
+#if TMNEXT
         if (club) {
+#endif
+
             if (S_MenuAutoSwitch && UI::MenuItem(Icons::Question + " Auto Switch Maps", "", S_AutoSwitch))
                 S_AutoSwitch = !S_AutoSwitch;
 
+#if TMNEXT
             if (UI::MenuItem(
                 S_Mode == Mode::NadeoCampaign ? "\\$1D4" + Icons::Kenney::Car + " Mode: Nadeo Campaign" : "\\$19F" + Icons::Calendar + " Mode: Track of the Day",
                 "",
@@ -79,6 +92,28 @@ void RenderMenu() {
             if (S_Mode == Mode::TrackOfTheDay)
                 S_Mode = Mode::NadeoCampaign;
         }
+
+#elif MP4
+        if (UI::BeginMenu(colorLoadedTitle + Icons::Download + " Titlepack: " + loadedTitleName, !loadingTitlepack)) {
+            if (hasCanyon && UI::MenuItem(colorCanyon + Icons::Road + " Canyon", "", false, loadedTitleName != "Canyon")) {
+                S_Titlepack = Titlepack::Canyon;
+                startnew(LoadTitlepack);
+            }
+            if (hasStadium && UI::MenuItem(colorStadium + Icons::Gamepad + " Stadium", "", false, loadedTitleName != "Stadium")) {
+                S_Titlepack = Titlepack::Stadium;
+                startnew(LoadTitlepack);
+            }
+            if (hasValley && UI::MenuItem(colorValley + Icons::Tree + " Valley", "", false, loadedTitleName != "Valley")) {
+                S_Titlepack = Titlepack::Valley;
+                startnew(LoadTitlepack);
+            }
+            if (hasLagoon && UI::MenuItem(colorLagoon + Icons::Shower + " Lagoon", "", false, loadedTitleName != "Lagoon")) {
+                S_Titlepack = Titlepack::Lagoon;
+                startnew(LoadTitlepack);
+            }
+            UI::EndMenu();
+        }
+#endif
 
         if (S_MenuRefresh && UI::MenuItem(Icons::Refresh + " Refresh Records", "", false, !gettingNow))
             startnew(RefreshRecords);
@@ -113,7 +148,7 @@ void RenderMenu() {
         }
 
         UI::MenuItem(
-            Icons::Percent + " Progress: " + (gettingNow ? "..." : metTargetTotal + "/" + maps.Length + " (" + (int(100 * metTargetTotal / maps.Length)) +"%)"),
+            Icons::Percent + " Progress: " + (gettingNow ? "..." : metTargetTotal + "/" + maps.Length + " (" + (maps.Length == 0 ? 0 : int(100 * metTargetTotal / maps.Length)) + "%)"),
             "",
             false,
             false
@@ -124,8 +159,14 @@ void RenderMenu() {
         if (gettingNow)
             nextText += "\\$AAAstill getting data...";
         else if (nextMap !is null) {
+
+#if TMNEXT
             nextText += S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ";
             nextText += S_ColorMapNames ? nextMap.nameColored : nextMap.nameClean;
+#elif MP4
+            nextText += nextMap.nameClean;
+#endif
+
             nextText += nextMap.uid == currentUid ? "\\$G (current)" : "";
         } else
             nextText += "you're done!";
@@ -138,7 +179,11 @@ void RenderMenu() {
                 for (uint i = 0; i < mapsRemaining.Length; i++) {
                     Map@ map = mapsRemaining[i];
 
+#if TMNEXT
                     if (UI::MenuItem(S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean), "", false, club))
+#elif MP4
+                    if (UI::MenuItem(map.nameClean, "", false, !loadingMap))
+#endif
                         startnew(CoroutineFunc(map.Play));
                 }
 
@@ -155,17 +200,24 @@ void Render() {
 }
 
 void OnSettingsChanged() {
+
+#if TMNEXT
     if (lastMode != S_Mode || lastOnlyCurrentCampaign != S_OnlyCurrentCampaign) {
         lastMode = S_Mode;
         lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
         startnew(SetNextMap);
     }
+#endif
 
     colorMedalAuthor = "\\" + Text::FormatGameColor(S_ColorMedalAuthor);
     colorMedalGold   = "\\" + Text::FormatGameColor(S_ColorMedalGold);
     colorMedalSilver = "\\" + Text::FormatGameColor(S_ColorMedalSilver);
     colorMedalBronze = "\\" + Text::FormatGameColor(S_ColorMedalBronze);
     colorMedalNone   = "\\" + Text::FormatGameColor(S_ColorMedalNone);
+
+#if MP4
+    SetMP4Colors();
+#endif
 
     switch (S_Target) {
         case TargetMedal::Author: colorTarget = colorMedalAuthor; break;
@@ -177,6 +229,8 @@ void OnSettingsChanged() {
 }
 
 void Loop() {
+
+#if TMNEXT
     if (!club) {
         if (S_AutoSwitch)
             S_AutoSwitch = false;
@@ -187,8 +241,30 @@ void Loop() {
         if (!S_OnlyCurrentCampaign)
             S_OnlyCurrentCampaign = true;
     }
+#endif
 
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+#if MP4
+    SetLoadedTitle();
+
+    if (lastLoadedTitle != loadedTitle) {
+        lastLoadedTitle = loadedTitle;
+
+        switch (loadedTitle) {
+            case 0: maps = mapsCanyon;  break;
+            case 1: maps = mapsStadium; break;
+            case 2: maps = mapsValley;  break;
+            case 3: maps = mapsLagoon;  break;
+            default: maps.RemoveRange(0, maps.Length);
+        }
+
+        SetMP4Colors();
+        // GetRecordsFromReplays();
+        GetRecordsFromLoadedCampaign(true);
+        SetNextMap();
+    }
+#endif
 
     if (App.RootMap is null || App.RootMap.MapInfo is null) {
         currentUid = "";
@@ -202,15 +278,23 @@ void Loop() {
 
     if (nextMap is null
         || nextMap.uid != currentUid
+#if TMNEXT
         || App.Network is null
         || App.Network.ClientManiaAppPlayground is null
         || App.Network.ClientManiaAppPlayground.ScoreMgr is null
         || App.Network.ClientManiaAppPlayground.UI is null
         || App.Network.ClientManiaAppPlayground.UI.UISequence != CGamePlaygroundUIConfig::EUISequence::Finish
         || App.UserManagerScript is null
+#elif MP4
+        || App.CurrentPlayground is null
+        || App.CurrentPlayground.UIConfigs.Length == 0
+        // || App.CurrentPlayground.UIConfigs[0].UISequence != CGamePlaygroundUIConfig::EUISequence::EndRound
+        // || !nextMap.ThisSessionPB()
+#endif
     )
         return;
 
+#if TMNEXT
     trace("run finished, getting PB on current map");
 
     uint prevTime = nextMap.myTime;
@@ -221,9 +305,16 @@ void Loop() {
     nextMap.myTime = App.Network.ClientManiaAppPlayground.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, currentUid, "PersonalBest", "", "TimeAttack", "");
     nextMap.SetMedals();
 
-    Meta::PluginCoroutine@ coro = startnew(SetNextMap);
-    while (coro.IsRunning())
-        yield();
+#elif MP4
+    bool pb = nextMap.ThisSessionPB();
+    if (pb) {
+#endif
+        Meta::PluginCoroutine@ coro = startnew(SetNextMap);
+        while (coro.IsRunning())
+            yield();
+#if MP4
+    }
+#endif
 
     if (nextMap.uid != currentUid) {
         Notify();
@@ -233,20 +324,32 @@ void Loop() {
             sleep(10000);  // give some time for next map to load before checking again
         }
     } else
+#if TMNEXT
         NotifyTimeNeeded(prevTime == 0 || nextMap.myTime < prevTime);
+#elif MP4
+        NotifyTimeNeeded(pb);
+#endif
 
     try {
         while (
+#if TMNEXT
             App.Network.ClientManiaAppPlayground.UI.UISequence == CGamePlaygroundUIConfig::EUISequence::Finish ||
+#endif
             App.Network.ClientManiaAppPlayground.UI.UISequence == CGamePlaygroundUIConfig::EUISequence::EndRound
         )
             yield();
-    } catch {
-        return;
-    }
+    } catch { }
 }
 
 void SetNextMap() {
+
+#if MP4
+    if (loadedTitle == -1) {
+        // warn("no titlepack loaded, can't set next map");
+        return;
+    }
+#endif
+
     while (gettingNow)
         yield();
 
@@ -258,10 +361,12 @@ void SetNextMap() {
 
     mapsRemaining.RemoveRange(0, mapsRemaining.Length);
 
+#if TMNEXT
     maps = S_Mode == Mode::NadeoCampaign ? mapsCampaign : mapsTotd;
 
     if (S_Mode == Mode::NadeoCampaign && S_OnlyCurrentCampaign && maps.Length >= 25)
         maps.RemoveRange(0, maps.Length - 25);
+#endif
 
     for (uint i = 0; i < maps.Length; i++) {
         if (S_Target == TargetMedal::None) {
@@ -286,6 +391,10 @@ void SetNextMap() {
     } else {
         allTarget = false;
         if (nextMap !is null)
-            trace("next map: " + nextMap.date + ": " + nextMap.nameClean);
+#if TMNEXT
+            trace("next map: " + (S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ") + nextMap.nameClean);
+#elif MP4
+            trace("next map: " + nextMap.nameClean);
+#endif
     }
 }

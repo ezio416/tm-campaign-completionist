@@ -1,5 +1,7 @@
 // c 2024-01-02
-// m 2024-01-13
+// m 2024-01-15
+
+#if TMNEXT
 
 uint64       latestNandoRequest   = 0;
 Json::Value@ mapsCampaignFromFile = Json::Object();
@@ -341,3 +343,5 @@ void GetRecordsFromApi(Mode mode) {
 void RefreshRecords() {
     GetRecordsFromApi(S_Mode);
 }
+
+#endif
