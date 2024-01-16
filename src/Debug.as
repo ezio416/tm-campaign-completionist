@@ -1,5 +1,5 @@
 // c 2024-01-08
-// m 2024-01-08
+// m 2024-01-16
 
 void RenderDebug() {
     if (!S_Debug)
@@ -81,48 +81,4 @@ void Tab_MapsDebug(Map@[]@ mapsDebug, Mode mode) {
     }
 
     UI::EndTabItem();
-}
-
-void MapsToJson(Mode mode) {
-    trace("MapsToJson: " + tostring(mode) + " starting");
-
-    if (mode == Mode::NadeoCampaign) {
-        if (mapsCampaign.Length == 0) {
-            warn("MapsToJson: no campaign maps!");
-            return;
-        }
-    } else {
-        if (mapsTotd.Length == 0) {
-            warn("MapsToJson: no TOTD maps!");
-            return;
-        }
-    }
-
-    Json::Value@ mapsForJson = Json::Object();
-
-    Map@[]@ mapsToSave = mode == Mode::NadeoCampaign ? mapsCampaign : mapsTotd;
-
-    for (uint i = 0; i < mapsToSave.Length; i++) {
-        Map@ map = mapsToSave[i];
-
-        Json::Value@ mapJson = Json::Object();
-
-        mapJson["authorTime"]  = map.authorTime;
-        mapJson["bronzeTime"]  = map.bronzeTime;
-        mapJson["downloadUrl"] = map.downloadUrl;
-        mapJson["goldTime"]    = map.goldTime;
-        mapJson["id"]          = map.id;
-        mapJson["nameRaw"]     = map.nameRaw.Trim();
-        mapJson["silverTime"]  = map.silverTime;
-        mapJson["uid"]         = map.uid;
-
-        if (mode == Mode::TrackOfTheDay)
-            mapJson["date"]    = map.date;
-
-        mapsForJson[ZPad4(i)] = mapJson;
-    }
-
-    Json::ToFile(IO::FromDataFolder("/Plugins/CampaignCompletionist/next_" + (mode == Mode::NadeoCampaign ? "campaign" : "totd") + "_raw.json"), mapsForJson);
-
-    trace("MapsToJson: " + tostring(mode) + " done");
 }
