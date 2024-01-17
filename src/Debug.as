@@ -67,13 +67,19 @@ void Tab_MapsDebug(Map@[]@ mapsDebug, Mode mode) {
                 UI::Text(TimeFormatColored(map.myMedals, false));
 
                 UI::TableNextColumn();
-                UI::Text(map.id);
+                if (UI::Selectable(map.id, false))
+                    IO::SetClipboard(map.id);
+                HoverTooltip("click to copy to clipboard");
 
                 UI::TableNextColumn();
-                UI::Text(map.uid);
+                if (UI::Selectable(map.uid, false))
+                    IO::SetClipboard(map.uid);
+                HoverTooltip("click to copy to clipboard");
 
                 UI::TableNextColumn();
-                UI::Text(map.downloadUrl);
+                if (UI::Selectable(map.downloadUrl, false))
+                    IO::SetClipboard(map.downloadUrl);
+                HoverTooltip("click to copy to clipboard");
             }
         }
 

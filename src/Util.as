@@ -1,5 +1,14 @@
 // c 2024-01-02
-// m 2024-01-07
+// m 2024-01-16
+
+void HoverTooltip(const string &in msg) {
+    if (!UI::IsItemHovered())
+        return;
+
+    UI::BeginTooltip();
+        UI::Text(msg);
+    UI::EndTooltip();
+}
 
 void Notify() {
     switch (S_Target) {
