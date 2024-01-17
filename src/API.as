@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-13
+// m 2024-01-16
 
 uint64       latestNandoRequest   = 0;
 Json::Value@ mapsCampaignFromFile = Json::Object();
@@ -129,7 +129,6 @@ void GetMapsFromFiles() {
 
             map.authorTime  = mapFromFile["authorTime"];
             map.bronzeTime  = mapFromFile["bronzeTime"];
-            map.downloadUrl = mapFromFile["downloadUrl"];
             map.goldTime    = mapFromFile["goldTime"];
             map.id          = mapFromFile["id"];
             map.nameRaw     = mapFromFile["nameRaw"];
@@ -157,8 +156,7 @@ void GetMapsFromFiles() {
 
             map.authorTime  = mapFromFile["authorTime"];
             map.bronzeTime  = mapFromFile["bronzeTime"];
-            map.date        = mapFromFile["date"];
-            map.downloadUrl = mapFromFile["downloadUrl"];
+            map.date        = "\\$S" + string(mapFromFile["date"]);
             map.goldTime    = mapFromFile["goldTime"];
             map.id          = mapFromFile["id"];
             map.nameRaw     = mapFromFile["nameRaw"];
@@ -196,7 +194,7 @@ void GetMapInfoFromApi(Mode mode) {
             mapsStillNeedInfo.InsertLast(map);
     }
 
-    while (mapsStillNeedInfo.Length > 0 && index < mapsStillNeedInfo.Length - 1) {
+    while (mapsStillNeedInfo.Length > 0 && (index == 0 || index < mapsStillNeedInfo.Length - 1)) {
         url = NadeoServices::BaseURLCore() + "/maps/?mapUidList=";
 
         for (uint i = index; i < mapsStillNeedInfo.Length; i++) {
@@ -243,7 +241,6 @@ void GetMapInfoFromApi(Mode mode) {
 
             map.authorTime  = mapInfo[i]["authorScore"];
             map.bronzeTime  = mapInfo[i]["bronzeScore"];
-            map.downloadUrl = mapInfo[i]["fileUrl"];
             map.goldTime    = mapInfo[i]["goldScore"];
             map.id          = mapInfo[i]["mapId"];
             map.nameRaw     = mapInfo[i]["name"];
@@ -257,12 +254,12 @@ void GetMapInfoFromApi(Mode mode) {
             else if (mode == Mode::TrackOfTheDay && !mapsTotdById.Exists(map.id))
                 mapsTotdById.Set(map.id, @map);
         }
+
+        if (mapsStillNeedInfo.Length == 1)
+            break;
     }
 
     trace("getting " + modeName + " map info from API done");
-
-    // MapsToJson(Mode::NadeoCampaign);
-    // MapsToJson(Mode::TrackOfTheDay);
 }
 
 void GetRecordsFromApi(Mode mode) {
@@ -330,6 +327,8 @@ void GetRecordsFromApi(Mode mode) {
 
             map.myMedals = records[i]["medal"];
             map.myTime = records[i]["recordScore"]["time"];
+
+            map.SetTargetDelta();
         }
     }
 
@@ -340,4 +339,5 @@ void GetRecordsFromApi(Mode mode) {
 
 void RefreshRecords() {
     GetRecordsFromApi(S_Mode);
+    SetNextMap();
 }
