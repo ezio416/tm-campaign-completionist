@@ -156,7 +156,7 @@ void GetMapsFromFiles() {
 
             map.authorTime  = mapFromFile["authorTime"];
             map.bronzeTime  = mapFromFile["bronzeTime"];
-            map.date        = mapFromFile["date"];
+            map.date        = "\\$S" + string(mapFromFile["date"]);
             map.goldTime    = mapFromFile["goldTime"];
             map.id          = mapFromFile["id"];
             map.nameRaw     = mapFromFile["nameRaw"];
@@ -327,6 +327,8 @@ void GetRecordsFromApi(Mode mode) {
 
             map.myMedals = records[i]["medal"];
             map.myTime = records[i]["recordScore"]["time"];
+
+            map.SetTargetDelta();
         }
     }
 
@@ -337,4 +339,5 @@ void GetRecordsFromApi(Mode mode) {
 
 void RefreshRecords() {
     GetRecordsFromApi(S_Mode);
+    SetNextMap();
 }

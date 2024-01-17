@@ -17,6 +17,7 @@ class Map {
     string nameQuoted;
     string nameRaw;
     uint   silverTime;
+    string targetDelta;
     string uid;
 
     Map() { }
@@ -24,7 +25,7 @@ class Map {
         uid = map["mapUid"];
     }
     Map(int year, int month, Json::Value@ day) {  // TOTD
-        date = year + "-" + ZPad2(month) + "-" + ZPad2(day["monthDay"]);
+        date = "\\$S" + year + "-" + ZPad2(month) + "-" + ZPad2(day["monthDay"]);
         uid = day["mapUid"];
     }
 
@@ -122,8 +123,42 @@ class Map {
     }
 
     void SetNames() {
+        nameRaw     = nameRaw.Trim();
         nameClean   = StripFormatCodes(nameRaw).Trim();
         nameColored = ColoredString(nameRaw).Trim();
         nameQuoted  = "\"" + nameClean + "\"";
+    }
+
+    void SetTargetDelta() {
+        int delta;
+        targetDelta = "";
+
+        switch (S_Target) {
+            case TargetMedal::Author: delta = myTime > 0 ? int(myTime) - int(authorTime) : int(authorTime); break;
+            case TargetMedal::Gold:   delta = myTime > 0 ? int(myTime) - int(goldTime)   : int(goldTime);   break;
+            case TargetMedal::Silver: delta = myTime > 0 ? int(myTime) - int(silverTime) : int(silverTime); break;
+            case TargetMedal::Bronze: delta = myTime > 0 ? int(myTime) - int(bronzeTime) : int(bronzeTime); break;
+            default:                  delta = 0;
+        }
+
+        if (delta == 0) {
+            targetDelta = "";
+            return;
+        }
+
+        if (delta < 100)
+            targetDelta += colorDeltaSub01;
+        else if (delta < 500)
+            targetDelta += colorDelta01to05;
+        else if (delta < 1000)
+            targetDelta += colorDelta05to1;
+        else if (delta < 2000)
+            targetDelta += colorDelta1to2;
+        else if (delta < 3000)
+            targetDelta += colorDelta2to3;
+        else
+            targetDelta += colorDeltaAbove3;
+
+        targetDelta += "\\$S(+" + Time::Format(delta) + ") \\$Z";
     }
 }
