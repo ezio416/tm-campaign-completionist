@@ -194,7 +194,7 @@ void GetMapInfoFromApi(Mode mode) {
             mapsStillNeedInfo.InsertLast(map);
     }
 
-    while (mapsStillNeedInfo.Length > 0 && index < mapsStillNeedInfo.Length - 1) {
+    while (mapsStillNeedInfo.Length > 0 && (index == 0 || index < mapsStillNeedInfo.Length - 1)) {
         url = NadeoServices::BaseURLCore() + "/maps/?mapUidList=";
 
         for (uint i = index; i < mapsStillNeedInfo.Length; i++) {
@@ -241,7 +241,6 @@ void GetMapInfoFromApi(Mode mode) {
 
             map.authorTime  = mapInfo[i]["authorScore"];
             map.bronzeTime  = mapInfo[i]["bronzeScore"];
-            map.downloadUrl = mapInfo[i]["fileUrl"];
             map.goldTime    = mapInfo[i]["goldScore"];
             map.id          = mapInfo[i]["mapId"];
             map.nameRaw     = mapInfo[i]["name"];
@@ -255,12 +254,12 @@ void GetMapInfoFromApi(Mode mode) {
             else if (mode == Mode::TrackOfTheDay && !mapsTotdById.Exists(map.id))
                 mapsTotdById.Set(map.id, @map);
         }
+
+        if (mapsStillNeedInfo.Length == 1)
+            break;
     }
 
     trace("getting " + modeName + " map info from API done");
-
-    // MapsToJson(Mode::NadeoCampaign);
-    // MapsToJson(Mode::TrackOfTheDay);
 }
 
 void GetRecordsFromApi(Mode mode) {
