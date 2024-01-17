@@ -208,6 +208,7 @@ void Loop() {
         || App.Network.ClientManiaAppPlayground.UI is null
         || App.Network.ClientManiaAppPlayground.UI.UISequence != CGamePlaygroundUIConfig::EUISequence::Finish
         || App.UserManagerScript is null
+        || App.UserManagerScript.Users.Length == 0
     )
         return;
 
@@ -215,7 +216,7 @@ void Loop() {
 
     uint prevTime = nextMap.myTime;
 
-    for (uint i = 0; i < 10; i++)
+    for (uint i = 0; i < 20; i++)
         yield();  // allow game to process PB
 
     nextMap.myTime = App.Network.ClientManiaAppPlayground.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, currentUid, "PersonalBest", "", "TimeAttack", "");
