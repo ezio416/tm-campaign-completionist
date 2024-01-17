@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-13
+// m 2024-01-16
 
 uint64       latestNandoRequest   = 0;
 Json::Value@ mapsCampaignFromFile = Json::Object();
@@ -129,7 +129,6 @@ void GetMapsFromFiles() {
 
             map.authorTime  = mapFromFile["authorTime"];
             map.bronzeTime  = mapFromFile["bronzeTime"];
-            map.downloadUrl = mapFromFile["downloadUrl"];
             map.goldTime    = mapFromFile["goldTime"];
             map.id          = mapFromFile["id"];
             map.nameRaw     = mapFromFile["nameRaw"];
@@ -158,7 +157,6 @@ void GetMapsFromFiles() {
             map.authorTime  = mapFromFile["authorTime"];
             map.bronzeTime  = mapFromFile["bronzeTime"];
             map.date        = mapFromFile["date"];
-            map.downloadUrl = mapFromFile["downloadUrl"];
             map.goldTime    = mapFromFile["goldTime"];
             map.id          = mapFromFile["id"];
             map.nameRaw     = mapFromFile["nameRaw"];

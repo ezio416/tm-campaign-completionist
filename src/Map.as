@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-08
+// m 2024-01-16
 
 bool loadingMap = false;
 
@@ -28,6 +28,58 @@ class Map {
         uid = day["mapUid"];
     }
 
+    // courtesy of "BetterTOTD" plugin - https://github.com/XertroV/tm-better-totd
+    void GetMapInfoFromManager() {
+        const uint64 start = Time::Now;
+
+        CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+        CTrackManiaMenus@ MenuManager = cast<CTrackManiaMenus@>(App.MenuManager);
+        if (MenuManager is null) {
+            warn("GetMapInfoFromManager error: null MenuManager");
+            return;
+        }
+
+        CGameManiaAppTitle@ Title = MenuManager.MenuCustom_CurrentManiaApp;
+        if (Title is null) {
+            warn("GetMapInfoFromManager error: null Title");
+            return;
+        }
+
+        CGameUserManagerScript@ UserMgr = Title.UserMgr;
+        if (UserMgr is null || UserMgr.Users.Length == 0) {
+            warn("GetMapInfoFromManager error: null UserMgr or no users");
+            return;
+        }
+
+        CGameUserScript@ User = UserMgr.Users[0];
+        if (User is null) {
+            warn("GetMapInfoFromManager error: null User");
+            return;
+        }
+
+        CGameDataFileManagerScript@ FileMgr = Title.DataFileMgr;
+        if (FileMgr is null) {
+            warn("GetMapInfoFromManager error: null FileMgr");
+            return;
+        }
+
+        CWebServicesTaskResult_NadeoServicesMapScript@ task = FileMgr.Map_NadeoServices_GetFromUid(User.Id, uid);
+
+        while (task.IsProcessing)
+            yield();
+
+        if (task.HasSucceeded) {
+            CNadeoServicesMap@ taskMap = task.Map;
+            downloadUrl = taskMap.FileUrl;
+
+            FileMgr.TaskResult_Release(task.Id);
+        } else
+            warn("GetMapInfoFromManager error: task failed");
+
+        trace("GetMapInfoFromManager done: " + (Time::Now - start) + "ms");
+    }
+
     // courtesy of "Play Map" plugin - https://github.com/XertroV/tm-play-map
     void Play() {
         if (loadingMap || !club)
@@ -36,6 +88,8 @@ class Map {
         loadingMap = true;
 
         trace("loading map " + nameQuoted + " for playing");
+
+        GetMapInfoFromManager();  // in case downloadUrl changed
 
         ReturnToMenu();
 
