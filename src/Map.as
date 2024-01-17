@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-16
+// m 2024-01-17
 
 bool loadingMap = false;
 
@@ -90,7 +90,7 @@ class Map {
 
         trace("loading map " + nameQuoted + " for playing");
 
-        GetMapInfoFromManager();  // in case downloadUrl changed
+        GetMapInfoFromManager();
 
         ReturnToMenu();
 
