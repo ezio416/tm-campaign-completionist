@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-09
+// m 2024-01-16
 
 enum Mode {
     NadeoCampaign,
@@ -23,20 +23,20 @@ Mode lastMode = S_Mode;
 TargetMedal S_Target = TargetMedal::Author;
 
 
-[Setting category="General" name="Notify when starter access is detected"]
+[Setting category="General" name="Notify when Starter Access is detected"]
 bool S_NotifyStarter = true;
 
-[Setting category="General" name="Automatically switch maps when target is reached" description="Always disabled for starter"]
+[Setting category="General" name="Automatically switch maps when target is reached" description="Always disabled for Starter"]
 bool S_AutoSwitch = true;
 
-[Setting category="General" name="Show 'Auto Switch' button" description="Always disabled for starter"]
+[Setting category="General" name="Show 'Auto Switch' button" description="Always disabled for Starter"]
 bool S_MenuAutoSwitch = true;
 
-[Setting category="General" name="Only show the current 25 Nadeo Campaign maps" description="Always enabled for starter"]
+[Setting category="General" name="Only show the current 25 Nadeo Campaign maps" description="Always enabled for Starter (only first 10 maps)"]
 bool S_OnlyCurrentCampaign = false;
 bool lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
 
-[Setting category="General" name="Show 'Only Current Campaign' button"]
+[Setting category="General" name="Show 'Only Current Campaign' button" description="Always disabled for Starter"]
 bool S_MenuOnlyCurrentCampaign = true;
 
 [Setting category="General" name="Show 'Refresh Records' button"]

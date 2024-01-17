@@ -181,6 +181,12 @@ void Loop() {
         if (S_AutoSwitch)
             S_AutoSwitch = false;
 
+        if (S_MenuAutoSwitch)
+            S_MenuAutoSwitch = false;
+
+        if (S_MenuOnlyCurrentCampaign)
+            S_MenuOnlyCurrentCampaign = false;
+
         if (S_Mode == Mode::TrackOfTheDay)
             S_Mode = Mode::NadeoCampaign;
 
@@ -259,10 +265,21 @@ void SetNextMap() {
 
     mapsRemaining.RemoveRange(0, mapsRemaining.Length);
 
+    if (!club) {
+        if (S_Mode == Mode::TrackOfTheDay)
+            S_Mode = Mode::NadeoCampaign;
+
+        if (!S_OnlyCurrentCampaign)
+            S_OnlyCurrentCampaign = true;
+    }
+
     maps = S_Mode == Mode::NadeoCampaign ? mapsCampaign : mapsTotd;
 
     if (S_Mode == Mode::NadeoCampaign && S_OnlyCurrentCampaign && maps.Length >= 25)
         maps.RemoveRange(0, maps.Length - 25);
+
+    if (!club)
+        maps.RemoveRange(10, 15);
 
     for (uint i = 0; i < maps.Length; i++) {
         if (S_Target == TargetMedal::None) {
