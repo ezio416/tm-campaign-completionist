@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-01-16
+// m 2024-01-17
 
 string     accountId;
 bool       allTarget       = false;
@@ -19,7 +19,7 @@ dictionary mapsTotdById;
 dictionary mapsTotdByUid;
 uint       metTargetTotal  = 0;
 Map@       nextMap;
-string     title           = "\\$0F0\\$S" + Icons::Check + "\\$G Campaign Completionist";
+string     title           = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
 
 void Main() {
     if (Permissions::PlayLocalMap())
