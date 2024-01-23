@@ -1,5 +1,5 @@
 // c 2024-01-08
-// m 2024-01-22
+// m 2024-01-23
 
 void RenderDebug() {
     if (!S_Debug)
@@ -43,13 +43,13 @@ void Tab_MapsDebug(Map@[]@ mapsDebug, Mode mode) {
 
                 UI::TableNextColumn();
                 if (bookmarkedUids.HasKey(map.uid)) {
-                    if (UI::Selectable("         " + Icons::Star + "##bookmarked" + map.uid, false)) {
+                    if (UI::Selectable("         " + Icons::Bookmark + "##bookmarked" + map.uid, false)) {
                         bookmarkedUids.Remove(map.uid);
                         SaveBookmarks();
                         startnew(SetNextMap);
                     }
                 } else {
-                    if (UI::Selectable("         " + Icons::StarO + "##unbookmarked" + map.uid, false)) {
+                    if (UI::Selectable("         " + Icons::BookmarkO + "##unbookmarked" + map.uid, false)) {
                         bookmarkedUids[map.uid] = 0;
                         SaveBookmarks();
                         startnew(SetNextMap);
