@@ -1,25 +1,26 @@
 // c 2024-01-01
-// m 2024-01-17
+// m 2024-01-22
 
-string     accountId;
-bool       allTarget       = false;
-string     audienceCore    = "NadeoServices";
-string     audienceLive    = "NadeoLiveServices";
-bool       club            = false;
-string     colorTarget;
-string     currentUid;
-bool       gettingNow      = false;
-Map@[]     maps;
-Map@[]     mapsCampaign;
-dictionary mapsCampaignById;
-dictionary mapsCampaignByUid;
-Map@[]     mapsRemaining;
-Map@[]     mapsTotd;
-dictionary mapsTotdById;
-dictionary mapsTotdByUid;
-uint       metTargetTotal  = 0;
-Map@       nextMap;
-string     title           = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
+string       accountId;
+bool         allTarget         = false;
+const string audienceCore      = "NadeoServices";
+const string audienceLive      = "NadeoLiveServices";
+bool         club              = false;
+string       colorSeries;
+string       colorTarget;
+string       currentUid;
+bool         gettingNow        = false;
+Map@[]       maps;
+Map@[]       mapsCampaign;
+dictionary@  mapsCampaignById  = dictionary();
+dictionary@  mapsCampaignByUid = dictionary();
+Map@[]       mapsRemaining;
+Map@[]       mapsTotd;
+dictionary@  mapsTotdById      = dictionary();
+dictionary@  mapsTotdByUid     = dictionary();
+uint         metTargetTotal    = 0;
+Map@         nextMap;
+const string title             = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
 
 void Main() {
     if (Permissions::PlayLocalMap())
@@ -75,31 +76,60 @@ void RenderMenu() {
                 S_Mode = Mode::NadeoCampaign;
         }
 
+        if (S_MenuSeries && S_Mode == Mode::NadeoCampaign && UI::BeginMenu(colorSeries + "\\$S" + Icons::Signal + " Series: " + tostring(S_Series))) {
+            if (UI::MenuItem(colorSeriesAll + "\\$S" + Icons::Star + " All", "", S_Series == CampaignSeries::All, S_Series != CampaignSeries::All)) {
+                S_Series = CampaignSeries::All;
+                OnSettingsChanged();
+            }
+            if (UI::MenuItem(colorSeriesWhite + "\\$S" + Icons::Star + " White", "", S_Series == CampaignSeries::White, S_Series != CampaignSeries::White)) {
+                S_Series = CampaignSeries::White;
+                OnSettingsChanged();
+            }
+            if (UI::MenuItem(colorSeriesGreen + "\\$S" + Icons::Star + " Green", "", S_Series == CampaignSeries::Green, S_Series != CampaignSeries::Green)) {
+                S_Series = CampaignSeries::Green;
+                OnSettingsChanged();
+            }
+            if (UI::MenuItem(colorSeriesBlue + "\\$S" + Icons::Star + " Blue", "", S_Series == CampaignSeries::Blue, S_Series != CampaignSeries::Blue)) {
+                S_Series = CampaignSeries::Blue;
+                OnSettingsChanged();
+            }
+            if (UI::MenuItem(colorSeriesRed + "\\$S" + Icons::Star + " Red", "", S_Series == CampaignSeries::Red, S_Series != CampaignSeries::Red)) {
+                S_Series = CampaignSeries::Red;
+                OnSettingsChanged();
+            }
+            if (UI::MenuItem(colorSeriesBlack + "\\$S" + Icons::Star + " Black", "", S_Series == CampaignSeries::Black, S_Series != CampaignSeries::Black)) {
+                S_Series = CampaignSeries::Black;
+                OnSettingsChanged();
+            }
+
+            UI::EndMenu();
+        }
+
         if (S_MenuRefresh && UI::MenuItem("\\$S" + Icons::Refresh + " Refresh Records", "", false, !gettingNow))
             startnew(RefreshRecords);
 
         if (UI::BeginMenu(colorTarget + "\\$S" + Icons::Circle + " Target Medal: " + tostring(S_Target))) {
-            if (UI::MenuItem(colorMedalAuthor + "\\$S" + Icons::Circle + " Author", "")) {
+            if (UI::MenuItem(colorMedalAuthor + "\\$S" + Icons::Circle + " Author", "", S_Target == TargetMedal::Author, S_Target != TargetMedal::Author)) {
                 S_Target = TargetMedal::Author;
                 OnSettingsChanged();
                 startnew(SetNextMap);
             }
-            if (UI::MenuItem(colorMedalGold + "\\$S" + Icons::Circle + " Gold", "")) {
+            if (UI::MenuItem(colorMedalGold + "\\$S" + Icons::Circle + " Gold", "", S_Target == TargetMedal::Gold, S_Target != TargetMedal::Gold)) {
                 S_Target = TargetMedal::Gold;
                 OnSettingsChanged();
                 startnew(SetNextMap);
             }
-            if (UI::MenuItem(colorMedalSilver + "\\$S" + Icons::Circle + " Silver", "")) {
+            if (UI::MenuItem(colorMedalSilver + "\\$S" + Icons::Circle + " Silver", "", S_Target == TargetMedal::Silver, S_Target != TargetMedal::Silver)) {
                 S_Target = TargetMedal::Silver;
                 OnSettingsChanged();
                 startnew(SetNextMap);
             }
-            if (UI::MenuItem(colorMedalBronze + "\\$S" + Icons::Circle + " Bronze", "")) {
+            if (UI::MenuItem(colorMedalBronze + "\\$S" + Icons::Circle + " Bronze", "", S_Target == TargetMedal::Bronze, S_Target != TargetMedal::Bronze)) {
                 S_Target = TargetMedal::Bronze;
                 OnSettingsChanged();
                 startnew(SetNextMap);
             }
-            if (UI::MenuItem(colorMedalNone + "\\$S" + Icons::Circle + " None", "")) {
+            if (UI::MenuItem(colorMedalNone + "\\$S" + Icons::Circle + " None", "", S_Target == TargetMedal::None, S_Target != TargetMedal::None)) {
                 S_Target = TargetMedal::None;
                 OnSettingsChanged();
                 startnew(SetNextMap);
@@ -160,10 +190,32 @@ void Render() {
 }
 
 void OnSettingsChanged() {
-    if (lastMode != S_Mode || lastOnlyCurrentCampaign != S_OnlyCurrentCampaign) {
+    if (
+        lastMode != S_Mode
+        || lastOnlyCurrentCampaign != S_OnlyCurrentCampaign
+        || lastSeries != S_Series
+    ) {
         lastMode = S_Mode;
         lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
+        lastSeries = S_Series;
         startnew(SetNextMap);
+    }
+
+    colorSeriesAll   = Text::FormatOpenplanetColor(S_ColorSeriesAll);
+    colorSeriesWhite = Text::FormatOpenplanetColor(S_ColorSeriesWhite);
+    colorSeriesGreen = Text::FormatOpenplanetColor(S_ColorSeriesGreen);
+    colorSeriesBlue  = Text::FormatOpenplanetColor(S_ColorSeriesBlue);
+    colorSeriesRed   = Text::FormatOpenplanetColor(S_ColorSeriesRed);
+    colorSeriesBlack = Text::FormatOpenplanetColor(S_ColorSeriesBlack);
+
+    switch (S_Series) {
+        case CampaignSeries::All:   colorSeries = colorSeriesAll;   break;
+        case CampaignSeries::White: colorSeries = colorSeriesWhite; break;
+        case CampaignSeries::Green: colorSeries = colorSeriesGreen; break;
+        case CampaignSeries::Blue:  colorSeries = colorSeriesBlue;  break;
+        case CampaignSeries::Red:   colorSeries = colorSeriesRed;   break;
+        case CampaignSeries::Black: colorSeries = colorSeriesBlack; break;
+        default:;
     }
 
     colorMedalAuthor = Text::FormatOpenplanetColor(S_ColorMedalAuthor);
@@ -299,6 +351,36 @@ void SetNextMap() {
 
     if (!club)
         maps.RemoveRange(10, 15);
+
+    if (S_Mode == Mode::NadeoCampaign && S_Series != CampaignSeries::All) {
+        for (int i = maps.Length - 1; i >= 0 ; i--) {
+            string mapNum = maps[i].nameClean.SubStr(maps[i].nameClean.Length - 2, 2);
+
+            switch (S_Series) {
+                case CampaignSeries::White:
+                    if (seriesWhite.Find(mapNum) == -1)
+                        maps.RemoveAt(i);
+                    break;
+                case CampaignSeries::Green:
+                    if (seriesGreen.Find(mapNum) == -1)
+                        maps.RemoveAt(i);
+                    break;
+                case CampaignSeries::Blue:
+                    if (seriesBlue.Find(mapNum) == -1)
+                        maps.RemoveAt(i);
+                    break;
+                case CampaignSeries::Red:
+                    if (seriesRed.Find(mapNum) == -1)
+                        maps.RemoveAt(i);
+                    break;
+                case CampaignSeries::Black:
+                    if (seriesBlack.Find(mapNum) == -1)
+                        maps.RemoveAt(i);
+                    break;
+                default:;
+            }
+        }
+    }
 
     for (uint i = 0; i < maps.Length; i++) {
         maps[i].SetTargetDelta();
