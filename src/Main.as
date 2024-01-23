@@ -160,10 +160,10 @@ void RenderMenu() {
             nextMapBookmarked = bookmarkedUids.HasKey(nextMap.uid);
 
             if (S_MenuBookmarkIcons)
-                nextText += "\\$Z\\$S" + (nextMapBookmarked ? Icons::Bookmark : Icons::BookmarkO);
+                nextText += "\\$Z\\$S" + (nextMapBookmarked ? Icons::Bookmark : Icons::BookmarkO) + " ";
 
             if (S_MenuTargetDelta)
-                nextText += "\\$Z " + nextMap.targetDelta;
+                nextText += "\\$Z" + nextMap.targetDelta;
 
             nextText += S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ";
             nextText += "\\$Z" + (S_ColorMapNames ? nextMap.nameColored : nextMap.nameClean);
@@ -187,13 +187,13 @@ void RenderMenu() {
                 string remainingText;
 
                 if (S_MenuSkipIcons)
-                    remainingText += "\\$S" + (skipped ? Icons::Times : Icons::CircleO);
+                    remainingText += "\\$S" + (skipped ? Icons::Times : Icons::CircleO) + (S_MenuBookmarkIcons ? "" : " ");
 
                 if (S_MenuBookmarkIcons)
-                    remainingText += "\\$Z\\$S" + (bookmarked ? Icons::Bookmark : Icons::BookmarkO);
+                    remainingText += "\\$Z\\$S" + (bookmarked ? Icons::Bookmark : Icons::BookmarkO) + " ";
 
                 if (S_MenuTargetDelta)
-                    remainingText += "\\$Z " + map.targetDelta;
+                    remainingText += "\\$Z" + map.targetDelta;
 
                 remainingText += S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean);
 
@@ -215,10 +215,10 @@ void RenderMenu() {
                 bool bookmarked = bookmarkedUids.HasKey(map.uid);
 
                 if (S_MenuBookmarkIcons)
-                    skippedText += "\\$S" + (bookmarked ? Icons::Bookmark : Icons::BookmarkO);
+                    skippedText += "\\$S" + (bookmarked ? Icons::Bookmark : Icons::BookmarkO) + " ";
 
                 if (S_MenuTargetDelta)
-                    skippedText += "\\$Z " + map.targetDelta;
+                    skippedText += "\\$Z" + map.targetDelta;
 
                 skippedText += S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean);
 
@@ -240,10 +240,10 @@ void RenderMenu() {
                 bool skipped = skippedUids.HasKey(map.uid);
 
                 if (S_MenuSkipIcons)
-                    bookmarkedText += "\\$S" + (skipped ? Icons::Times : Icons::CircleO);
+                    bookmarkedText += "\\$S" + (skipped ? Icons::Times : Icons::CircleO) + " ";
 
                 if (S_MenuTargetDelta)
-                    bookmarkedText += "\\$Z " + map.targetDelta;
+                    bookmarkedText += "\\$Z" + map.targetDelta;
 
                 bookmarkedText += S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean);
 

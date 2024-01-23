@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-17
+// m 2024-01-23
 
 bool loadingMap = false;
 
@@ -159,6 +159,6 @@ class Map {
         else
             targetDelta += colorDeltaAbove3;
 
-        targetDelta += "\\$S(+" + Time::Format(delta) + ") \\$Z";
+        targetDelta += "\\$S(+" + Time::Format(delta) + ") \\$Z ";
     }
 }
