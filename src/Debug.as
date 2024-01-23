@@ -17,8 +17,9 @@ void Tab_MapsDebug(Map@[]@ mapsDebug, Mode mode) {
     if (!UI::BeginTabItem(mode == Mode::NadeoCampaign ? "Campaign" : "TOTD"))
         return;
 
-    if (UI::BeginTable("##table", mode == Mode::NadeoCampaign ? 11 : 12, UI::TableFlags::ScrollY)) {
+    if (UI::BeginTable("##table", mode == Mode::NadeoCampaign ? 12 : 13, UI::TableFlags::ScrollY)) {
         UI::TableSetupScrollFreeze(0, 1);
+        UI::TableSetupColumn("Skipped", UI::TableColumnFlags::WidthFixed, 120.0f);
         UI::TableSetupColumn("Bookmarked", UI::TableColumnFlags::WidthFixed, 120.0f);
         if (mode == Mode::TrackOfTheDay)
             UI::TableSetupColumn("Date",   UI::TableColumnFlags::WidthFixed, 100.0f);
@@ -42,18 +43,21 @@ void Tab_MapsDebug(Map@[]@ mapsDebug, Mode mode) {
                 UI::TableNextRow();
 
                 UI::TableNextColumn();
-                if (bookmarkedUids.HasKey(map.uid)) {
-                    if (UI::Selectable("         " + Icons::Bookmark + "##bookmarked" + map.uid, false)) {
-                        bookmarkedUids.Remove(map.uid);
-                        SaveBookmarks();
-                        startnew(SetNextMap);
-                    }
+                if (skippedUids.HasKey(map.uid)) {
+                    if (UI::Selectable("         " + Icons::Times + "##skipped" + map.uid, false))
+                        RemoveSkip(map.uid);
                 } else {
-                    if (UI::Selectable("         " + Icons::BookmarkO + "##unbookmarked" + map.uid, false)) {
-                        bookmarkedUids[map.uid] = 0;
-                        SaveBookmarks();
-                        startnew(SetNextMap);
-                    }
+                    if (UI::Selectable("         " + Icons::CircleO + "##unskipped" + map.uid, false))
+                        AddSkip(map.uid);
+                }
+
+                UI::TableNextColumn();
+                if (bookmarkedUids.HasKey(map.uid)) {
+                    if (UI::Selectable("         " + Icons::Bookmark + "##bookmarked" + map.uid, false))
+                        RemoveBookmark(map.uid);
+                } else {
+                    if (UI::Selectable("         " + Icons::BookmarkO + "##unbookmarked" + map.uid, false))
+                        AddBookmark(map.uid);
                 }
 
                 if (mode == Mode::TrackOfTheDay) {
