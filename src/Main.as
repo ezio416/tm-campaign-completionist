@@ -198,7 +198,7 @@ void RenderMenu() {
             UI::EndMenu();
         }
 
-        if (S_MenuAllBookmarks && mapsBookmarked.Length > 0 && UI::BeginMenu("\\$S" + Icons::List + " Bookmarked Maps (" + mapsBookmarked.Length + ")")) {
+        if (S_MenuAllBookmarks && mapsBookmarked.Length > 0 && UI::BeginMenu("\\$S" + Icons::List + " Bookmarked Maps (" + mapsBookmarked.Length + ")", !gettingNow)) {
             for (uint i = 0; i < mapsBookmarked.Length; i++) {
                 Map@ map = mapsBookmarked[i];
 
