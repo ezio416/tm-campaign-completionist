@@ -54,11 +54,11 @@ CampaignSeries lastSeries = S_Series;
 [Setting category="General" name="Show 'Series' button"]
 bool S_MenuSeries = true;
 
-string[] seriesWhite = { "01", "02", "03", "04", "05" };
-string[] seriesGreen = { "06", "07", "08", "09", "10" };
-string[] seriesBlue  = { "11", "12", "13", "14", "15" };
-string[] seriesRed   = { "16", "17", "18", "19", "20" };
-string[] seriesBlack = { "21", "22", "23", "24", "25" };
+const string[] seriesWhite = { "01", "02", "03", "04", "05" };
+const string[] seriesGreen = { "06", "07", "08", "09", "10" };
+const string[] seriesBlue  = { "11", "12", "13", "14", "15" };
+const string[] seriesRed   = { "16", "17", "18", "19", "20" };
+const string[] seriesBlack = { "21", "22", "23", "24", "25" };
 
 [Setting category="General" name="Show 'Refresh Records' button"]
 bool S_MenuRefresh = true;
@@ -107,7 +107,7 @@ vec3 S_ColorSeriesGreen = vec3(0.0f, 1.0f, 0.0f);
 string colorSeriesGreen;
 
 [Setting category="Colors" name="Blue series" color]
-vec3 S_ColorSeriesBlue = vec3(0.5f, 0.5f, 1.0f);
+vec3 S_ColorSeriesBlue = vec3(0.4f, 0.8f, 1.0f);
 string colorSeriesBlue;
 
 [Setting category="Colors" name="Red series" color]
