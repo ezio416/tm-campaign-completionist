@@ -12948,5 +12948,75 @@
         "nameRaw": "Irish $f00Goodbye",
         "silverTime": 54000,
         "uid": "uV2Aj2ehqyjN4YZ4Xi45KsCjkU0"
+    },
+    "1295": {
+        "authorTime": 49988,
+        "bronzeTime": 75000,
+        "date": "2024-01-17",
+        "goldTime": 53000,
+        "id": "4beabc7b-d0f3-49ad-b862-3b7c5349602a",
+        "nameRaw": "$s$6cfStonewashed $fffft $6cfSki Freak",
+        "silverTime": 60000,
+        "uid": "C2GgffYI0KRBmTS5LEHnWP1D874"
+    },
+    "1296": {
+        "authorTime": 40392,
+        "bronzeTime": 61000,
+        "date": "2024-01-18",
+        "goldTime": 43000,
+        "id": "c72971e9-9dbc-4db6-a0c9-45aa7ba59972",
+        "nameRaw": "$38bCytosine nerf",
+        "silverTime": 49000,
+        "uid": "ZScCTfvc9R7FPCA0OZg2CluWlGg"
+    },
+    "1297": {
+        "authorTime": 34979,
+        "bronzeTime": 53000,
+        "date": "2024-01-19",
+        "goldTime": 38000,
+        "id": "62d90a08-47b5-487e-9178-cb9255efb335",
+        "nameRaw": "$i$o$s$000BLACK$z $FFF&$ff0 yellow",
+        "silverTime": 42000,
+        "uid": "EqrVLmtAZj_KAOdoPOXerQKHDfg"
+    },
+    "1298": {
+        "authorTime": 44853,
+        "bronzeTime": 68000,
+        "date": "2024-01-20",
+        "goldTime": 48000,
+        "id": "4d48651c-e2ef-49e6-a269-38721bd9b017",
+        "nameRaw": "$n$s$o$F63M$D73a$B83n$883i$693a ft Ascki",
+        "silverTime": 54000,
+        "uid": "qzHRPUrTUHCMD0vD5FEtK1oVHV4"
+    },
+    "1299": {
+        "authorTime": 38861,
+        "bronzeTime": 59000,
+        "date": "2024-01-21",
+        "goldTime": 42000,
+        "id": "a2b88af5-eeb9-4874-b4b1-1a0ede2b5bbf",
+        "nameRaw": "$o$s$F9FY$CBDA$9DBY$6F9O",
+        "silverTime": 47000,
+        "uid": "qGf64pzzVqLMi_KLZyYFc5a1CM7"
+    },
+    "1300": {
+        "authorTime": 40995,
+        "bronzeTime": 62000,
+        "date": "2024-01-22",
+        "goldTime": 44000,
+        "id": "66c4180e-f864-4d24-bd8b-e2555a95beff",
+        "nameRaw": "$f70 A Space Odyssey 2",
+        "silverTime": 50000,
+        "uid": "jrgJE8DvxNE1eB7R89mBAviVT3c"
+    },
+    "1301": {
+        "authorTime": 56168,
+        "bronzeTime": 85000,
+        "date": "2024-01-23",
+        "goldTime": 60000,
+        "id": "04adf4f0-1a11-42ee-86cc-aa7ccd7075ae",
+        "nameRaw": "$s$F96Draco's Time $FFFft' Svendsenz & MrOmkes",
+        "silverTime": 68000,
+        "uid": "wRYCp97sf_k5znJQ9gVojK6Trm4"
     }
 }

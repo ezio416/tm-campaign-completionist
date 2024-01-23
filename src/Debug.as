@@ -1,5 +1,5 @@
 // c 2024-01-08
-// m 2024-01-16
+// m 2024-01-23
 
 void RenderDebug() {
     if (!S_Debug)
@@ -17,19 +17,21 @@ void Tab_MapsDebug(Map@[]@ mapsDebug, Mode mode) {
     if (!UI::BeginTabItem(mode == Mode::NadeoCampaign ? "Campaign" : "TOTD"))
         return;
 
-    if (UI::BeginTable("##table", mode == Mode::NadeoCampaign ? 10 : 11, UI::TableFlags::ScrollY)) {
+    if (UI::BeginTable("##table", mode == Mode::NadeoCampaign ? 12 : 13, UI::TableFlags::ScrollY)) {
         UI::TableSetupScrollFreeze(0, 1);
+        UI::TableSetupColumn("Skipped", UI::TableColumnFlags::WidthFixed, 120.0f);
+        UI::TableSetupColumn("Bookmarked", UI::TableColumnFlags::WidthFixed, 120.0f);
         if (mode == Mode::TrackOfTheDay)
-            UI::TableSetupColumn("Date", UI::TableColumnFlags::WidthFixed, 100.0f);
-        UI::TableSetupColumn("Map",    UI::TableColumnFlags::WidthFixed, 200.0f);
-        UI::TableSetupColumn("author", UI::TableColumnFlags::WidthFixed, 80.0f);
-        UI::TableSetupColumn("gold",   UI::TableColumnFlags::WidthFixed, 80.0f);
-        UI::TableSetupColumn("silver", UI::TableColumnFlags::WidthFixed, 80.0f);
-        UI::TableSetupColumn("bronze", UI::TableColumnFlags::WidthFixed, 80.0f);
-        UI::TableSetupColumn("pb",     UI::TableColumnFlags::WidthFixed, 80.0f);
-        UI::TableSetupColumn("medals", UI::TableColumnFlags::WidthFixed, 80.0f);
-        UI::TableSetupColumn("id",     UI::TableColumnFlags::WidthFixed, 400.0f);
-        UI::TableSetupColumn("uid",    UI::TableColumnFlags::WidthFixed, 350.0f);
+            UI::TableSetupColumn("Date",   UI::TableColumnFlags::WidthFixed, 100.0f);
+        UI::TableSetupColumn("Map",        UI::TableColumnFlags::WidthFixed, 200.0f);
+        UI::TableSetupColumn("author",     UI::TableColumnFlags::WidthFixed, 80.0f);
+        UI::TableSetupColumn("gold",       UI::TableColumnFlags::WidthFixed, 80.0f);
+        UI::TableSetupColumn("silver",     UI::TableColumnFlags::WidthFixed, 80.0f);
+        UI::TableSetupColumn("bronze",     UI::TableColumnFlags::WidthFixed, 80.0f);
+        UI::TableSetupColumn("pb",         UI::TableColumnFlags::WidthFixed, 80.0f);
+        UI::TableSetupColumn("medals",     UI::TableColumnFlags::WidthFixed, 80.0f);
+        UI::TableSetupColumn("id",         UI::TableColumnFlags::WidthFixed, 400.0f);
+        UI::TableSetupColumn("uid",        UI::TableColumnFlags::WidthFixed, 350.0f);
         UI::TableSetupColumn("downloadUrl");
         UI::TableHeadersRow();
 
@@ -39,6 +41,24 @@ void Tab_MapsDebug(Map@[]@ mapsDebug, Mode mode) {
                 Map@ map = mapsDebug[i];
 
                 UI::TableNextRow();
+
+                UI::TableNextColumn();
+                if (skippedUids.HasKey(map.uid)) {
+                    if (UI::Selectable("         " + Icons::Times + "##skipped" + map.uid, false))
+                        RemoveSkip(map.uid);
+                } else {
+                    if (UI::Selectable("         " + Icons::CircleO + "##unskipped" + map.uid, false))
+                        AddSkip(map.uid);
+                }
+
+                UI::TableNextColumn();
+                if (bookmarkedUids.HasKey(map.uid)) {
+                    if (UI::Selectable("         " + Icons::Bookmark + "##bookmarked" + map.uid, false))
+                        RemoveBookmark(map.uid);
+                } else {
+                    if (UI::Selectable("         " + Icons::BookmarkO + "##unbookmarked" + map.uid, false))
+                        AddBookmark(map.uid);
+                }
 
                 if (mode == Mode::TrackOfTheDay) {
                     UI::TableNextColumn();

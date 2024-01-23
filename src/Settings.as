@@ -1,10 +1,14 @@
 // c 2024-01-02
-// m 2024-01-16
+// m 2024-01-23
 
 enum Mode {
     NadeoCampaign,
     TrackOfTheDay
 }
+
+[Setting hidden]
+Mode S_Mode = Mode::NadeoCampaign;
+Mode lastMode = S_Mode;
 
 enum TargetMedal {
     Author,
@@ -13,11 +17,6 @@ enum TargetMedal {
     Bronze,
     None
 }
-
-
-[Setting hidden]
-Mode S_Mode = Mode::NadeoCampaign;
-Mode lastMode = S_Mode;
 
 [Setting hidden]
 TargetMedal S_Target = TargetMedal::Author;
@@ -39,11 +38,52 @@ bool lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
 [Setting category="General" name="Show 'Only Current Campaign' button" description="Always disabled for Starter"]
 bool S_MenuOnlyCurrentCampaign = true;
 
+enum CampaignSeries {
+    All,
+    White,
+    Green,
+    Blue,
+    Red,
+    Black
+}
+
+[Setting category="General" name="Campaign series to show"]
+CampaignSeries S_Series = CampaignSeries::All;
+CampaignSeries lastSeries = S_Series;
+
+[Setting category="General" name="Show 'Series' button"]
+bool S_MenuSeries = true;
+
+const string[] seriesWhite = { "01", "02", "03", "04", "05" };
+const string[] seriesGreen = { "06", "07", "08", "09", "10" };
+const string[] seriesBlue  = { "11", "12", "13", "14", "15" };
+const string[] seriesRed   = { "16", "17", "18", "19", "20" };
+const string[] seriesBlack = { "21", "22", "23", "24", "25" };
+
 [Setting category="General" name="Show 'Refresh Records' button"]
 bool S_MenuRefresh = true;
 
-[Setting category="General" name="Show a list of all remaining maps"]
+[Setting category="General" name="Show a list of remaining maps"]
 bool S_MenuAllMaps = true;
+
+[Setting category="General" name="Show hover text for clicking" description="Left-click to play, middle-click to skip, right-click to bookmark"]
+bool S_MenuClickHover = true;
+
+[Setting category="General" name="Show skip icons"]
+bool S_MenuSkipIcons = true;
+
+[Setting category="General" name="Exclude skipped maps from 'remaining maps'"]
+bool S_MenuExcludeSkips = true;
+bool lastMenuExcludeSkips = S_MenuExcludeSkips;
+
+[Setting category="General" name="Show a list of skipped maps"]
+bool S_MenuAllSkips = true;
+
+[Setting category="General" name="Show bookmark icons"]
+bool S_MenuBookmarkIcons = true;
+
+[Setting category="General" name="Show a list of bookmarked maps"]
+bool S_MenuAllBookmarks = true;
 
 [Setting category="General" name="Show time still needed for target"]
 bool S_MenuTargetDelta = false;
@@ -63,6 +103,30 @@ bool S_ColorMapNames = false;
 
 [Setting category="Colors" name="'Time still needed' notification" color]
 vec3 S_ColorTimeNeeded = vec3(1.0f, 0.1f, 0.5f);
+
+[Setting category="Colors" name="All series" color]
+vec3 S_ColorSeriesAll = vec3(1.0f, 0.4f, 1.0f);
+string colorSeriesAll;
+
+[Setting category="Colors" name="White series" color]
+vec3 S_ColorSeriesWhite = vec3(1.0f, 1.0f, 1.0f);
+string colorSeriesWhite;
+
+[Setting category="Colors" name="Green series" color]
+vec3 S_ColorSeriesGreen = vec3(0.0f, 1.0f, 0.0f);
+string colorSeriesGreen;
+
+[Setting category="Colors" name="Blue series" color]
+vec3 S_ColorSeriesBlue = vec3(0.4f, 0.8f, 1.0f);
+string colorSeriesBlue;
+
+[Setting category="Colors" name="Red series" color]
+vec3 S_ColorSeriesRed = vec3(1.0f, 0.0f, 0.0f);
+string colorSeriesRed;
+
+[Setting category="Colors" name="Black series" color]
+vec3 S_ColorSeriesBlack = vec3(0.4f, 0.4f, 0.4f);
+string colorSeriesBlack;
 
 [Setting category="Colors" name="Author medal" color]
 vec3 S_ColorMedalAuthor = vec3(0.17f, 0.75f, 0.0f);
