@@ -248,6 +248,9 @@ void Loop() {
     while (coro.IsRunning())
         yield();
 
+    if (nextMap is null)
+        return;  // finished all maps
+
     if (nextMap.uid != currentUid) {
         Notify();
 
