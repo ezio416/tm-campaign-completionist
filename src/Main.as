@@ -444,10 +444,9 @@ void SetNextMap() {
             @nextMap = map;
     }
 
-    if (metTargetTotal == maps.Length) {
+    if (metTargetTotal == maps.Length)
         allTarget = true;
-        print("congrats, you've met your target on all maps!");
-    } else {
+    else {
         allTarget = false;
         if (nextMap !is null)
             trace("next map: " + nextMap.date + ": " + nextMap.nameClean);
