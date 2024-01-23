@@ -356,9 +356,7 @@ void Loop() {
             App.Network.ClientManiaAppPlayground.UI.UISequence == CGamePlaygroundUIConfig::EUISequence::EndRound
         )
             yield();
-    } catch {
-        return;
-    }
+    } catch { }
 }
 
 void SetNextMap() {
