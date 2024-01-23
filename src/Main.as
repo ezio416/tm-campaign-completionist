@@ -2,25 +2,29 @@
 // m 2024-01-22
 
 string       accountId;
-bool         allTarget         = false;
-const string audienceCore      = "NadeoServices";
-const string audienceLive      = "NadeoLiveServices";
-bool         club              = false;
+bool         allTarget          = false;
+const string audienceCore       = "NadeoServices";
+const string audienceLive       = "NadeoLiveServices";
+const string bookmarkedFile     = IO::FromStorageFolder("bookmarks.json");
+Json::Value@ bookmarkedUids     = Json::Object();
+bool         club               = false;
 string       colorSeries;
 string       colorTarget;
 string       currentUid;
-bool         gettingNow        = false;
+bool         gettingNow         = false;
 Map@[]       maps;
+Map@[]       mapsBookmarked;
 Map@[]       mapsCampaign;
-dictionary@  mapsCampaignById  = dictionary();
-dictionary@  mapsCampaignByUid = dictionary();
+dictionary@  mapsCampaignById   = dictionary();
+dictionary@  mapsCampaignByUid  = dictionary();
 Map@[]       mapsRemaining;
+dictionary@  mapsRemainingByUid = dictionary();
 Map@[]       mapsTotd;
-dictionary@  mapsTotdById      = dictionary();
-dictionary@  mapsTotdByUid     = dictionary();
-uint         metTargetTotal    = 0;
+dictionary@  mapsTotdById       = dictionary();
+dictionary@  mapsTotdByUid      = dictionary();
+uint         metTargetTotal     = 0;
 Map@         nextMap;
-const string title             = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
+const string title              = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
 
 void Main() {
     if (Permissions::PlayLocalMap())
@@ -40,6 +44,8 @@ void Main() {
 
     NadeoServices::AddAudience(audienceCore);
     NadeoServices::AddAudience(audienceLive);
+
+    LoadBookmarks();
 
     GetMaps();
 
@@ -76,28 +82,28 @@ void RenderMenu() {
                 S_Mode = Mode::NadeoCampaign;
         }
 
-        if (S_MenuSeries && S_Mode == Mode::NadeoCampaign && UI::BeginMenu(colorSeries + "\\$S" + Icons::Signal + " Series: " + tostring(S_Series))) {
-            if (UI::MenuItem(colorSeriesAll + "\\$S" + Icons::Star + " All", "", S_Series == CampaignSeries::All, S_Series != CampaignSeries::All)) {
+        if (S_MenuSeries && S_Mode == Mode::NadeoCampaign && UI::BeginMenu(colorSeries + "\\$S" + Icons::Columns + " Series: " + tostring(S_Series))) {
+            if (UI::MenuItem(colorSeriesAll + "\\$S" + Icons::Columns + " All", "", S_Series == CampaignSeries::All, S_Series != CampaignSeries::All)) {
                 S_Series = CampaignSeries::All;
                 OnSettingsChanged();
             }
-            if (UI::MenuItem(colorSeriesWhite + "\\$S" + Icons::Star + " White", "", S_Series == CampaignSeries::White, S_Series != CampaignSeries::White)) {
+            if (UI::MenuItem(colorSeriesWhite + "\\$S" + Icons::Columns + " White", "", S_Series == CampaignSeries::White, S_Series != CampaignSeries::White)) {
                 S_Series = CampaignSeries::White;
                 OnSettingsChanged();
             }
-            if (UI::MenuItem(colorSeriesGreen + "\\$S" + Icons::Star + " Green", "", S_Series == CampaignSeries::Green, S_Series != CampaignSeries::Green)) {
+            if (UI::MenuItem(colorSeriesGreen + "\\$S" + Icons::Columns + " Green", "", S_Series == CampaignSeries::Green, S_Series != CampaignSeries::Green)) {
                 S_Series = CampaignSeries::Green;
                 OnSettingsChanged();
             }
-            if (UI::MenuItem(colorSeriesBlue + "\\$S" + Icons::Star + " Blue", "", S_Series == CampaignSeries::Blue, S_Series != CampaignSeries::Blue)) {
+            if (UI::MenuItem(colorSeriesBlue + "\\$S" + Icons::Columns + " Blue", "", S_Series == CampaignSeries::Blue, S_Series != CampaignSeries::Blue)) {
                 S_Series = CampaignSeries::Blue;
                 OnSettingsChanged();
             }
-            if (UI::MenuItem(colorSeriesRed + "\\$S" + Icons::Star + " Red", "", S_Series == CampaignSeries::Red, S_Series != CampaignSeries::Red)) {
+            if (UI::MenuItem(colorSeriesRed + "\\$S" + Icons::Columns + " Red", "", S_Series == CampaignSeries::Red, S_Series != CampaignSeries::Red)) {
                 S_Series = CampaignSeries::Red;
                 OnSettingsChanged();
             }
-            if (UI::MenuItem(colorSeriesBlack + "\\$S" + Icons::Star + " Black", "", S_Series == CampaignSeries::Black, S_Series != CampaignSeries::Black)) {
+            if (UI::MenuItem(colorSeriesBlack + "\\$S" + Icons::Columns + " Black", "", S_Series == CampaignSeries::Black, S_Series != CampaignSeries::Black)) {
                 S_Series = CampaignSeries::Black;
                 OnSettingsChanged();
             }
@@ -161,24 +167,53 @@ void RenderMenu() {
         if (UI::MenuItem(nextText, "", false, club && !gettingNow && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid))
             startnew(CoroutineFunc(nextMap.Play));
 
-        if (S_MenuAllMaps && mapsRemaining.Length > 0) {
-            if (UI::BeginMenu("\\$S" + Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow)) {
-                for (uint i = 0; i < mapsRemaining.Length; i++) {
-                    Map@ map = mapsRemaining[i];
+        if (S_MenuAllMaps && mapsRemaining.Length > 0 && UI::BeginMenu("\\$S" + Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow)) {
+            for (uint i = 0; i < mapsRemaining.Length; i++) {
+                Map@ map = mapsRemaining[i];
 
-                    string remainingText;
+                string remainingText;
 
-                    if (S_MenuTargetDelta)
-                        remainingText += map.targetDelta;
+                if (S_MenuTargetDelta)
+                    remainingText += map.targetDelta;
 
-                    remainingText += S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean);
+                remainingText += S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean);
 
-                    if (UI::MenuItem(remainingText, "", false, club))
-                        startnew(CoroutineFunc(map.Play));
-                }
-
-                UI::EndMenu();
+                if (UI::MenuItem(remainingText, "", false, club))
+                    startnew(CoroutineFunc(map.Play));
             }
+
+            UI::EndMenu();
+        }
+
+        bool bookmarked = bookmarkedUids.HasKey(currentUid);
+        if (S_MenuBookmarks && mapsRemainingByUid.Exists(currentUid) && UI::MenuItem("\\$S" + Icons::Star + " Bookmark Current Map", "", bookmarked)) {
+            if (bookmarked) {
+                bookmarkedUids.Remove(currentUid);
+                SaveBookmarks();
+                startnew(SetNextMap);
+            } else {
+                bookmarkedUids[currentUid] = 0;
+                SaveBookmarks();
+                startnew(SetNextMap);
+            }
+        }
+
+        if (S_MenuBookmarks && mapsBookmarked.Length > 0 && UI::BeginMenu("\\$S" + Icons::List + " Bookmarked Maps (" + mapsBookmarked.Length + ")", mapsBookmarked.Length > 0)) {
+            for (uint i = 0; i < mapsBookmarked.Length; i++) {
+                Map@ map = mapsBookmarked[i];
+
+                string bookmarkedText;
+
+                if (S_MenuTargetDelta)
+                    bookmarkedText += map.targetDelta;
+
+                bookmarkedText += S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean);
+
+                if (UI::MenuItem(bookmarkedText, "", false, club))
+                    startnew(CoroutineFunc(map.Play));
+            }
+
+            UI::EndMenu();
         }
 
         UI::EndMenu();
@@ -334,7 +369,9 @@ void SetNextMap() {
     @nextMap = null;
     uint target = 4 - S_Target;
 
+    mapsBookmarked.RemoveRange(0, mapsBookmarked.Length);
     mapsRemaining.RemoveRange(0, mapsRemaining.Length);
+    mapsRemainingByUid.DeleteAll();
 
     if (!club) {
         if (S_Mode == Mode::TrackOfTheDay)
@@ -383,30 +420,59 @@ void SetNextMap() {
     }
 
     for (uint i = 0; i < maps.Length; i++) {
-        maps[i].SetTargetDelta();
+        Map@ map = maps[i];
+
+        map.SetTargetDelta();
 
         if (S_Target == TargetMedal::None) {
-            if (maps[i].myTime > 0) {
+            if (map.myTime > 0) {
                 metTargetTotal++;
                 continue;
             }
-        } else if (maps[i].myMedals >= target) {
+        } else if (map.myMedals >= target) {
             metTargetTotal++;
             continue;
         }
 
-        mapsRemaining.InsertLast(maps[i]);
+        mapsRemaining.InsertLast(map);
+        mapsRemainingByUid[map.uid] = map;
+
+        if (bookmarkedUids.HasKey(map.uid))
+            mapsBookmarked.InsertLast(map);
 
         if (nextMap is null)
-            @nextMap = maps[i];
+            @nextMap = map;
     }
 
     if (metTargetTotal == maps.Length) {
         allTarget = true;
-        trace("congrats, you've met your target on all maps!");
+        print("congrats, you've met your target on all maps!");
     } else {
         allTarget = false;
         if (nextMap !is null)
-            trace("next map: " + nextMap.date + ": " + nextMap.nameClean);
+            print("next map: " + nextMap.date + ": " + nextMap.nameClean);
+    }
+}
+
+void LoadBookmarks() {
+    if (!IO::FileExists(bookmarkedFile))
+        return;
+
+    trace("loading " + bookmarkedFile);
+
+    try {
+        bookmarkedUids = Json::FromFile(bookmarkedFile);
+    } catch {
+        warn("failed loading bookmarks: " + getExceptionInfo());
+    }
+}
+
+void SaveBookmarks() {
+    trace("saving " + bookmarkedFile);
+
+    try {
+        Json::ToFile(bookmarkedFile, bookmarkedUids);
+    } catch {
+        warn("error saving bookmarks: " + getExceptionInfo());
     }
 }

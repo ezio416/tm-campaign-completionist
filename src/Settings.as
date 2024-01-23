@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-17
+// m 2024-01-22
 
 enum Mode {
     NadeoCampaign,
@@ -66,6 +66,9 @@ bool S_MenuRefresh = true;
 
 [Setting category="General" name="Show a list of all remaining maps"]
 bool S_MenuAllMaps = true;
+
+[Setting category="General" name="Show bookmark menu options"]
+bool S_MenuBookmarks = true;
 
 [Setting category="General" name="Show time still needed for target"]
 bool S_MenuTargetDelta = false;
