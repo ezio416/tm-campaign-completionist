@@ -5,20 +5,16 @@ string       accountId;
 bool         allTarget          = false;
 const string audienceCore       = "NadeoServices";
 const string audienceLive       = "NadeoLiveServices";
-const string bookmarkedFile     = IO::FromStorageFolder("bookmarks.json");
-Json::Value@ bookmarkedUids     = Json::Object();
 bool         club               = false;
 string       colorSeries;
 string       colorTarget;
 string       currentUid;
 bool         gettingNow         = false;
 Map@[]       maps;
-Map@[]       mapsBookmarked;
 Map@[]       mapsCampaign;
 dictionary@  mapsCampaignById   = dictionary();
 dictionary@  mapsCampaignByUid  = dictionary();
 Map@[]       mapsRemaining;
-dictionary@  mapsRemainingByUid = dictionary();
 Map@[]       mapsTotd;
 dictionary@  mapsTotdById       = dictionary();
 dictionary@  mapsTotdByUid      = dictionary();
@@ -175,7 +171,7 @@ void RenderMenu() {
             startnew(CoroutineFunc(nextMap.Play));
 
         if (nextMap !is null)
-            Bookmark(nextMapBookmarked, nextMap.uid);
+            BookmarkAction(nextMapBookmarked, nextMap.uid);
 
         if (S_MenuAllMaps && mapsRemaining.Length > 0 && UI::BeginMenu("\\$S" + Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow)) {
             for (uint i = 0; i < mapsRemaining.Length; i++) {
@@ -196,7 +192,7 @@ void RenderMenu() {
                 if (UI::MenuItem(remainingText, "", false, club))
                     startnew(CoroutineFunc(map.Play));
 
-                Bookmark(bookmarked, map.uid);
+                BookmarkAction(bookmarked, map.uid);
             }
 
             UI::EndMenu();
@@ -216,7 +212,7 @@ void RenderMenu() {
                 if (UI::MenuItem(bookmarkedText, "", false, club))
                     startnew(CoroutineFunc(map.Play));
 
-                Bookmark(true, map.uid);
+                BookmarkAction(true, map.uid);
             }
 
             UI::EndMenu();
@@ -377,7 +373,6 @@ void SetNextMap() {
 
     mapsBookmarked.RemoveRange(0, mapsBookmarked.Length);
     mapsRemaining.RemoveRange(0, mapsRemaining.Length);
-    mapsRemainingByUid.DeleteAll();
 
     if (!club) {
         if (S_Mode == Mode::TrackOfTheDay)
@@ -441,7 +436,6 @@ void SetNextMap() {
         }
 
         mapsRemaining.InsertLast(map);
-        mapsRemainingByUid[map.uid] = map;
 
         if (bookmarkedUids.HasKey(map.uid))
             mapsBookmarked.InsertLast(map);
@@ -457,50 +451,5 @@ void SetNextMap() {
         allTarget = false;
         if (nextMap !is null)
             trace("next map: " + nextMap.date + ": " + nextMap.nameClean);
-    }
-}
-
-void Bookmark(bool bookmarked, const string &in uid) {
-    if (UI::IsItemHovered()) {
-        if (S_MenuBookmarkHover) {
-            UI::BeginTooltip();
-            UI::Text("click to play, right-click to " + (bookmarked ? "remove " : "") + "bookmark");
-            UI::EndTooltip();
-        }
-
-        if (UI::IsMouseReleased(UI::MouseButton::Right)) {
-            if (bookmarked) {
-                bookmarkedUids.Remove(uid);
-                SaveBookmarks();
-                startnew(SetNextMap);
-            } else {
-                bookmarkedUids[uid] = 0;
-                SaveBookmarks();
-                startnew(SetNextMap);
-            }
-        }
-    }
-}
-
-void LoadBookmarks() {
-    if (!IO::FileExists(bookmarkedFile))
-        return;
-
-    trace("loading " + bookmarkedFile);
-
-    try {
-        bookmarkedUids = Json::FromFile(bookmarkedFile);
-    } catch {
-        warn("failed loading bookmarks: " + getExceptionInfo());
-    }
-}
-
-void SaveBookmarks() {
-    trace("saving " + bookmarkedFile);
-
-    try {
-        Json::ToFile(bookmarkedFile, bookmarkedUids);
-    } catch {
-        warn("error saving bookmarks: " + getExceptionInfo());
     }
 }
