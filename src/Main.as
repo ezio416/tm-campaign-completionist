@@ -175,14 +175,14 @@ void RenderMenu() {
             startnew(CoroutineFunc(nextMap.Play));
 
         if (nextMap !is null)
-            ClickAction(nextMapBookmarked, false, nextMap.uid);
+            ClickAction(false, nextMapBookmarked, nextMap.uid);
 
         if (S_MenuAllMaps && mapsRemaining.Length > 0 && UI::BeginMenu("\\$S" + Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow)) {
             for (uint i = 0; i < mapsRemaining.Length; i++) {
                 Map@ map = mapsRemaining[i];
 
-                bool bookmarked = bookmarkedUids.HasKey(map.uid);
                 bool skipped = skippedUids.HasKey(map.uid);
+                bool bookmarked = bookmarkedUids.HasKey(map.uid);
 
                 string remainingText;
 
@@ -200,7 +200,7 @@ void RenderMenu() {
                 if (UI::MenuItem(remainingText, "", false, club))
                     startnew(CoroutineFunc(map.Play));
 
-                ClickAction(bookmarked, skipped, map.uid);
+                ClickAction(skipped, bookmarked, map.uid);
             }
 
             UI::EndMenu();
@@ -225,7 +225,7 @@ void RenderMenu() {
                 if (UI::MenuItem(skippedText, "", false, club))
                     startnew(CoroutineFunc(map.Play));
 
-                ClickAction(bookmarked, true, map.uid);
+                ClickAction(true, bookmarked, map.uid);
             }
 
             UI::EndMenu();
@@ -250,7 +250,7 @@ void RenderMenu() {
                 if (UI::MenuItem(bookmarkedText, "", false, club))
                     startnew(CoroutineFunc(map.Play));
 
-                ClickAction(true, skipped, map.uid);
+                ClickAction(skipped, true, map.uid);
             }
 
             UI::EndMenu();

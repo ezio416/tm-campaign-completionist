@@ -8,7 +8,7 @@ Map@[]       mapsSkipped;
 const string skippedFile    = IO::FromStorageFolder("skips.json");
 Json::Value@ skippedUids    = Json::Object();
 
-void ClickAction(bool bookmarked, bool skipped, const string &in uid) {
+void ClickAction(bool skipped, bool bookmarked, const string &in uid) {
     if (UI::IsItemHovered()) {
         if (S_MenuClickHover) {
             UI::BeginTooltip();
@@ -16,18 +16,18 @@ void ClickAction(bool bookmarked, bool skipped, const string &in uid) {
             UI::EndTooltip();
         }
 
-        if (UI::IsMouseReleased(UI::MouseButton::Right)) {
-            if (bookmarked)
-                RemoveBookmark(uid);
-            else
-                AddBookmark(uid);
-        }
-
         if (UI::IsMouseReleased(UI::MouseButton::Middle)) {
             if (skipped)
                 RemoveSkip(uid);
             else
                 AddSkip(uid);
+        }
+
+        if (UI::IsMouseReleased(UI::MouseButton::Right)) {
+            if (bookmarked)
+                RemoveBookmark(uid);
+            else
+                AddBookmark(uid);
         }
     }
 }
@@ -38,9 +38,21 @@ void AddBookmark(const string &in uid) {
     startnew(SetNextMap);
 }
 
+void AddSkip(const string &in uid) {
+    skippedUids[uid] = 0;
+    SaveSkips();
+    startnew(SetNextMap);
+}
+
 void RemoveBookmark(const string &in uid) {
     bookmarkedUids.Remove(uid);
     SaveBookmarks();
+    startnew(SetNextMap);
+}
+
+void RemoveSkip(const string &in uid) {
+    skippedUids.Remove(uid);
+    SaveSkips();
     startnew(SetNextMap);
 }
 
@@ -57,28 +69,6 @@ void LoadBookmarks() {
     }
 }
 
-void SaveBookmarks() {
-    trace("saving " + bookmarkedFile);
-
-    try {
-        Json::ToFile(bookmarkedFile, bookmarkedUids);
-    } catch {
-        warn("error saving bookmarks: " + getExceptionInfo());
-    }
-}
-
-void AddSkip(const string &in uid) {
-    skippedUids[uid] = 0;
-    SaveSkips();
-    startnew(SetNextMap);
-}
-
-void RemoveSkip(const string &in uid) {
-    skippedUids.Remove(uid);
-    SaveSkips();
-    startnew(SetNextMap);
-}
-
 void LoadSkips() {
     if (!IO::FileExists(skippedFile))
         return;
@@ -89,6 +79,16 @@ void LoadSkips() {
         skippedUids = Json::FromFile(skippedFile);
     } catch {
         warn("failed loading skips: " + getExceptionInfo());
+    }
+}
+
+void SaveBookmarks() {
+    trace("saving " + bookmarkedFile);
+
+    try {
+        Json::ToFile(bookmarkedFile, bookmarkedUids);
+    } catch {
+        warn("error saving bookmarks: " + getExceptionInfo());
     }
 }
 
