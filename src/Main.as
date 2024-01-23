@@ -34,6 +34,7 @@ void Main() {
 
     lastMode = S_Mode;
     lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
+    lastMenuExcludeSkips = S_MenuExcludeSkips;
     OnSettingsChanged();
 
     accountId = GetApp().LocalPlayerInfo.WebServicesUserId;
