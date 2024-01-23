@@ -148,7 +148,7 @@ void RenderMenu() {
 
         bool nextMapBookmarked = false;
 
-        string nextText = "\\$0F0\\$S" + Icons::Play + "\\$FFF Next: \\$S";
+        string nextText = "\\$0F0\\$S" + Icons::Play + "\\$FFF Next: ";
 
         if (gettingNow)
             nextText += "\\$AAA\\$Sstill getting data...";
@@ -156,10 +156,10 @@ void RenderMenu() {
             nextMapBookmarked = bookmarkedUids.HasKey(nextMap.uid);
 
             if (S_MenuBookmarkIcons)
-                nextText += "\\$S" + (nextMapBookmarked ? Icons::Bookmark : Icons::BookmarkO) + "\\$Z ";
+                nextText += "\\$Z\\$S" + (nextMapBookmarked ? Icons::Bookmark : Icons::BookmarkO);
 
             if (S_MenuTargetDelta)
-                nextText += nextMap.targetDelta;
+                nextText += "\\$Z " + nextMap.targetDelta;
 
             nextText += S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ";
             nextText += "\\$Z" + (S_ColorMapNames ? nextMap.nameColored : nextMap.nameClean);
@@ -171,28 +171,57 @@ void RenderMenu() {
             startnew(CoroutineFunc(nextMap.Play));
 
         if (nextMap !is null)
-            BookmarkAction(nextMapBookmarked, nextMap.uid);
+            ClickAction(nextMapBookmarked, false, nextMap.uid);
 
         if (S_MenuAllMaps && mapsRemaining.Length > 0 && UI::BeginMenu("\\$S" + Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow)) {
             for (uint i = 0; i < mapsRemaining.Length; i++) {
                 Map@ map = mapsRemaining[i];
 
                 bool bookmarked = bookmarkedUids.HasKey(map.uid);
+                bool skipped = skippedUids.HasKey(map.uid);
 
-                string remainingText = "\\$S";
+                string remainingText;
+
+                if (S_MenuSkipIcons)
+                    remainingText += "\\$S" + (skipped ? Icons::Times : Icons::CircleO);
 
                 if (S_MenuBookmarkIcons)
-                    remainingText += (bookmarked ? Icons::Bookmark : Icons::BookmarkO) + "\\$S ";
+                    remainingText += "\\$Z\\$S" + (bookmarked ? Icons::Bookmark : Icons::BookmarkO);
 
                 if (S_MenuTargetDelta)
-                    remainingText += map.targetDelta;
+                    remainingText += "\\$Z " + map.targetDelta;
 
                 remainingText += S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean);
 
                 if (UI::MenuItem(remainingText, "", false, club))
                     startnew(CoroutineFunc(map.Play));
 
-                BookmarkAction(bookmarked, map.uid);
+                ClickAction(bookmarked, skipped, map.uid);
+            }
+
+            UI::EndMenu();
+        }
+
+        if (S_MenuAllSkips && mapsSkipped.Length > 0 && UI::BeginMenu("\\$S" + Icons::List + " Skipped Maps (" + mapsSkipped.Length + ")", !gettingNow)) {
+            for (uint i = 0; i < mapsSkipped.Length; i++) {
+                Map@ map = mapsSkipped[i];
+
+                string skippedText;
+
+                bool bookmarked = bookmarkedUids.HasKey(map.uid);
+
+                if (S_MenuBookmarkIcons)
+                    skippedText += "\\$S" + (bookmarked ? Icons::Bookmark : Icons::BookmarkO);
+
+                if (S_MenuTargetDelta)
+                    skippedText += "\\$Z " + map.targetDelta;
+
+                skippedText += S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean);
+
+                if (UI::MenuItem(skippedText, "", false, club))
+                    startnew(CoroutineFunc(map.Play));
+
+                ClickAction(bookmarked, true, map.uid);
             }
 
             UI::EndMenu();
@@ -204,15 +233,20 @@ void RenderMenu() {
 
                 string bookmarkedText;
 
+                bool skipped = skippedUids.HasKey(map.uid);
+
+                if (S_MenuSkipIcons)
+                    bookmarkedText += "\\$S" + (skipped ? Icons::Times : Icons::CircleO);
+
                 if (S_MenuTargetDelta)
-                    bookmarkedText += map.targetDelta;
+                    bookmarkedText += "\\$Z " + map.targetDelta;
 
                 bookmarkedText += S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean);
 
                 if (UI::MenuItem(bookmarkedText, "", false, club))
                     startnew(CoroutineFunc(map.Play));
 
-                BookmarkAction(true, map.uid);
+                ClickAction(true, skipped, map.uid);
             }
 
             UI::EndMenu();
@@ -231,10 +265,12 @@ void OnSettingsChanged() {
         lastMode != S_Mode
         || lastOnlyCurrentCampaign != S_OnlyCurrentCampaign
         || lastSeries != S_Series
+        || lastMenuExcludeSkips != S_MenuExcludeSkips
     ) {
         lastMode = S_Mode;
         lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
         lastSeries = S_Series;
+        lastMenuExcludeSkips = S_MenuExcludeSkips;
         startnew(SetNextMap);
     }
 
@@ -371,6 +407,7 @@ void SetNextMap() {
 
     mapsBookmarked.RemoveRange(0, mapsBookmarked.Length);
     mapsRemaining.RemoveRange(0, mapsRemaining.Length);
+    mapsSkipped.RemoveRange(0, mapsSkipped.Length);
 
     if (!club) {
         if (S_Mode == Mode::TrackOfTheDay)
@@ -433,12 +470,20 @@ void SetNextMap() {
             continue;
         }
 
-        mapsRemaining.InsertLast(map);
+        bool skipped = skippedUids.HasKey(map.uid);
+
+        if (skipped) {
+            mapsSkipped.InsertLast(map);
+
+            if (!S_MenuExcludeSkips)
+                mapsRemaining.InsertLast(map);
+        } else
+            mapsRemaining.InsertLast(map);
 
         if (bookmarkedUids.HasKey(map.uid))
             mapsBookmarked.InsertLast(map);
 
-        if (nextMap is null)
+        if (nextMap is null && !skipped)
             @nextMap = map;
     }
 

@@ -63,14 +63,24 @@ const string[] seriesBlack = { "21", "22", "23", "24", "25" };
 [Setting category="General" name="Show 'Refresh Records' button"]
 bool S_MenuRefresh = true;
 
-[Setting category="General" name="Show a list of all remaining maps"]
+[Setting category="General" name="Show a list of remaining maps"]
 bool S_MenuAllMaps = true;
+
+[Setting category="General" name="Show hover text for clicking" description="Left-click to play, middle-click to skip, right-click to bookmark"]
+bool S_MenuClickHover = true;
+
+[Setting category="General" name="Show skip icons"]
+bool S_MenuSkipIcons = true;
+
+[Setting category="General" name="Exclude skipped maps from 'remaining maps'"]
+bool S_MenuExcludeSkips = true;
+bool lastMenuExcludeSkips = S_MenuExcludeSkips;
+
+[Setting category="General" name="Show a list of skipped maps"]
+bool S_MenuAllSkips = true;
 
 [Setting category="General" name="Show bookmark icons"]
 bool S_MenuBookmarkIcons = true;
-
-[Setting category="General" name="Show hover text for right-clicking to bookmark"]
-bool S_MenuBookmarkHover = true;
 
 [Setting category="General" name="Show a list of bookmarked maps"]
 bool S_MenuAllBookmarks = true;
