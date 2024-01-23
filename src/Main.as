@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-01-22
+// m 2024-01-23
 
 string       accountId;
 bool         allTarget          = false;
@@ -150,13 +150,20 @@ void RenderMenu() {
             false
         );
 
-        string nextText = "\\$0F0\\$S" + Icons::Play + "\\$FFF Next: ";
+        bool nextMapBookmarked = false;
+
+        string nextText = "\\$0F0\\$S" + Icons::Play + "\\$FFF Next: \\$S";
 
         if (gettingNow)
             nextText += "\\$AAA\\$Sstill getting data...";
         else if (nextMap !is null) {
+            nextMapBookmarked = bookmarkedUids.HasKey(nextMap.uid);
+
+            if (S_MenuBookmarkIcons)
+                nextText += "\\$S" + (nextMapBookmarked ? Icons::Bookmark : Icons::BookmarkO) + "\\$Z ";
+
             if (S_MenuTargetDelta)
-                nextText += "\\$S" + nextMap.targetDelta;
+                nextText += nextMap.targetDelta;
 
             nextText += S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ";
             nextText += "\\$Z" + (S_ColorMapNames ? nextMap.nameColored : nextMap.nameClean);
@@ -167,11 +174,37 @@ void RenderMenu() {
         if (UI::MenuItem(nextText, "", false, club && !gettingNow && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid))
             startnew(CoroutineFunc(nextMap.Play));
 
+        if (nextMap !is null) {
+            if (UI::IsItemHovered()) {
+                if (S_MenuBookmarkHover) {
+                    UI::BeginTooltip();
+                    UI::Text("click to play, right-click to " + (nextMapBookmarked ? "remove " : "") + "bookmark");
+                    UI::EndTooltip();
+                }
+                if (UI::IsMouseReleased(UI::MouseButton::Right)) {
+                    if (nextMapBookmarked) {
+                        bookmarkedUids.Remove(nextMap.uid);
+                        SaveBookmarks();
+                        startnew(SetNextMap);
+                    } else {
+                        bookmarkedUids[nextMap.uid] = 0;
+                        SaveBookmarks();
+                        startnew(SetNextMap);
+                    }
+                }
+            }
+        }
+
         if (S_MenuAllMaps && mapsRemaining.Length > 0 && UI::BeginMenu("\\$S" + Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow)) {
             for (uint i = 0; i < mapsRemaining.Length; i++) {
                 Map@ map = mapsRemaining[i];
 
-                string remainingText;
+                bool bookmarked = bookmarkedUids.HasKey(map.uid);
+
+                string remainingText = "\\$S";
+
+                if (S_MenuBookmarkIcons)
+                    remainingText += (bookmarked ? Icons::Bookmark : Icons::BookmarkO) + "\\$S ";
 
                 if (S_MenuTargetDelta)
                     remainingText += map.targetDelta;
@@ -180,25 +213,31 @@ void RenderMenu() {
 
                 if (UI::MenuItem(remainingText, "", false, club))
                     startnew(CoroutineFunc(map.Play));
+
+                if (UI::IsItemHovered()) {
+                    if (S_MenuBookmarkHover) {
+                        UI::BeginTooltip();
+                        UI::Text("click to play, right-click to " + (bookmarked ? "remove " : "") + "bookmark");
+                        UI::EndTooltip();
+                    }
+                    if (UI::IsMouseReleased(UI::MouseButton::Right)) {
+                        if (bookmarked) {
+                            bookmarkedUids.Remove(map.uid);
+                            SaveBookmarks();
+                            startnew(SetNextMap);
+                        } else {
+                            bookmarkedUids[map.uid] = 0;
+                            SaveBookmarks();
+                            startnew(SetNextMap);
+                        }
+                    }
+                }
             }
 
             UI::EndMenu();
         }
 
-        bool bookmarked = bookmarkedUids.HasKey(currentUid);
-        if (S_MenuBookmarks && mapsRemainingByUid.Exists(currentUid) && UI::MenuItem("\\$S" + Icons::Star + " Bookmark Current Map", "", bookmarked)) {
-            if (bookmarked) {
-                bookmarkedUids.Remove(currentUid);
-                SaveBookmarks();
-                startnew(SetNextMap);
-            } else {
-                bookmarkedUids[currentUid] = 0;
-                SaveBookmarks();
-                startnew(SetNextMap);
-            }
-        }
-
-        if (S_MenuBookmarks && mapsBookmarked.Length > 0 && UI::BeginMenu("\\$S" + Icons::List + " Bookmarked Maps (" + mapsBookmarked.Length + ")", mapsBookmarked.Length > 0)) {
+        if (S_MenuAllBookmarks && mapsBookmarked.Length > 0 && UI::BeginMenu("\\$S" + Icons::List + " Bookmarked Maps (" + mapsBookmarked.Length + ")", mapsBookmarked.Length > 0)) {
             for (uint i = 0; i < mapsBookmarked.Length; i++) {
                 Map@ map = mapsBookmarked[i];
 
@@ -211,6 +250,19 @@ void RenderMenu() {
 
                 if (UI::MenuItem(bookmarkedText, "", false, club))
                     startnew(CoroutineFunc(map.Play));
+
+                if (UI::IsItemHovered()) {
+                    if (S_MenuBookmarkHover) {
+                        UI::BeginTooltip();
+                        UI::Text("click to play, right-click to remove bookmark");
+                        UI::EndTooltip();
+                    }
+                    if (UI::IsMouseReleased(UI::MouseButton::Right)) {
+                        bookmarkedUids.Remove(map.uid);
+                        SaveBookmarks();
+                        startnew(SetNextMap);
+                    }
+                }
             }
 
             UI::EndMenu();
@@ -450,7 +502,7 @@ void SetNextMap() {
     } else {
         allTarget = false;
         if (nextMap !is null)
-            print("next map: " + nextMap.date + ": " + nextMap.nameClean);
+            trace("next map: " + nextMap.date + ": " + nextMap.nameClean);
     }
 }
 

@@ -67,8 +67,14 @@ bool S_MenuRefresh = true;
 [Setting category="General" name="Show a list of all remaining maps"]
 bool S_MenuAllMaps = true;
 
-[Setting category="General" name="Show bookmark menu options"]
-bool S_MenuBookmarks = true;
+[Setting category="General" name="Show bookmark icons"]
+bool S_MenuBookmarkIcons = true;
+
+[Setting category="General" name="Show hover text for right-clicking to bookmark"]
+bool S_MenuBookmarkHover = true;
+
+[Setting category="General" name="Show a list of bookmarked maps"]
+bool S_MenuAllBookmarks = true;
 
 [Setting category="General" name="Show time still needed for target"]
 bool S_MenuTargetDelta = false;
