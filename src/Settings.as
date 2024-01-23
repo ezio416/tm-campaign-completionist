@@ -1,10 +1,14 @@
 // c 2024-01-02
-// m 2024-01-22
+// m 2024-01-23
 
 enum Mode {
     NadeoCampaign,
     TrackOfTheDay
 }
+
+[Setting hidden]
+Mode S_Mode = Mode::NadeoCampaign;
+Mode lastMode = S_Mode;
 
 enum TargetMedal {
     Author,
@@ -13,11 +17,6 @@ enum TargetMedal {
     Bronze,
     None
 }
-
-
-[Setting hidden]
-Mode S_Mode = Mode::NadeoCampaign;
-Mode lastMode = S_Mode;
 
 [Setting hidden]
 TargetMedal S_Target = TargetMedal::Author;
