@@ -177,7 +177,7 @@ void RenderMenu() {
         if (nextMap !is null)
             ClickAction(false, nextMapBookmarked, nextMap.uid);
 
-        if (S_MenuAllMaps && mapsRemaining.Length > 0 && UI::BeginMenu("\\$S" + Icons::List + " Remaining Maps (" + mapsRemaining.Length + ")", !gettingNow)) {
+        if (S_MenuAllMaps && mapsRemaining.Length > 0 && UI::BeginMenu("\\$S" + Icons::List + " Remaining (" + mapsRemaining.Length + ")", !gettingNow)) {
             for (uint i = 0; i < mapsRemaining.Length; i++) {
                 Map@ map = mapsRemaining[i];
 
@@ -206,7 +206,7 @@ void RenderMenu() {
             UI::EndMenu();
         }
 
-        if (S_MenuAllSkips && mapsSkipped.Length > 0 && UI::BeginMenu("\\$S" + Icons::List + " Skipped Maps (" + mapsSkipped.Length + ")", !gettingNow)) {
+        if (S_MenuAllSkips && mapsSkipped.Length > 0 && UI::BeginMenu("\\$S" + Icons::List + " Skipped (" + mapsSkipped.Length + ")", !gettingNow)) {
             for (uint i = 0; i < mapsSkipped.Length; i++) {
                 Map@ map = mapsSkipped[i];
 
@@ -231,7 +231,7 @@ void RenderMenu() {
             UI::EndMenu();
         }
 
-        if (S_MenuAllBookmarks && mapsBookmarked.Length > 0 && UI::BeginMenu("\\$S" + Icons::List + " Bookmarked Maps (" + mapsBookmarked.Length + ")", !gettingNow)) {
+        if (S_MenuAllBookmarks && mapsBookmarked.Length > 0 && UI::BeginMenu("\\$S" + Icons::List + " Bookmarked (" + mapsBookmarked.Length + ")", !gettingNow)) {
             for (uint i = 0; i < mapsBookmarked.Length; i++) {
                 Map@ map = mapsBookmarked[i];
 
