@@ -2,25 +2,25 @@
 // m 2024-01-23
 
 string       accountId;
-bool         allTarget          = false;
-const string audienceCore       = "NadeoServices";
-const string audienceLive       = "NadeoLiveServices";
-bool         club               = false;
+bool         allTarget         = false;
+const string audienceCore      = "NadeoServices";
+const string audienceLive      = "NadeoLiveServices";
+bool         club              = false;
 string       colorSeries;
 string       colorTarget;
 string       currentUid;
-bool         gettingNow         = false;
+bool         gettingNow        = false;
 Map@[]       maps;
 Map@[]       mapsCampaign;
-dictionary@  mapsCampaignById   = dictionary();
-dictionary@  mapsCampaignByUid  = dictionary();
+dictionary@  mapsCampaignById  = dictionary();
+dictionary@  mapsCampaignByUid = dictionary();
 Map@[]       mapsRemaining;
 Map@[]       mapsTotd;
-dictionary@  mapsTotdById       = dictionary();
-dictionary@  mapsTotdByUid      = dictionary();
-uint         metTargetTotal     = 0;
+dictionary@  mapsTotdById      = dictionary();
+dictionary@  mapsTotdByUid     = dictionary();
+uint         metTargetTotal    = 0;
 Map@         nextMap;
-const string title              = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
+const string title             = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
 
 void Main() {
     if (Permissions::PlayLocalMap())
