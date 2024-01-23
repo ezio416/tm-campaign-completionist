@@ -42,6 +42,7 @@ void Main() {
     NadeoServices::AddAudience(audienceLive);
 
     LoadBookmarks();
+    LoadSkips();
 
     GetMaps();
 
