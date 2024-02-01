@@ -32,6 +32,12 @@ void Main() {
             UI::ShowNotification(title, "Club access is required to play maps, but you can still track your progress on the current Nadeo Campaign", vec4(1.0f, 0.1f, 0.1f, 0.8f));
     }
 
+#if DEPENDENCY_CHAMPIONMEDALS
+    print("champion medals installed");
+#else
+    warn("champion medals not found");
+#endif
+
     lastMode = S_Mode;
     lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
     lastMenuExcludeSkips = S_MenuExcludeSkips;
