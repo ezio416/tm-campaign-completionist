@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-01-23
+// m 2024-02-01
 
 string       accountId;
 bool         allTarget         = false;
@@ -10,6 +10,7 @@ string       colorSeries;
 string       colorTarget;
 string       currentUid;
 bool         gettingNow        = false;
+bool         hasPlayPermission = false;
 Map@[]       maps;
 Map@[]       mapsCampaign;
 dictionary@  mapsCampaignById  = dictionary();
@@ -24,7 +25,7 @@ const string title             = "\\$0F0" + Icons::Check + "\\$G Campaign Comple
 
 void Main() {
     if (Permissions::PlayLocalMap())
-        club = true;
+        hasPlayPermission = true;
     else {
         warn("Club access required to play maps");
 
@@ -57,7 +58,7 @@ void Main() {
 
 void RenderMenu() {
     if (UI::BeginMenu(title)) {
-        if (club) {
+        if (hasPlayPermission) {
             if (S_MenuAutoSwitch && UI::MenuItem("\\$S" + Icons::ArrowsH + " Auto Switch Maps", "", S_AutoSwitch))
                 S_AutoSwitch = !S_AutoSwitch;
 
@@ -144,7 +145,7 @@ void RenderMenu() {
         }
 
         UI::MenuItem(
-            "\\$S" + Icons::Percent + " Progress: " + (gettingNow ? "..." : metTargetTotal + "/" + maps.Length + " (" + (int(100 * metTargetTotal / maps.Length)) +"%)"),
+            "\\$S" + Icons::Percent + " Progress: " + (gettingNow ? "..." : metTargetTotal + "/" + maps.Length + " (" + (maps.Length > 0 ? int(100 * metTargetTotal / maps.Length) : 100) + "%)"),
             "",
             false,
             false
@@ -171,7 +172,7 @@ void RenderMenu() {
         } else
             nextText += "you're done!";
 
-        if (UI::MenuItem(nextText, "", false, club && !gettingNow && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid))
+        if (UI::MenuItem(nextText, "", false, hasPlayPermission && !gettingNow && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid))
             startnew(CoroutineFunc(nextMap.Play));
 
         if (nextMap !is null)
@@ -197,7 +198,7 @@ void RenderMenu() {
 
                 remainingText += S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean);
 
-                if (UI::MenuItem(remainingText, "", false, club))
+                if (UI::MenuItem(remainingText, "", false, hasPlayPermission))
                     startnew(CoroutineFunc(map.Play));
 
                 ClickAction(skipped, bookmarked, map.uid);
@@ -222,7 +223,7 @@ void RenderMenu() {
 
                 skippedText += S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean);
 
-                if (UI::MenuItem(skippedText, "", false, club))
+                if (UI::MenuItem(skippedText, "", false, hasPlayPermission))
                     startnew(CoroutineFunc(map.Play));
 
                 ClickAction(true, bookmarked, map.uid);
@@ -247,7 +248,7 @@ void RenderMenu() {
 
                 bookmarkedText += S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean);
 
-                if (UI::MenuItem(bookmarkedText, "", false, club))
+                if (UI::MenuItem(bookmarkedText, "", false, hasPlayPermission))
                     startnew(CoroutineFunc(map.Play));
 
                 ClickAction(skipped, true, map.uid);
@@ -321,7 +322,7 @@ void OnSettingsChanged() {
 }
 
 void Loop() {
-    if (!club) {
+    if (!hasPlayPermission) {
         if (S_AutoSwitch)
             S_AutoSwitch = false;
 
@@ -383,7 +384,7 @@ void Loop() {
     if (nextMap.uid != currentUid) {
         Notify();
 
-        if (S_AutoSwitch && club) {
+        if (S_AutoSwitch && hasPlayPermission) {
             startnew(CoroutineFunc(nextMap.Play));
             sleep(10000);  // give some time for next map to load before checking again
         }
@@ -413,7 +414,7 @@ void SetNextMap() {
     mapsRemaining.RemoveRange(0, mapsRemaining.Length);
     mapsSkipped.RemoveRange(0, mapsSkipped.Length);
 
-    if (!club) {
+    if (!hasPlayPermission) {
         if (S_Mode == Mode::TrackOfTheDay)
             S_Mode = Mode::NadeoCampaign;
 
@@ -426,7 +427,7 @@ void SetNextMap() {
     if (S_Mode == Mode::NadeoCampaign && S_OnlyCurrentCampaign && maps.Length >= 25)
         maps.RemoveRange(0, maps.Length - 25);
 
-    if (!club)
+    if (!hasPlayPermission)
         maps.RemoveRange(10, 15);
 
     if (S_Mode == Mode::NadeoCampaign && S_Series != CampaignSeries::All) {
