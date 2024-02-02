@@ -1,5 +1,5 @@
 // c 2024-01-08
-// m 2024-01-23
+// m 2024-02-01
 
 void RenderDebug() {
     if (!S_Debug)
@@ -17,10 +17,11 @@ void Tab_MapsDebug(Map@[]@ mapsDebug, Mode mode) {
     if (!UI::BeginTabItem(mode == Mode::NadeoCampaign ? "Campaign" : "TOTD"))
         return;
 
-    if (UI::BeginTable("##table", mode == Mode::NadeoCampaign ? 12 : 13, UI::TableFlags::ScrollY)) {
+    if (UI::BeginTable("##table", mode == Mode::NadeoCampaign ? 13 : 14, UI::TableFlags::ScrollY)) {
         UI::TableSetupScrollFreeze(0, 1);
-        UI::TableSetupColumn("Skipped", UI::TableColumnFlags::WidthFixed, 120.0f);
+        UI::TableSetupColumn("Skipped", UI::TableColumnFlags::WidthFixed, 75.0f);
         UI::TableSetupColumn("Bookmarked", UI::TableColumnFlags::WidthFixed, 120.0f);
+        UI::TableSetupColumn("Season",     UI::TableColumnFlags::WidthFixed, 135.0f);
         if (mode == Mode::TrackOfTheDay)
             UI::TableSetupColumn("Date",   UI::TableColumnFlags::WidthFixed, 100.0f);
         UI::TableSetupColumn("Map",        UI::TableColumnFlags::WidthFixed, 200.0f);
@@ -44,10 +45,10 @@ void Tab_MapsDebug(Map@[]@ mapsDebug, Mode mode) {
 
                 UI::TableNextColumn();
                 if (skippedUids.HasKey(map.uid)) {
-                    if (UI::Selectable("         " + Icons::Times + "##skipped" + map.uid, false))
+                    if (UI::Selectable("     " + Icons::Times + "##skipped" + map.uid, false))
                         RemoveSkip(map.uid);
                 } else {
-                    if (UI::Selectable("         " + Icons::CircleO + "##unskipped" + map.uid, false))
+                    if (UI::Selectable("     " + Icons::CircleO + "##unskipped" + map.uid, false))
                         AddSkip(map.uid);
                 }
 
@@ -59,6 +60,9 @@ void Tab_MapsDebug(Map@[]@ mapsDebug, Mode mode) {
                     if (UI::Selectable("         " + Icons::BookmarkO + "##unbookmarked" + map.uid, false))
                         AddBookmark(map.uid);
                 }
+
+                UI::TableNextColumn();
+                UI::Text(tostring(map.season));
 
                 if (mode == Mode::TrackOfTheDay) {
                     UI::TableNextColumn();
