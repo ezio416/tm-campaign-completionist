@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-16
+// m 2024-02-01
 
 uint64       latestNandoRequest   = 0;
 Json::Value@ mapsCampaignFromFile = Json::Object();
@@ -135,6 +135,7 @@ void GetMapsFromFiles() {
             map.silverTime  = mapFromFile["silverTime"];
 
             map.SetNames();
+            map.SetSeason(Mode::NadeoCampaign);
 
             mapsCampaignById.Set(map.id, @map);
         }
@@ -163,6 +164,7 @@ void GetMapsFromFiles() {
             map.silverTime  = mapFromFile["silverTime"];
 
             map.SetNames();
+            map.SetSeason(Mode::TrackOfTheDay);
 
             mapsTotdById.Set(map.id, @map);
         }
@@ -247,6 +249,7 @@ void GetMapInfoFromApi(Mode mode) {
             map.silverTime  = mapInfo[i]["silverScore"];
 
             map.SetNames();
+            map.SetSeason(mode);
 
             if (mode == Mode::NadeoCampaign && !mapsCampaignById.Exists(map.id))
                 mapsCampaignById.Set(map.id, @map);
@@ -263,7 +266,7 @@ void GetMapInfoFromApi(Mode mode) {
 }
 
 void GetRecordsFromApi(Mode mode) {
-    if (!club && mode == Mode::TrackOfTheDay)
+    if (!hasPlayPermission && mode == Mode::TrackOfTheDay)
         return;
 
     gettingNow = true;
