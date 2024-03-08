@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-02-01
+// m 2024-03-08
 
 uint64       latestNandoRequest   = 0;
 Json::Value@ mapsCampaignFromFile = Json::Object();
@@ -127,12 +127,12 @@ void GetMapsFromFiles() {
                 continue;
             }
 
-            map.authorTime  = mapFromFile["authorTime"];
-            map.bronzeTime  = mapFromFile["bronzeTime"];
-            map.goldTime    = mapFromFile["goldTime"];
-            map.id          = mapFromFile["id"];
-            map.nameRaw     = mapFromFile["nameRaw"];
-            map.silverTime  = mapFromFile["silverTime"];
+            map.authorTime = mapFromFile["authorTime"];
+            map.bronzeTime = mapFromFile["bronzeTime"];
+            map.goldTime   = mapFromFile["goldTime"];
+            map.id         = mapFromFile["id"];
+            map.nameRaw    = mapFromFile["nameRaw"];
+            map.silverTime = mapFromFile["silverTime"];
 
             map.SetNames();
             map.SetSeason(Mode::NadeoCampaign);
@@ -214,7 +214,7 @@ void GetMapInfoFromApi(Mode mode) {
 
         trace("getting " + modeName + " map info from API (" + (index + 1) + "/" + mapsStillNeedInfo.Length + ")");
 
-        Net::HttpRequest@ req = NadeoServices::Get(audienceCore, url);
+        Net::HttpRequest@ req = NadeoServices::Get(audienceCore, url.SubStr(0, url.Length - 1));
         req.Start();
         while (!req.Finished())
             yield();
