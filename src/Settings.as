@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-23
+// m 2024-03-08
 
 enum Mode {
     NadeoCampaign,
@@ -25,17 +25,17 @@ TargetMedal S_Target = TargetMedal::Author;
 [Setting category="General" name="Notify when Starter Access is detected"]
 bool S_NotifyStarter = true;
 
-[Setting category="General" name="Automatically switch maps when target is reached" description="Always disabled for Starter"]
+[Setting category="General" name="Automatically switch maps when target is reached" description="Always disabled for Starter Access"]
 bool S_AutoSwitch = true;
 
-[Setting category="General" name="Show 'Auto Switch' button" description="Always disabled for Starter"]
+[Setting category="General" name="Show 'Auto Switch' button" description="Always disabled for Starter Access"]
 bool S_MenuAutoSwitch = true;
 
-[Setting category="General" name="Only show the current 25 Nadeo Campaign maps" description="Always enabled for Starter (only first 10 maps)"]
+[Setting category="General" name="Only show the current 25 Nadeo Campaign maps" description="Always enabled for Starter Access (only first 10 maps)"]
 bool S_OnlyCurrentCampaign = false;
 bool lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
 
-[Setting category="General" name="Show 'Only Current Campaign' button" description="Always disabled for Starter"]
+[Setting category="General" name="Show 'Only Current Campaign' button" description="Always disabled for Starter Access"]
 bool S_MenuOnlyCurrentCampaign = true;
 
 enum Season {
@@ -62,7 +62,7 @@ enum Season {
 Season S_Season = Season::All;
 Season lastSeason = S_Season;
 
-[Setting category="General" name="Show 'Season' button" description="Does nothing for Starter Access"]
+[Setting category="General" name="Show 'Season' menu" description="Does nothing for Starter Access"]
 bool S_MenuSeason = true;
 
 enum CampaignSeries {
@@ -78,7 +78,7 @@ enum CampaignSeries {
 CampaignSeries S_Series = CampaignSeries::All;
 CampaignSeries lastSeries = S_Series;
 
-[Setting category="General" name="Show 'Series' button"]
+[Setting category="General" name="Show 'Series' menu"]
 bool S_MenuSeries = true;
 
 const string[] seriesWhite = { "01", "02", "03", "04", "05" };
