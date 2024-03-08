@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-02-01
+// m 2024-03-08
 
 string       accountId;
 bool         allTarget         = false;
@@ -28,10 +28,10 @@ void Main() {
     if (Permissions::PlayLocalMap())
         hasPlayPermission = true;
     else {
-        warn("Club access required to play maps");
+        warn("Paid access required to play maps");
 
         if (S_NotifyStarter)
-            UI::ShowNotification(title, "Club access is required to play maps, but you can still track your progress on the current Nadeo Campaign", vec4(1.0f, 0.1f, 0.1f, 0.8f));
+            UI::ShowNotification(title, "Paid access is required to play maps, but you can still track your progress on the current Nadeo Campaign", vec4(1.0f, 0.1f, 0.1f, 0.8f));
     }
 
     lastMode = S_Mode;
@@ -76,7 +76,7 @@ void RenderMenu() {
             }
 
             if (S_MenuOnlyCurrentCampaign && S_Mode == Mode::NadeoCampaign && UI::MenuItem("\\$S" + Icons::ClockO + " Only Current Season", "", S_OnlyCurrentCampaign)) {
-                S_OnlyCurrentCampaign= !S_OnlyCurrentCampaign;
+                S_OnlyCurrentCampaign = !S_OnlyCurrentCampaign;
                 startnew(SetNextMap);
             }
         } else {
@@ -165,8 +165,8 @@ void RenderMenu() {
                 else if (S_Season == Season::Unknown)
                     seasonMonths += iconSeasonUnknown + " Season: Unknown";
                 else {
-                    string seasonName = tostring(S_Season);
-                    string seasonYear = seasonName.SubStr(seasonName.Length - 4, 4);
+                    const string seasonName = tostring(S_Season);
+                    const string seasonYear = seasonName.SubStr(seasonName.Length - 4, 4);
 
                     if (seasonName.StartsWith("Winter"))
                         seasonMonths += iconSeasonWinter + " Season: Jan-Mar " + seasonYear;
@@ -351,8 +351,8 @@ void RenderMenu() {
             for (uint i = 0; i < mapsRemaining.Length; i++) {
                 Map@ map = mapsRemaining[i];
 
-                bool skipped = skippedUids.HasKey(map.uid);
-                bool bookmarked = bookmarkedUids.HasKey(map.uid);
+                const bool skipped = skippedUids.HasKey(map.uid);
+                const bool bookmarked = bookmarkedUids.HasKey(map.uid);
 
                 string remainingText;
 
@@ -382,7 +382,7 @@ void RenderMenu() {
 
                 string skippedText;
 
-                bool bookmarked = bookmarkedUids.HasKey(map.uid);
+                const bool bookmarked = bookmarkedUids.HasKey(map.uid);
 
                 if (S_MenuBookmarkIcons)
                     skippedText += "\\$S" + (bookmarked ? Icons::Bookmark : Icons::BookmarkO) + " ";
@@ -407,7 +407,7 @@ void RenderMenu() {
 
                 string bookmarkedText;
 
-                bool skipped = skippedUids.HasKey(map.uid);
+                const bool skipped = skippedUids.HasKey(map.uid);
 
                 if (S_MenuSkipIcons)
                     bookmarkedText += "\\$S" + (skipped ? Icons::Times : Icons::CircleO) + " ";
@@ -550,7 +550,7 @@ void Loop() {
 
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
-    if (App.RootMap is null || App.RootMap.MapInfo is null) {
+    if (App.RootMap is null) {
         currentUid = "";
         return;
     }
@@ -558,7 +558,7 @@ void Loop() {
     if (loadingMap)
         return;
 
-    currentUid = App.RootMap.MapInfo.MapUid;
+    currentUid = App.RootMap.EdChallengeId;
 
     if (nextMap is null
         || nextMap.uid != currentUid
@@ -574,7 +574,7 @@ void Loop() {
 
     trace("run finished, getting PB on current map");
 
-    uint prevTime = nextMap.myTime;
+    const uint prevTime = nextMap.myTime;
 
     for (uint i = 0; i < 20; i++)
         yield();  // allow game to process PB
@@ -617,7 +617,6 @@ void SetNextMap() {
 
     metTargetTotal = 0;
     @nextMap = null;
-    uint target = 4 - S_Target;
 
     mapsBookmarked.RemoveRange(0, mapsBookmarked.Length);
     mapsRemaining.RemoveRange(0, mapsRemaining.Length);
@@ -676,6 +675,8 @@ void SetNextMap() {
         }
     }
 
+    const uint target = 4 - S_Target;
+
     for (uint i = 0; i < maps.Length; i++) {
         Map@ map = maps[i];
 
@@ -691,7 +692,7 @@ void SetNextMap() {
             continue;
         }
 
-        bool skipped = skippedUids.HasKey(map.uid);
+        const bool skipped = skippedUids.HasKey(map.uid);
 
         if (skipped) {
             mapsSkipped.InsertLast(map);
@@ -712,6 +713,7 @@ void SetNextMap() {
         allTarget = true;
     else {
         allTarget = false;
+
         if (nextMap !is null)
             trace("next map: " + nextMap.date + ": " + nextMap.nameClean);
     }

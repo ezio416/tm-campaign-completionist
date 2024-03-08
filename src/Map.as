@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-02-01
+// m 2024-03-08
 
 bool loadingMap = false;
 
@@ -144,9 +144,9 @@ class Map {
             return;
         }
 
-        string dateRaw = date.SubStr(3, date.Length - 3);
-        int year = Text::ParseInt(dateRaw.SubStr(0, 4));
-        int month = Text::ParseInt(dateRaw.SubStr(5, 2));
+        const string dateRaw = date.SubStr(3, date.Length - 3);
+        const int year = Text::ParseInt(dateRaw.SubStr(0, 4));
+        const int month = Text::ParseInt(dateRaw.SubStr(5, 2));
 
         switch (year) {
             case 2020:

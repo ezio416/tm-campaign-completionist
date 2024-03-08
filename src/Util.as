@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-16
+// m 2024-03-08
 
 void HoverTooltip(const string &in msg) {
     if (!UI::IsItemHovered())
@@ -57,7 +57,7 @@ void NotifyTimeNeeded(bool pb) {
         default: target = 0;
     }
 
-    string text = (pb ? "Better, but y" : "Not fast enough! Y") + "ou still need " + Time::Format(int(nextMap.myTime) - target) + " for " + tostring(S_Target);
+    const string text = (pb ? "Better, but y" : "Not fast enough! Y") + "ou still need " + Time::Format(int(nextMap.myTime) - target) + " for " + tostring(S_Target);
     trace(text);
     UI::ShowNotification(title, text, vec4(S_ColorTimeNeeded.x, S_ColorTimeNeeded.y, S_ColorTimeNeeded.z, 0.8f));
 }
@@ -78,9 +78,6 @@ void ReturnToMenu() {
 string TimeFormatColored(uint u, bool format = true) {
     if (u > 0)
         return "\\$0F0" + (format ? Time::Format(u) : tostring(u));
-
-    if (u < 0)
-        return "\\$F00" + (format ? Time::Format(Math::Abs(u)) : tostring(Math::Abs(u)));
 
     return "\\$G0" + (format ? ":00.000" : "");
 }

@@ -1,11 +1,11 @@
 // c 2024-01-23
-// m 2024-01-23
+// m 2024-03-08
 
-const string bookmarkedFile = IO::FromStorageFolder("bookmarks.json");
+const string bookmarkedFile = IO::FromStorageFolder("bookmarks.json").Replace("\\", "/");
 Json::Value@ bookmarkedUids = Json::Object();
 Map@[]       mapsBookmarked;
 Map@[]       mapsSkipped;
-const string skippedFile    = IO::FromStorageFolder("skips.json");
+const string skippedFile    = IO::FromStorageFolder("skips.json").Replace("\\", "/");
 Json::Value@ skippedUids    = Json::Object();
 
 void ClickAction(bool skipped, bool bookmarked, const string &in uid) {
