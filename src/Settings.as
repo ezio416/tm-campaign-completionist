@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-23
+// m 2024-03-08
 
 enum Mode {
     NadeoCampaign,
@@ -25,18 +25,45 @@ TargetMedal S_Target = TargetMedal::Author;
 [Setting category="General" name="Notify when Starter Access is detected"]
 bool S_NotifyStarter = true;
 
-[Setting category="General" name="Automatically switch maps when target is reached" description="Always disabled for Starter"]
+[Setting category="General" name="Automatically switch maps when target is reached" description="Always disabled for Starter Access"]
 bool S_AutoSwitch = true;
 
-[Setting category="General" name="Show 'Auto Switch' button" description="Always disabled for Starter"]
+[Setting category="General" name="Show 'Auto Switch' button" description="Always disabled for Starter Access"]
 bool S_MenuAutoSwitch = true;
 
-[Setting category="General" name="Only show the current 25 Nadeo Campaign maps" description="Always enabled for Starter (only first 10 maps)"]
+[Setting category="General" name="Only show the current 25 Nadeo Campaign maps" description="Always enabled for Starter Access (only first 10 maps)"]
 bool S_OnlyCurrentCampaign = false;
 bool lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
 
-[Setting category="General" name="Show 'Only Current Campaign' button" description="Always disabled for Starter"]
+[Setting category="General" name="Show 'Only Current Campaign' button" description="Always disabled for Starter Access"]
 bool S_MenuOnlyCurrentCampaign = true;
+
+enum Season {
+    All,
+    Unknown,
+    Summer_2020,
+    Fall_2020,
+    Winter_2021,
+    Spring_2021,
+    Summer_2021,
+    Fall_2021,
+    Winter_2022,
+    Spring_2022,
+    Summer_2022,
+    Fall_2022,
+    Winter_2023,
+    Spring_2023,
+    Summer_2023,
+    Fall_2023,
+    Winter_2024
+}
+
+[Setting category="General" name="Season to show" description="Tracks of the Day are categorized into 3-month periods which may differ slightly from the time periods of Nadeo Campaigns. Does nothing for Starter Access"]
+Season S_Season = Season::All;
+Season lastSeason = S_Season;
+
+[Setting category="General" name="Show 'Season' menu" description="Does nothing for Starter Access"]
+bool S_MenuSeason = true;
 
 enum CampaignSeries {
     All,
@@ -51,7 +78,7 @@ enum CampaignSeries {
 CampaignSeries S_Series = CampaignSeries::All;
 CampaignSeries lastSeries = S_Series;
 
-[Setting category="General" name="Show 'Series' button"]
+[Setting category="General" name="Show 'Series' menu"]
 bool S_MenuSeries = true;
 
 const string[] seriesWhite = { "01", "02", "03", "04", "05" };
@@ -103,6 +130,36 @@ bool S_ColorMapNames = false;
 
 [Setting category="Colors" name="'Time still needed' notification" color]
 vec3 S_ColorTimeNeeded = vec3(1.0f, 0.1f, 0.5f);
+
+[Setting category="Colors" name="All seasons" color]
+vec3 S_ColorSeasonAll = vec3(1.0f, 0.4f, 1.0f);
+string colorSeasonAll;
+const string iconSeasonAll = Icons::ListAlt;
+
+[Setting category="Colors" name="Unknown season" color]
+vec3 S_ColorSeasonUnknown = vec3(1.0f, 0.0f, 0.0f);
+string colorSeasonUnknown;
+const string iconSeasonUnknown = Icons::QuestionCircle;
+
+[Setting category="Colors" name="Winter/Jan-Mar" color]
+vec3 S_ColorSeasonWinter = vec3(0.0f, 1.0f, 1.0f);
+string colorSeasonWinter;
+const string iconSeasonWinter = Icons::SnowflakeO;
+
+[Setting category="Colors" name="Spring/Apr-Jun" color]
+vec3 S_ColorSeasonSpring = vec3(0.3f, 0.9f, 0.3f);
+string colorSeasonSpring;
+const string iconSeasonSpring = Icons::Tree;
+
+[Setting category="Colors" name="Summer/Jul-Sep" color]
+vec3 S_ColorSeasonSummer = vec3(1.0f, 0.8f, 0.0f);
+string colorSeasonSummer;
+const string iconSeasonSummer = Icons::Sun;
+
+[Setting category="Colors" name="Fall/Oct-Dec" color]
+vec3 S_ColorSeasonFall = vec3(1.0f, 0.5f, 0.0f);
+string colorSeasonFall;
+const string iconSeasonFall = Icons::Leaf;
 
 [Setting category="Colors" name="All series" color]
 vec3 S_ColorSeriesAll = vec3(1.0f, 0.4f, 1.0f);

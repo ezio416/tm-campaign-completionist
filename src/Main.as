@@ -1,15 +1,17 @@
 // c 2024-01-01
-// m 2024-01-23
+// m 2024-03-08
 
 string       accountId;
 bool         allTarget         = false;
 const string audienceCore      = "NadeoServices";
 const string audienceLive      = "NadeoLiveServices";
-bool         club              = false;
+string       colorSeason;
 string       colorSeries;
 string       colorTarget;
 string       currentUid;
 bool         gettingNow        = false;
+bool         hasPlayPermission = false;
+string       iconSeason;
 Map@[]       maps;
 Map@[]       mapsCampaign;
 dictionary@  mapsCampaignById  = dictionary();
@@ -24,16 +26,18 @@ const string title             = "\\$0F0" + Icons::Check + "\\$G Campaign Comple
 
 void Main() {
     if (Permissions::PlayLocalMap())
-        club = true;
+        hasPlayPermission = true;
     else {
-        warn("Club access required to play maps");
+        warn("Paid access required to play maps");
 
         if (S_NotifyStarter)
-            UI::ShowNotification(title, "Club access is required to play maps, but you can still track your progress on the current Nadeo Campaign", vec4(1.0f, 0.1f, 0.1f, 0.8f));
+            UI::ShowNotification(title, "Paid access is required to play maps, but you can still track your progress on the current Nadeo Campaign", vec4(1.0f, 0.1f, 0.1f, 0.8f));
     }
 
     lastMode = S_Mode;
     lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
+    lastSeason = S_Season;
+    lastSeries = S_Series;
     lastMenuExcludeSkips = S_MenuExcludeSkips;
     OnSettingsChanged();
 
@@ -57,7 +61,7 @@ void Main() {
 
 void RenderMenu() {
     if (UI::BeginMenu(title)) {
-        if (club) {
+        if (hasPlayPermission) {
             if (S_MenuAutoSwitch && UI::MenuItem("\\$S" + Icons::ArrowsH + " Auto Switch Maps", "", S_AutoSwitch))
                 S_AutoSwitch = !S_AutoSwitch;
 
@@ -71,7 +75,7 @@ void RenderMenu() {
                 OnSettingsChanged();
             }
 
-            if (S_MenuOnlyCurrentCampaign && S_Mode == Mode::NadeoCampaign && UI::MenuItem("\\$S" + Icons::ClockO + " Only Current Campaign", "", S_OnlyCurrentCampaign)) {
+            if (S_MenuOnlyCurrentCampaign && S_Mode == Mode::NadeoCampaign && UI::MenuItem("\\$S" + Icons::ClockO + " Only Current Season", "", S_OnlyCurrentCampaign)) {
                 S_OnlyCurrentCampaign = !S_OnlyCurrentCampaign;
                 startnew(SetNextMap);
             }
@@ -80,6 +84,172 @@ void RenderMenu() {
 
             if (S_Mode == Mode::TrackOfTheDay)
                 S_Mode = Mode::NadeoCampaign;
+        }
+
+        if (S_MenuSeason && hasPlayPermission) {
+            if (S_Mode == Mode::NadeoCampaign && !S_OnlyCurrentCampaign && UI::BeginMenu(colorSeason + "\\$S" + iconSeason + " Season: " + (tostring(S_Season).Replace("_", " ")))) {
+                if (UI::MenuItem(colorSeasonAll + "\\$S" + iconSeasonAll + " All", "", S_Season == Season::All, S_Season != Season::All)) {
+                    S_Season = Season::All;
+                    OnSettingsChanged();
+                }
+                if (UI::MenuItem(colorSeasonUnknown + "\\$S" + iconSeasonUnknown + " Unknown", "", S_Season == Season::Unknown, S_Season != Season::Unknown)) {
+                    S_Season = Season::Unknown;
+                    OnSettingsChanged();
+                }
+                if (UI::MenuItem(colorSeasonSummer + "\\$S" + iconSeasonSummer + " Summer 2020", "", S_Season == Season::Summer_2020, S_Season != Season::Summer_2020)) {
+                    S_Season = Season::Summer_2020;
+                    OnSettingsChanged();
+                }
+                if (UI::MenuItem(colorSeasonFall + "\\$S" + iconSeasonFall + " Fall 2020", "", S_Season == Season::Fall_2020, S_Season != Season::Fall_2020)) {
+                    S_Season = Season::Fall_2020;
+                    OnSettingsChanged();
+                }
+                if (UI::MenuItem(colorSeasonWinter + "\\$S" + iconSeasonWinter + " Winter 2021", "", S_Season == Season::Winter_2021, S_Season != Season::Winter_2021)) {
+                    S_Season = Season::Winter_2021;
+                    OnSettingsChanged();
+                }
+                if (UI::MenuItem(colorSeasonSpring + "\\$S" + iconSeasonSpring + " Spring 2021", "", S_Season == Season::Spring_2021, S_Season != Season::Spring_2021)) {
+                    S_Season = Season::Spring_2021;
+                    OnSettingsChanged();
+                }
+                if (UI::MenuItem(colorSeasonSummer + "\\$S" + iconSeasonSummer + " Summer 2021", "", S_Season == Season::Summer_2021, S_Season != Season::Summer_2021)) {
+                    S_Season = Season::Summer_2021;
+                    OnSettingsChanged();
+                }
+                if (UI::MenuItem(colorSeasonFall + "\\$S" + iconSeasonFall + " Fall 2021", "", S_Season == Season::Fall_2021, S_Season != Season::Fall_2021)) {
+                    S_Season = Season::Fall_2021;
+                    OnSettingsChanged();
+                }
+                if (UI::MenuItem(colorSeasonWinter + "\\$S" + iconSeasonWinter + " Winter 2022", "", S_Season == Season::Winter_2022, S_Season != Season::Winter_2022)) {
+                    S_Season = Season::Winter_2022;
+                    OnSettingsChanged();
+                }
+                if (UI::MenuItem(colorSeasonSpring + "\\$S" + iconSeasonSpring + " Spring 2022", "", S_Season == Season::Spring_2022, S_Season != Season::Spring_2022)) {
+                    S_Season = Season::Spring_2022;
+                    OnSettingsChanged();
+                }
+                if (UI::MenuItem(colorSeasonSummer + "\\$S" + iconSeasonSummer + " Summer 2022", "", S_Season == Season::Summer_2022, S_Season != Season::Summer_2022)) {
+                    S_Season = Season::Summer_2022;
+                    OnSettingsChanged();
+                }
+                if (UI::MenuItem(colorSeasonFall + "\\$S" + iconSeasonFall + " Fall 2022", "", S_Season == Season::Fall_2022, S_Season != Season::Fall_2022)) {
+                    S_Season = Season::Fall_2022;
+                    OnSettingsChanged();
+                }
+                if (UI::MenuItem(colorSeasonWinter + "\\$S" + iconSeasonWinter + " Winter 2023", "", S_Season == Season::Winter_2023, S_Season != Season::Winter_2023)) {
+                    S_Season = Season::Winter_2023;
+                    OnSettingsChanged();
+                }
+                if (UI::MenuItem(colorSeasonSpring + "\\$S" + iconSeasonSpring + " Spring 2023", "", S_Season == Season::Spring_2023, S_Season != Season::Spring_2023)) {
+                    S_Season = Season::Spring_2023;
+                    OnSettingsChanged();
+                }
+                if (UI::MenuItem(colorSeasonSummer + "\\$S" + iconSeasonSummer + " Summer 2023", "", S_Season == Season::Summer_2023, S_Season != Season::Summer_2023)) {
+                    S_Season = Season::Summer_2023;
+                    OnSettingsChanged();
+                }
+                if (UI::MenuItem(colorSeasonFall + "\\$S" + iconSeasonFall + " Fall 2023", "", S_Season == Season::Fall_2023, S_Season != Season::Fall_2023)) {
+                    S_Season = Season::Fall_2023;
+                    OnSettingsChanged();
+                }
+                if (UI::MenuItem(colorSeasonWinter + "\\$S" + iconSeasonWinter + " Winter 2024", "", S_Season == Season::Winter_2024, S_Season != Season::Winter_2024)) {
+                    S_Season = Season::Winter_2024;
+                    OnSettingsChanged();
+                }
+                UI::EndMenu();
+            } else if (S_Mode == Mode::TrackOfTheDay) {
+                string seasonMonths = "\\$S";
+
+                if (S_Season == Season::All)
+                    seasonMonths += iconSeasonAll + " Season: All";
+                else if (S_Season == Season::Unknown)
+                    seasonMonths += iconSeasonUnknown + " Season: Unknown";
+                else {
+                    const string seasonName = tostring(S_Season);
+                    const string seasonYear = seasonName.SubStr(seasonName.Length - 4, 4);
+
+                    if (seasonName.StartsWith("Winter"))
+                        seasonMonths += iconSeasonWinter + " Season: Jan-Mar " + seasonYear;
+                    else if (seasonName.StartsWith("Spring"))
+                        seasonMonths += iconSeasonSpring + " Season: Apr-Jun " + seasonYear;
+                    else if (seasonName.StartsWith("Summer"))
+                        seasonMonths += iconSeasonSummer + " Season: Jul-Sep " + seasonYear;
+                    else
+                        seasonMonths += iconSeasonFall + " Season: Oct-Dec " + seasonYear;
+                }
+
+                if (UI::BeginMenu(colorSeason + seasonMonths)) {
+                    if (UI::MenuItem(colorSeasonAll + "\\$S" + iconSeasonAll + " All", "", S_Season == Season::All, S_Season != Season::All)) {
+                        S_Season = Season::All;
+                        OnSettingsChanged();
+                    }
+                    if (UI::MenuItem(colorSeasonUnknown + "\\$S" + iconSeasonUnknown + " Unknown", "", S_Season == Season::Unknown, S_Season != Season::Unknown)) {
+                        S_Season = Season::Unknown;
+                        OnSettingsChanged();
+                    }
+                    if (UI::MenuItem(colorSeasonSummer + "\\$S" + iconSeasonSummer + " Jul-Sep 2020", "", S_Season == Season::Summer_2020, S_Season != Season::Summer_2020)) {
+                        S_Season = Season::Summer_2020;
+                        OnSettingsChanged();
+                    }
+                    if (UI::MenuItem(colorSeasonFall + "\\$S" + iconSeasonFall + " Oct-Dec 2020", "", S_Season == Season::Fall_2020, S_Season != Season::Fall_2020)) {
+                        S_Season = Season::Fall_2020;
+                        OnSettingsChanged();
+                    }
+                    if (UI::MenuItem(colorSeasonWinter + "\\$S" + iconSeasonWinter + " Jan-Mar 2021", "", S_Season == Season::Winter_2021, S_Season != Season::Winter_2021)) {
+                        S_Season = Season::Winter_2021;
+                        OnSettingsChanged();
+                    }
+                    if (UI::MenuItem(colorSeasonSpring + "\\$S" + iconSeasonSpring + " Apr-Jun 2021", "", S_Season == Season::Spring_2021, S_Season != Season::Spring_2021)) {
+                        S_Season = Season::Spring_2021;
+                        OnSettingsChanged();
+                    }
+                    if (UI::MenuItem(colorSeasonSummer + "\\$S" + iconSeasonSummer + " Jul-Sep 2021", "", S_Season == Season::Summer_2021, S_Season != Season::Summer_2021)) {
+                        S_Season = Season::Summer_2021;
+                        OnSettingsChanged();
+                    }
+                    if (UI::MenuItem(colorSeasonFall + "\\$S" + iconSeasonFall + " Oct-Dec 2021", "", S_Season == Season::Fall_2021, S_Season != Season::Fall_2021)) {
+                        S_Season = Season::Fall_2021;
+                        OnSettingsChanged();
+                    }
+                    if (UI::MenuItem(colorSeasonWinter + "\\$S" + iconSeasonWinter + " Jan-Mar 2022", "", S_Season == Season::Winter_2022, S_Season != Season::Winter_2022)) {
+                        S_Season = Season::Winter_2022;
+                        OnSettingsChanged();
+                    }
+                    if (UI::MenuItem(colorSeasonSpring + "\\$S" + iconSeasonSpring + " Apr-Jun 2022", "", S_Season == Season::Spring_2022, S_Season != Season::Spring_2022)) {
+                        S_Season = Season::Spring_2022;
+                        OnSettingsChanged();
+                    }
+                    if (UI::MenuItem(colorSeasonSummer + "\\$S" + iconSeasonSummer + " Jul-Sep 2022", "", S_Season == Season::Summer_2022, S_Season != Season::Summer_2022)) {
+                        S_Season = Season::Summer_2022;
+                        OnSettingsChanged();
+                    }
+                    if (UI::MenuItem(colorSeasonFall + "\\$S" + iconSeasonFall + " Oct-Dec 2022", "", S_Season == Season::Fall_2022, S_Season != Season::Fall_2022)) {
+                        S_Season = Season::Fall_2022;
+                        OnSettingsChanged();
+                    }
+                    if (UI::MenuItem(colorSeasonWinter + "\\$S" + iconSeasonWinter + " Jan-Mar 2023", "", S_Season == Season::Winter_2023, S_Season != Season::Winter_2023)) {
+                        S_Season = Season::Winter_2023;
+                        OnSettingsChanged();
+                    }
+                    if (UI::MenuItem(colorSeasonSpring + "\\$S" + iconSeasonSpring + " Apr-Jun 2023", "", S_Season == Season::Spring_2023, S_Season != Season::Spring_2023)) {
+                        S_Season = Season::Spring_2023;
+                        OnSettingsChanged();
+                    }
+                    if (UI::MenuItem(colorSeasonSummer + "\\$S" + iconSeasonSummer + " Jul-Sep 2023", "", S_Season == Season::Summer_2023, S_Season != Season::Summer_2023)) {
+                        S_Season = Season::Summer_2023;
+                        OnSettingsChanged();
+                    }
+                    if (UI::MenuItem(colorSeasonFall + "\\$S" + iconSeasonFall + " Oct-Dec 2023", "", S_Season == Season::Fall_2023, S_Season != Season::Fall_2023)) {
+                        S_Season = Season::Fall_2023;
+                        OnSettingsChanged();
+                    }
+                    if (UI::MenuItem(colorSeasonWinter + "\\$S" + iconSeasonWinter + " Jan-Mar 2024", "", S_Season == Season::Winter_2024, S_Season != Season::Winter_2024)) {
+                        S_Season = Season::Winter_2024;
+                        OnSettingsChanged();
+                    }
+                    UI::EndMenu();
+                }
+            }
         }
 
         if (S_MenuSeries && S_Mode == Mode::NadeoCampaign && UI::BeginMenu(colorSeries + "\\$S" + Icons::Columns + " Series: " + tostring(S_Series))) {
@@ -144,7 +314,7 @@ void RenderMenu() {
         }
 
         UI::MenuItem(
-            "\\$S" + Icons::Percent + " Progress: " + (gettingNow ? "..." : metTargetTotal + "/" + maps.Length + " (" + (int(100 * metTargetTotal / maps.Length)) +"%)"),
+            "\\$S" + Icons::Percent + " Progress: " + (gettingNow ? "..." : metTargetTotal + "/" + maps.Length + " (" + (maps.Length > 0 ? int(100 * metTargetTotal / maps.Length) : 100) + "%)"),
             "",
             false,
             false
@@ -171,7 +341,7 @@ void RenderMenu() {
         } else
             nextText += "you're done!";
 
-        if (UI::MenuItem(nextText, "", false, club && !gettingNow && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid))
+        if (UI::MenuItem(nextText, "", false, hasPlayPermission && !gettingNow && !loadingMap && !allTarget && nextMap !is null && nextMap.uid != currentUid))
             startnew(CoroutineFunc(nextMap.Play));
 
         if (nextMap !is null)
@@ -181,8 +351,8 @@ void RenderMenu() {
             for (uint i = 0; i < mapsRemaining.Length; i++) {
                 Map@ map = mapsRemaining[i];
 
-                bool skipped = skippedUids.HasKey(map.uid);
-                bool bookmarked = bookmarkedUids.HasKey(map.uid);
+                const bool skipped = skippedUids.HasKey(map.uid);
+                const bool bookmarked = bookmarkedUids.HasKey(map.uid);
 
                 string remainingText;
 
@@ -197,7 +367,7 @@ void RenderMenu() {
 
                 remainingText += S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean);
 
-                if (UI::MenuItem(remainingText, "", false, club))
+                if (UI::MenuItem(remainingText, "", false, hasPlayPermission))
                     startnew(CoroutineFunc(map.Play));
 
                 ClickAction(skipped, bookmarked, map.uid);
@@ -212,7 +382,7 @@ void RenderMenu() {
 
                 string skippedText;
 
-                bool bookmarked = bookmarkedUids.HasKey(map.uid);
+                const bool bookmarked = bookmarkedUids.HasKey(map.uid);
 
                 if (S_MenuBookmarkIcons)
                     skippedText += "\\$S" + (bookmarked ? Icons::Bookmark : Icons::BookmarkO) + " ";
@@ -222,7 +392,7 @@ void RenderMenu() {
 
                 skippedText += S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean);
 
-                if (UI::MenuItem(skippedText, "", false, club))
+                if (UI::MenuItem(skippedText, "", false, hasPlayPermission))
                     startnew(CoroutineFunc(map.Play));
 
                 ClickAction(true, bookmarked, map.uid);
@@ -237,7 +407,7 @@ void RenderMenu() {
 
                 string bookmarkedText;
 
-                bool skipped = skippedUids.HasKey(map.uid);
+                const bool skipped = skippedUids.HasKey(map.uid);
 
                 if (S_MenuSkipIcons)
                     bookmarkedText += "\\$S" + (skipped ? Icons::Times : Icons::CircleO) + " ";
@@ -247,7 +417,7 @@ void RenderMenu() {
 
                 bookmarkedText += S_Mode == Mode::NadeoCampaign ? map.nameClean : map.date + ": " + (S_ColorMapNames ? map.nameColored : map.nameClean);
 
-                if (UI::MenuItem(bookmarkedText, "", false, club))
+                if (UI::MenuItem(bookmarkedText, "", false, hasPlayPermission))
                     startnew(CoroutineFunc(map.Play));
 
                 ClickAction(skipped, true, map.uid);
@@ -268,14 +438,54 @@ void OnSettingsChanged() {
     if (
         lastMode != S_Mode
         || lastOnlyCurrentCampaign != S_OnlyCurrentCampaign
+        || lastSeason != S_Season
         || lastSeries != S_Series
         || lastMenuExcludeSkips != S_MenuExcludeSkips
     ) {
         lastMode = S_Mode;
         lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
+        lastSeason = S_Season;
         lastSeries = S_Series;
         lastMenuExcludeSkips = S_MenuExcludeSkips;
         startnew(SetNextMap);
+    }
+
+    colorSeasonAll     = Text::FormatOpenplanetColor(S_ColorSeasonAll);
+    colorSeasonUnknown = Text::FormatOpenplanetColor(S_ColorSeasonUnknown);
+    colorSeasonWinter  = Text::FormatOpenplanetColor(S_ColorSeasonWinter);
+    colorSeasonSpring  = Text::FormatOpenplanetColor(S_ColorSeasonSpring);
+    colorSeasonSummer  = Text::FormatOpenplanetColor(S_ColorSeasonSummer);
+    colorSeasonFall    = Text::FormatOpenplanetColor(S_ColorSeasonFall);
+
+    string season;
+    string seasonCategory;
+
+    switch (S_Season) {
+        case Season::All:
+            colorSeason = colorSeasonAll;
+            iconSeason = iconSeasonAll;
+            break;
+        case Season::Unknown:
+            colorSeason = colorSeasonUnknown;
+            iconSeason = iconSeasonUnknown;
+            break;
+        default:
+            season = tostring(S_Season);
+            seasonCategory = season.SubStr(0, season.Length - 5);
+
+            if (seasonCategory == "Winter") {
+                colorSeason = colorSeasonWinter;
+                iconSeason = iconSeasonWinter;
+            } else if (seasonCategory == "Spring") {
+                colorSeason = colorSeasonSpring;
+                iconSeason = iconSeasonSpring;
+            } else if (seasonCategory == "Summer") {
+                colorSeason = colorSeasonSummer;
+                iconSeason = iconSeasonSummer;
+            } else {
+                colorSeason = colorSeasonFall;
+                iconSeason = iconSeasonFall;
+            }
     }
 
     colorSeriesAll   = Text::FormatOpenplanetColor(S_ColorSeriesAll);
@@ -321,7 +531,7 @@ void OnSettingsChanged() {
 }
 
 void Loop() {
-    if (!club) {
+    if (!hasPlayPermission) {
         if (S_AutoSwitch)
             S_AutoSwitch = false;
 
@@ -340,7 +550,7 @@ void Loop() {
 
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
-    if (App.RootMap is null || App.RootMap.MapInfo is null) {
+    if (App.RootMap is null) {
         currentUid = "";
         return;
     }
@@ -348,7 +558,7 @@ void Loop() {
     if (loadingMap)
         return;
 
-    currentUid = App.RootMap.MapInfo.MapUid;
+    currentUid = App.RootMap.EdChallengeId;
 
     if (nextMap is null
         || nextMap.uid != currentUid
@@ -364,7 +574,7 @@ void Loop() {
 
     trace("run finished, getting PB on current map");
 
-    uint prevTime = nextMap.myTime;
+    const uint prevTime = nextMap.myTime;
 
     for (uint i = 0; i < 20; i++)
         yield();  // allow game to process PB
@@ -383,7 +593,7 @@ void Loop() {
     if (nextMap.uid != currentUid) {
         Notify();
 
-        if (S_AutoSwitch && club) {
+        if (S_AutoSwitch && hasPlayPermission) {
             startnew(CoroutineFunc(nextMap.Play));
             sleep(10000);  // give some time for next map to load before checking again
         }
@@ -407,13 +617,12 @@ void SetNextMap() {
 
     metTargetTotal = 0;
     @nextMap = null;
-    uint target = 4 - S_Target;
 
     mapsBookmarked.RemoveRange(0, mapsBookmarked.Length);
     mapsRemaining.RemoveRange(0, mapsRemaining.Length);
     mapsSkipped.RemoveRange(0, mapsSkipped.Length);
 
-    if (!club) {
+    if (!hasPlayPermission) {
         if (S_Mode == Mode::TrackOfTheDay)
             S_Mode = Mode::NadeoCampaign;
 
@@ -426,8 +635,15 @@ void SetNextMap() {
     if (S_Mode == Mode::NadeoCampaign && S_OnlyCurrentCampaign && maps.Length >= 25)
         maps.RemoveRange(0, maps.Length - 25);
 
-    if (!club)
+    if (!hasPlayPermission)
         maps.RemoveRange(10, 15);
+
+    if (S_Season != Season::All) {
+        for (int i = maps.Length - 1; i >= 0 ; i--) {
+            if (maps[i].season != S_Season)
+                maps.RemoveAt(i);
+        }
+    }
 
     if (S_Mode == Mode::NadeoCampaign && S_Series != CampaignSeries::All) {
         for (int i = maps.Length - 1; i >= 0 ; i--) {
@@ -459,6 +675,8 @@ void SetNextMap() {
         }
     }
 
+    const uint target = 4 - S_Target;
+
     for (uint i = 0; i < maps.Length; i++) {
         Map@ map = maps[i];
 
@@ -474,7 +692,7 @@ void SetNextMap() {
             continue;
         }
 
-        bool skipped = skippedUids.HasKey(map.uid);
+        const bool skipped = skippedUids.HasKey(map.uid);
 
         if (skipped) {
             mapsSkipped.InsertLast(map);
@@ -495,6 +713,7 @@ void SetNextMap() {
         allTarget = true;
     else {
         allTarget = false;
+
         if (nextMap !is null)
             trace("next map: " + nextMap.date + ": " + nextMap.nameClean);
     }

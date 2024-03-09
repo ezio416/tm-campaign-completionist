@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-01-16
+// m 2024-03-08
 
 uint64       latestNandoRequest   = 0;
 Json::Value@ mapsCampaignFromFile = Json::Object();
@@ -47,7 +47,7 @@ void GetMapsFromApi(Mode mode) {
     while (!NadeoServices::IsAuthenticated(audienceLive))
         yield();
 
-    string modeName = tostring(mode);
+    const string modeName = tostring(mode);
 
     trace("getting " + modeName + " maps from API...");
 
@@ -63,7 +63,7 @@ void GetMapsFromApi(Mode mode) {
     while (!req.Finished())
         yield();
 
-    int code = req.ResponseCode();
+    const int code = req.ResponseCode();
     if (code != 200) {
         warn("error getting " + modeName + " maps from API: " + code + "; " + req.Error() + "; " + req.String());
         return;
@@ -118,7 +118,7 @@ void GetMapsFromFiles() {
 
         for (uint i = 0; i < mapsCampaignFromFile.Length; i++) {
             Json::Value@ mapFromFile = mapsCampaignFromFile[ZPad4(i)];
-            string uid = mapFromFile["uid"];
+            const string uid = mapFromFile["uid"];
 
             Map@ map = cast<Map@>(mapsCampaignByUid[uid]);
 
@@ -127,14 +127,15 @@ void GetMapsFromFiles() {
                 continue;
             }
 
-            map.authorTime  = mapFromFile["authorTime"];
-            map.bronzeTime  = mapFromFile["bronzeTime"];
-            map.goldTime    = mapFromFile["goldTime"];
-            map.id          = mapFromFile["id"];
-            map.nameRaw     = mapFromFile["nameRaw"];
-            map.silverTime  = mapFromFile["silverTime"];
+            map.authorTime = mapFromFile["authorTime"];
+            map.bronzeTime = mapFromFile["bronzeTime"];
+            map.goldTime   = mapFromFile["goldTime"];
+            map.id         = mapFromFile["id"];
+            map.nameRaw    = mapFromFile["nameRaw"];
+            map.silverTime = mapFromFile["silverTime"];
 
             map.SetNames();
+            map.SetSeason(Mode::NadeoCampaign);
 
             mapsCampaignById.Set(map.id, @map);
         }
@@ -145,7 +146,7 @@ void GetMapsFromFiles() {
 
         for (uint i = 0; i < mapsTotdFromFile.Length; i++) {
             Json::Value@ mapFromFile = mapsTotdFromFile[ZPad4(i)];
-            string uid = mapFromFile["uid"];
+            const string uid = mapFromFile["uid"];
 
             Map@ map = cast<Map@>(mapsTotdByUid[uid]);
 
@@ -154,15 +155,16 @@ void GetMapsFromFiles() {
                 continue;
             }
 
-            map.authorTime  = mapFromFile["authorTime"];
-            map.bronzeTime  = mapFromFile["bronzeTime"];
-            map.date        = "\\$S" + string(mapFromFile["date"]);
-            map.goldTime    = mapFromFile["goldTime"];
-            map.id          = mapFromFile["id"];
-            map.nameRaw     = mapFromFile["nameRaw"];
-            map.silverTime  = mapFromFile["silverTime"];
+            map.authorTime = mapFromFile["authorTime"];
+            map.bronzeTime = mapFromFile["bronzeTime"];
+            map.date       = "\\$S" + string(mapFromFile["date"]);
+            map.goldTime   = mapFromFile["goldTime"];
+            map.id         = mapFromFile["id"];
+            map.nameRaw    = mapFromFile["nameRaw"];
+            map.silverTime = mapFromFile["silverTime"];
 
             map.SetNames();
+            map.SetSeason(Mode::TrackOfTheDay);
 
             mapsTotdById.Set(map.id, @map);
         }
@@ -177,7 +179,7 @@ void GetMapInfoFromApi(Mode mode) {
     while (!NadeoServices::IsAuthenticated(audienceCore))
         yield();
 
-    string modeName = tostring(mode);
+    const string modeName = tostring(mode);
 
     trace("getting " + modeName + " map info from API...");
 
@@ -212,12 +214,12 @@ void GetMapInfoFromApi(Mode mode) {
 
         trace("getting " + modeName + " map info from API (" + (index + 1) + "/" + mapsStillNeedInfo.Length + ")");
 
-        Net::HttpRequest@ req = NadeoServices::Get(audienceCore, url);
+        Net::HttpRequest@ req = NadeoServices::Get(audienceCore, url.SubStr(0, url.Length - 1));
         req.Start();
         while (!req.Finished())
             yield();
 
-        int code = req.ResponseCode();
+        const int code = req.ResponseCode();
         if (code != 200) {
             warn("error getting " + modeName + " map info from API: " + code + "; " + req.Error() + "; " + req.String());
             return;
@@ -226,7 +228,7 @@ void GetMapInfoFromApi(Mode mode) {
         Json::Value@ mapInfo = Json::Parse(req.String());
 
         for (uint i = 0; i < mapInfo.Length; i++) {
-            string uid = mapInfo[i]["mapUid"];
+            const string uid = mapInfo[i]["mapUid"];
 
             Map@ map;
             if (mode == Mode::NadeoCampaign)
@@ -247,6 +249,7 @@ void GetMapInfoFromApi(Mode mode) {
             map.silverTime  = mapInfo[i]["silverScore"];
 
             map.SetNames();
+            map.SetSeason(mode);
 
             if (mode == Mode::NadeoCampaign && !mapsCampaignById.Exists(map.id))
                 mapsCampaignById.Set(map.id, @map);
@@ -263,14 +266,14 @@ void GetMapInfoFromApi(Mode mode) {
 }
 
 void GetRecordsFromApi(Mode mode) {
-    if (!club && mode == Mode::TrackOfTheDay)
+    if (!hasPlayPermission && mode == Mode::TrackOfTheDay)
         return;
 
     gettingNow = true;
 
     yield();
 
-    string modeName = tostring(mode);
+    const string modeName = tostring(mode);
 
     trace("getting " + modeName + " records from API...");
 
@@ -302,7 +305,7 @@ void GetRecordsFromApi(Mode mode) {
         while (!req.Finished())
             yield();
 
-        int code = req.ResponseCode();
+        const int code = req.ResponseCode();
         if (code != 200) {
             warn("error getting " + modeName + " records: " + code + "; " + req.Error() + "; " + req.String());
             gettingNow = false;
@@ -312,7 +315,7 @@ void GetRecordsFromApi(Mode mode) {
         Json::Value@ records = Json::Parse(req.String());
 
         for (uint i = 0; i < records.Length; i++) {
-            string id = records[i]["mapId"];
+            const string id = records[i]["mapId"];
 
             Map@ map;
             if (mode == Mode::NadeoCampaign)
