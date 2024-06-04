@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-03-08
+// m 2024-06-03
 
 bool loadingMap = false;
 
@@ -125,8 +125,8 @@ class Map {
 
     void SetNames() {
         nameRaw     = nameRaw.Trim();
-        nameClean   = StripFormatCodes(nameRaw).Trim();
-        nameColored = ColoredString(nameRaw).Trim();
+        nameClean   = Text::StripFormatCodes(nameRaw).Trim();
+        nameColored = Text::OpenplanetFormatCodes(nameRaw).Trim();
         nameQuoted  = "\"" + nameClean + "\"";
     }
 
