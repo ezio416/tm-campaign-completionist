@@ -55,8 +55,7 @@ void Main() {
 
     while (true) {
         Loop();
-        // yield();
-        sleep(0);  // temporary fix until this bug is resolved: https://github.com/openplanet-nl/issues/issues/494
+        yield();
     }
 }
 
@@ -587,7 +586,8 @@ void Loop() {
 
     currentUid = App.RootMap.EdChallengeId;
 
-    if (nextMap is null
+    if (false
+        || nextMap is null
         || nextMap.uid != currentUid
         || App.Network is null
         || App.Network.ClientManiaAppPlayground is null
@@ -627,9 +627,9 @@ void Loop() {
         NotifyTimeNeeded(prevTime == 0 || nextMap.myTime < prevTime);
 
     try {
-        while (
-            App.Network.ClientManiaAppPlayground.UI.UISequence == CGamePlaygroundUIConfig::EUISequence::Finish ||
-            App.Network.ClientManiaAppPlayground.UI.UISequence == CGamePlaygroundUIConfig::EUISequence::EndRound
+        while (false
+            || App.Network.ClientManiaAppPlayground.UI.UISequence == CGamePlaygroundUIConfig::EUISequence::Finish
+            || App.Network.ClientManiaAppPlayground.UI.UISequence == CGamePlaygroundUIConfig::EUISequence::EndRound
         )
             yield();
     } catch { }
