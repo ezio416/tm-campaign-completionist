@@ -241,12 +241,12 @@ void GetMapInfoFromApi(Mode mode) {
                 continue;
             }
 
-            map.authorTime  = mapInfo[i]["authorScore"];
-            map.bronzeTime  = mapInfo[i]["bronzeScore"];
-            map.goldTime    = mapInfo[i]["goldScore"];
-            map.id          = mapInfo[i]["mapId"];
-            map.nameRaw     = mapInfo[i]["name"];
-            map.silverTime  = mapInfo[i]["silverScore"];
+            map.authorTime = mapInfo[i]["authorScore"];
+            map.bronzeTime = mapInfo[i]["bronzeScore"];
+            map.goldTime   = mapInfo[i]["goldScore"];
+            map.id         = mapInfo[i]["mapId"];
+            map.nameRaw    = mapInfo[i]["name"];
+            map.silverTime = mapInfo[i]["silverScore"];
 
             map.SetNames();
             map.SetSeason(mode);

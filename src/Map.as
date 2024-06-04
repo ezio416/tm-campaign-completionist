@@ -16,7 +16,7 @@ class Map {
     string nameColored;
     string nameQuoted;
     string nameRaw;
-    Season season = Season::Unknown;
+    Season season   = Season::Unknown;
     uint   silverTime;
     string targetDelta;
     string uid;
