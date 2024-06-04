@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-06-03
+// m 2024-06-04
 
 bool loadingMap = false;
 
@@ -186,7 +186,7 @@ class Map {
             case 2024:
                 switch (month) {
                     case 1:  case 2:  case 3:  season = Season::Winter_2024; break;
-                    // case 4:  case 5:  case 6:  season = Season::Spring_2024; break;
+                    case 4:  case 5:  case 6:  season = Season::Spring_2024; break;
                     // case 7:  case 8:  case 9:  season = Season::Summer_2024; break;
                     // case 10: case 11: case 12: season = Season::Fall_2024;   break;
                     default:;

@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-03-08
+// m 2024-06-04
 
 uint64       latestNandoRequest   = 0;
 Json::Value@ mapsCampaignFromFile = Json::Object();
@@ -23,11 +23,11 @@ void GetMaps() {
 
     gettingNow = true;
 
-    mapsCampaign.RemoveRange(0, mapsCampaign.Length);
+    mapsCampaign = {};
     mapsCampaignById.DeleteAll();
     mapsCampaignByUid.DeleteAll();
 
-    mapsTotd.RemoveRange(0, mapsTotd.Length);
+    mapsTotd = {};
     mapsTotdById.DeleteAll();
     mapsTotdByUid.DeleteAll();
 
