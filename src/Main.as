@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-03-08
+// m 2024-06-04
 
 string       accountId;
 bool         allTarget         = false;
@@ -96,6 +96,9 @@ void RenderMenu() {
                     S_Season = Season::Unknown;
                     OnSettingsChanged();
                 }
+
+                UI::Separator();
+
                 if (UI::MenuItem(colorSeasonSummer + "\\$S" + iconSeasonSummer + " Summer 2020", "", S_Season == Season::Summer_2020, S_Season != Season::Summer_2020)) {
                     S_Season = Season::Summer_2020;
                     OnSettingsChanged();
@@ -156,6 +159,10 @@ void RenderMenu() {
                     S_Season = Season::Winter_2024;
                     OnSettingsChanged();
                 }
+                if (UI::MenuItem(colorSeasonSpring + "\\$S" + iconSeasonSpring + " Spring 2024", "", S_Season == Season::Spring_2024, S_Season != Season::Spring_2024)) {
+                    S_Season = Season::Spring_2024;
+                    OnSettingsChanged();
+                }
                 UI::EndMenu();
             } else if (S_Mode == Mode::TrackOfTheDay) {
                 string seasonMonths = "\\$S";
@@ -187,6 +194,9 @@ void RenderMenu() {
                         S_Season = Season::Unknown;
                         OnSettingsChanged();
                     }
+
+                    UI::Separator();
+
                     if (UI::MenuItem(colorSeasonSummer + "\\$S" + iconSeasonSummer + " Jul-Sep 2020", "", S_Season == Season::Summer_2020, S_Season != Season::Summer_2020)) {
                         S_Season = Season::Summer_2020;
                         OnSettingsChanged();
@@ -247,6 +257,10 @@ void RenderMenu() {
                         S_Season = Season::Winter_2024;
                         OnSettingsChanged();
                     }
+                    if (UI::MenuItem(colorSeasonSpring + "\\$S" + iconSeasonSpring + " Apr-Jun 2024", "", S_Season == Season::Spring_2024, S_Season != Season::Spring_2024)) {
+                        S_Season = Season::Spring_2024;
+                        OnSettingsChanged();
+                    }
                     UI::EndMenu();
                 }
             }
@@ -257,6 +271,9 @@ void RenderMenu() {
                 S_Series = CampaignSeries::All;
                 OnSettingsChanged();
             }
+
+            UI::Separator();
+
             if (UI::MenuItem(colorSeriesWhite + "\\$S" + Icons::Columns + " White", "", S_Series == CampaignSeries::White, S_Series != CampaignSeries::White)) {
                 S_Series = CampaignSeries::White;
                 OnSettingsChanged();
@@ -351,6 +368,9 @@ void RenderMenu() {
             for (uint i = 0; i < mapsRemaining.Length; i++) {
                 Map@ map = mapsRemaining[i];
 
+                if (i > 0 && map.season != mapsRemaining[i - 1].season)
+                    UI::Separator();
+
                 const bool skipped = skippedUids.HasKey(map.uid);
                 const bool bookmarked = bookmarkedUids.HasKey(map.uid);
 
@@ -380,6 +400,9 @@ void RenderMenu() {
             for (uint i = 0; i < mapsSkipped.Length; i++) {
                 Map@ map = mapsSkipped[i];
 
+                if (i > 0 && map.season != mapsSkipped[i - 1].season)
+                    UI::Separator();
+
                 string skippedText;
 
                 const bool bookmarked = bookmarkedUids.HasKey(map.uid);
@@ -404,6 +427,9 @@ void RenderMenu() {
         if (S_MenuAllBookmarks && mapsBookmarked.Length > 0 && UI::BeginMenu("\\$S" + Icons::Bookmark + " Bookmarked (" + mapsBookmarked.Length + ")", !gettingNow)) {
             for (uint i = 0; i < mapsBookmarked.Length; i++) {
                 Map@ map = mapsBookmarked[i];
+
+                if (i > 0 && map.season != mapsBookmarked[i - 1].season)
+                    UI::Separator();
 
                 string bookmarkedText;
 
@@ -560,7 +586,8 @@ void Loop() {
 
     currentUid = App.RootMap.EdChallengeId;
 
-    if (nextMap is null
+    if (false
+        || nextMap is null
         || nextMap.uid != currentUid
         || App.Network is null
         || App.Network.ClientManiaAppPlayground is null
@@ -576,8 +603,7 @@ void Loop() {
 
     const uint prevTime = nextMap.myTime;
 
-    for (uint i = 0; i < 20; i++)
-        yield();  // allow game to process PB
+    sleep(500);  // allow game to process PB, 500ms should be enough time
 
     nextMap.myTime = App.Network.ClientManiaAppPlayground.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, currentUid, "PersonalBest", "", "TimeAttack", "");
     nextMap.SetMedals();
@@ -601,9 +627,9 @@ void Loop() {
         NotifyTimeNeeded(prevTime == 0 || nextMap.myTime < prevTime);
 
     try {
-        while (
-            App.Network.ClientManiaAppPlayground.UI.UISequence == CGamePlaygroundUIConfig::EUISequence::Finish ||
-            App.Network.ClientManiaAppPlayground.UI.UISequence == CGamePlaygroundUIConfig::EUISequence::EndRound
+        while (false
+            || App.Network.ClientManiaAppPlayground.UI.UISequence == CGamePlaygroundUIConfig::EUISequence::Finish
+            || App.Network.ClientManiaAppPlayground.UI.UISequence == CGamePlaygroundUIConfig::EUISequence::EndRound
         )
             yield();
     } catch { }
@@ -618,9 +644,9 @@ void SetNextMap() {
     metTargetTotal = 0;
     @nextMap = null;
 
-    mapsBookmarked.RemoveRange(0, mapsBookmarked.Length);
-    mapsRemaining.RemoveRange(0, mapsRemaining.Length);
-    mapsSkipped.RemoveRange(0, mapsSkipped.Length);
+    mapsBookmarked = {};
+    mapsRemaining  = {};
+    mapsSkipped    = {};
 
     if (!hasPlayPermission) {
         if (S_Mode == Mode::TrackOfTheDay)
