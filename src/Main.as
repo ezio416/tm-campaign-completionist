@@ -87,7 +87,7 @@ void RenderMenu() {
                 S_Mode = Mode::NadeoCampaign;
         }
 
-        if (S_MenuSeason && hasPlayPermission) {  // update every season
+        if (S_MenuSeason && hasPlayPermission) {
             if (S_Mode == Mode::NadeoCampaign && !S_OnlyCurrentCampaign && UI::BeginMenu(colorSeason + "\\$S" + iconSeason + " Season: " + (tostring(S_Season).Replace("_", " ")))) {
                 if (UI::MenuItem(colorSeasonAll + "\\$S" + iconSeasonAll + " All", "", S_Season == Season::All, S_Season != Season::All)) {
                     S_Season = Season::All;
