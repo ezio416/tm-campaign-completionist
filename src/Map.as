@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-06-04
+// m 2024-07-01
 
 bool loadingMap = false;
 
@@ -132,8 +132,8 @@ class Map {
 
     void SetSeason(Mode mode) {
         if (mode == Mode::NadeoCampaign) {
-            for (uint i = 2; i < 17; i++) {
-                Season _season = Season(i);
+            for (uint i = 0; i < seasonCount; i++) {
+                Season _season = Season(i + 2);
 
                 if (nameClean.StartsWith(tostring(_season).Replace("_", " "))) {
                     season = _season;
@@ -148,7 +148,7 @@ class Map {
         const int year = Text::ParseInt(dateRaw.SubStr(0, 4));
         const int month = Text::ParseInt(dateRaw.SubStr(5, 2));
 
-        switch (year) {
+        switch (year) {  // update every season
             case 2020:
                 switch (month) {
                     case 7:  case 8:  case 9:  season = Season::Summer_2020; break;
@@ -187,7 +187,7 @@ class Map {
                 switch (month) {
                     case 1:  case 2:  case 3:  season = Season::Winter_2024; break;
                     case 4:  case 5:  case 6:  season = Season::Spring_2024; break;
-                    // case 7:  case 8:  case 9:  season = Season::Summer_2024; break;
+                    case 7:  case 8:  case 9:  season = Season::Summer_2024; break;
                     // case 10: case 11: case 12: season = Season::Fall_2024;   break;
                     default:;
                 }

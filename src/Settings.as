@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-06-04
+// m 2024-07-01
 
 enum Mode {
     NadeoCampaign,
@@ -38,7 +38,7 @@ bool lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
 [Setting category="General" name="Show 'Only Current Campaign' button" description="Always disabled for Starter Access"]
 bool S_MenuOnlyCurrentCampaign = true;
 
-enum Season {
+enum Season {  // update every season
     All,
     Unknown,
     Summer_2020,
@@ -56,7 +56,8 @@ enum Season {
     Summer_2023,
     Fall_2023,
     Winter_2024,
-    Spring_2024
+    Spring_2024,
+    Summer_2024
 }
 
 [Setting category="General" name="Season to show" description="Tracks of the Day are categorized into 3-month periods which may differ slightly from the time periods of Nadeo Campaigns. Does nothing for Starter Access"]
