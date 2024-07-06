@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-06-04
+// m 2024-07-01
 
 string       accountId;
 bool         allTarget         = false;
@@ -22,6 +22,7 @@ dictionary@  mapsTotdById      = dictionary();
 dictionary@  mapsTotdByUid     = dictionary();
 uint         metTargetTotal    = 0;
 Map@         nextMap;
+const uint   seasonCount       = 17;  // update every season
 const string title             = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
 
 void Main() {
@@ -99,71 +100,38 @@ void RenderMenu() {
 
                 UI::Separator();
 
-                if (UI::MenuItem(colorSeasonSummer + "\\$S" + iconSeasonSummer + " Summer 2020", "", S_Season == Season::Summer_2020, S_Season != Season::Summer_2020)) {
-                    S_Season = Season::Summer_2020;
-                    OnSettingsChanged();
+                for (uint i = 0; i < seasonCount; i++) {
+                    const Season season = Season(i + 2);
+                    const string seasonStr = tostring(season);
+                    const string[]@ seasonParts = seasonStr.Split("_");
+                    const string seasonName = seasonParts[0];
+                    const string seasonYear = seasonParts[1];
+
+                    string color;
+                    string icon;
+
+                    if (seasonName == "Winter") {
+                        color = colorSeasonWinter;
+                        icon = iconSeasonWinter;
+                    } else if (seasonName == "Spring") {
+                        color = colorSeasonSpring;
+                        icon = iconSeasonSpring;
+                    } else if (seasonName == "Summer") {
+                        color = colorSeasonSummer;
+                        icon = iconSeasonSummer;
+                    } else {
+                        color = colorSeasonFall;
+                        icon = iconSeasonFall;
+                    }
+
+                    if (UI::MenuItem(color + "\\$S" + icon + " " + seasonName + " " + seasonYear, "", S_Season == season, S_Season != season)) {
+                        S_Season = season;
+                        OnSettingsChanged();
+                    }
                 }
-                if (UI::MenuItem(colorSeasonFall + "\\$S" + iconSeasonFall + " Fall 2020", "", S_Season == Season::Fall_2020, S_Season != Season::Fall_2020)) {
-                    S_Season = Season::Fall_2020;
-                    OnSettingsChanged();
-                }
-                if (UI::MenuItem(colorSeasonWinter + "\\$S" + iconSeasonWinter + " Winter 2021", "", S_Season == Season::Winter_2021, S_Season != Season::Winter_2021)) {
-                    S_Season = Season::Winter_2021;
-                    OnSettingsChanged();
-                }
-                if (UI::MenuItem(colorSeasonSpring + "\\$S" + iconSeasonSpring + " Spring 2021", "", S_Season == Season::Spring_2021, S_Season != Season::Spring_2021)) {
-                    S_Season = Season::Spring_2021;
-                    OnSettingsChanged();
-                }
-                if (UI::MenuItem(colorSeasonSummer + "\\$S" + iconSeasonSummer + " Summer 2021", "", S_Season == Season::Summer_2021, S_Season != Season::Summer_2021)) {
-                    S_Season = Season::Summer_2021;
-                    OnSettingsChanged();
-                }
-                if (UI::MenuItem(colorSeasonFall + "\\$S" + iconSeasonFall + " Fall 2021", "", S_Season == Season::Fall_2021, S_Season != Season::Fall_2021)) {
-                    S_Season = Season::Fall_2021;
-                    OnSettingsChanged();
-                }
-                if (UI::MenuItem(colorSeasonWinter + "\\$S" + iconSeasonWinter + " Winter 2022", "", S_Season == Season::Winter_2022, S_Season != Season::Winter_2022)) {
-                    S_Season = Season::Winter_2022;
-                    OnSettingsChanged();
-                }
-                if (UI::MenuItem(colorSeasonSpring + "\\$S" + iconSeasonSpring + " Spring 2022", "", S_Season == Season::Spring_2022, S_Season != Season::Spring_2022)) {
-                    S_Season = Season::Spring_2022;
-                    OnSettingsChanged();
-                }
-                if (UI::MenuItem(colorSeasonSummer + "\\$S" + iconSeasonSummer + " Summer 2022", "", S_Season == Season::Summer_2022, S_Season != Season::Summer_2022)) {
-                    S_Season = Season::Summer_2022;
-                    OnSettingsChanged();
-                }
-                if (UI::MenuItem(colorSeasonFall + "\\$S" + iconSeasonFall + " Fall 2022", "", S_Season == Season::Fall_2022, S_Season != Season::Fall_2022)) {
-                    S_Season = Season::Fall_2022;
-                    OnSettingsChanged();
-                }
-                if (UI::MenuItem(colorSeasonWinter + "\\$S" + iconSeasonWinter + " Winter 2023", "", S_Season == Season::Winter_2023, S_Season != Season::Winter_2023)) {
-                    S_Season = Season::Winter_2023;
-                    OnSettingsChanged();
-                }
-                if (UI::MenuItem(colorSeasonSpring + "\\$S" + iconSeasonSpring + " Spring 2023", "", S_Season == Season::Spring_2023, S_Season != Season::Spring_2023)) {
-                    S_Season = Season::Spring_2023;
-                    OnSettingsChanged();
-                }
-                if (UI::MenuItem(colorSeasonSummer + "\\$S" + iconSeasonSummer + " Summer 2023", "", S_Season == Season::Summer_2023, S_Season != Season::Summer_2023)) {
-                    S_Season = Season::Summer_2023;
-                    OnSettingsChanged();
-                }
-                if (UI::MenuItem(colorSeasonFall + "\\$S" + iconSeasonFall + " Fall 2023", "", S_Season == Season::Fall_2023, S_Season != Season::Fall_2023)) {
-                    S_Season = Season::Fall_2023;
-                    OnSettingsChanged();
-                }
-                if (UI::MenuItem(colorSeasonWinter + "\\$S" + iconSeasonWinter + " Winter 2024", "", S_Season == Season::Winter_2024, S_Season != Season::Winter_2024)) {
-                    S_Season = Season::Winter_2024;
-                    OnSettingsChanged();
-                }
-                if (UI::MenuItem(colorSeasonSpring + "\\$S" + iconSeasonSpring + " Spring 2024", "", S_Season == Season::Spring_2024, S_Season != Season::Spring_2024)) {
-                    S_Season = Season::Spring_2024;
-                    OnSettingsChanged();
-                }
+
                 UI::EndMenu();
+
             } else if (S_Mode == Mode::TrackOfTheDay) {
                 string seasonMonths = "\\$S";
 
@@ -197,70 +165,41 @@ void RenderMenu() {
 
                     UI::Separator();
 
-                    if (UI::MenuItem(colorSeasonSummer + "\\$S" + iconSeasonSummer + " Jul-Sep 2020", "", S_Season == Season::Summer_2020, S_Season != Season::Summer_2020)) {
-                        S_Season = Season::Summer_2020;
-                        OnSettingsChanged();
+                    for (uint i = 0; i < seasonCount; i++) {
+                        const Season season = Season(i + 2);
+                        const string seasonStr = tostring(season);
+                        const string[]@ seasonParts = seasonStr.Split("_");
+                        const string seasonName = seasonParts[0];
+                        const string seasonYear = seasonParts[1];
+
+                        string color;
+                        string icon;
+                        string seasonNameTotd;
+
+                        if (seasonName == "Winter") {
+                            color = colorSeasonWinter;
+                            icon = iconSeasonWinter;
+                            seasonNameTotd = " Jan-Mar ";
+                        } else if (seasonName == "Spring") {
+                            color = colorSeasonSpring;
+                            icon = iconSeasonSpring;
+                            seasonNameTotd = " Apr-Jun ";
+                        } else if (seasonName == "Summer") {
+                            color = colorSeasonSummer;
+                            icon = iconSeasonSummer;
+                            seasonNameTotd = " Jul-Sep ";
+                        } else {
+                            color = colorSeasonFall;
+                            icon = iconSeasonFall;
+                            seasonNameTotd = " Oct-Dec ";
+                        }
+
+                        if (UI::MenuItem(color + "\\$S" + icon + seasonNameTotd + seasonYear, "", S_Season == season, S_Season != season)) {
+                            S_Season = season;
+                            OnSettingsChanged();
+                        }
                     }
-                    if (UI::MenuItem(colorSeasonFall + "\\$S" + iconSeasonFall + " Oct-Dec 2020", "", S_Season == Season::Fall_2020, S_Season != Season::Fall_2020)) {
-                        S_Season = Season::Fall_2020;
-                        OnSettingsChanged();
-                    }
-                    if (UI::MenuItem(colorSeasonWinter + "\\$S" + iconSeasonWinter + " Jan-Mar 2021", "", S_Season == Season::Winter_2021, S_Season != Season::Winter_2021)) {
-                        S_Season = Season::Winter_2021;
-                        OnSettingsChanged();
-                    }
-                    if (UI::MenuItem(colorSeasonSpring + "\\$S" + iconSeasonSpring + " Apr-Jun 2021", "", S_Season == Season::Spring_2021, S_Season != Season::Spring_2021)) {
-                        S_Season = Season::Spring_2021;
-                        OnSettingsChanged();
-                    }
-                    if (UI::MenuItem(colorSeasonSummer + "\\$S" + iconSeasonSummer + " Jul-Sep 2021", "", S_Season == Season::Summer_2021, S_Season != Season::Summer_2021)) {
-                        S_Season = Season::Summer_2021;
-                        OnSettingsChanged();
-                    }
-                    if (UI::MenuItem(colorSeasonFall + "\\$S" + iconSeasonFall + " Oct-Dec 2021", "", S_Season == Season::Fall_2021, S_Season != Season::Fall_2021)) {
-                        S_Season = Season::Fall_2021;
-                        OnSettingsChanged();
-                    }
-                    if (UI::MenuItem(colorSeasonWinter + "\\$S" + iconSeasonWinter + " Jan-Mar 2022", "", S_Season == Season::Winter_2022, S_Season != Season::Winter_2022)) {
-                        S_Season = Season::Winter_2022;
-                        OnSettingsChanged();
-                    }
-                    if (UI::MenuItem(colorSeasonSpring + "\\$S" + iconSeasonSpring + " Apr-Jun 2022", "", S_Season == Season::Spring_2022, S_Season != Season::Spring_2022)) {
-                        S_Season = Season::Spring_2022;
-                        OnSettingsChanged();
-                    }
-                    if (UI::MenuItem(colorSeasonSummer + "\\$S" + iconSeasonSummer + " Jul-Sep 2022", "", S_Season == Season::Summer_2022, S_Season != Season::Summer_2022)) {
-                        S_Season = Season::Summer_2022;
-                        OnSettingsChanged();
-                    }
-                    if (UI::MenuItem(colorSeasonFall + "\\$S" + iconSeasonFall + " Oct-Dec 2022", "", S_Season == Season::Fall_2022, S_Season != Season::Fall_2022)) {
-                        S_Season = Season::Fall_2022;
-                        OnSettingsChanged();
-                    }
-                    if (UI::MenuItem(colorSeasonWinter + "\\$S" + iconSeasonWinter + " Jan-Mar 2023", "", S_Season == Season::Winter_2023, S_Season != Season::Winter_2023)) {
-                        S_Season = Season::Winter_2023;
-                        OnSettingsChanged();
-                    }
-                    if (UI::MenuItem(colorSeasonSpring + "\\$S" + iconSeasonSpring + " Apr-Jun 2023", "", S_Season == Season::Spring_2023, S_Season != Season::Spring_2023)) {
-                        S_Season = Season::Spring_2023;
-                        OnSettingsChanged();
-                    }
-                    if (UI::MenuItem(colorSeasonSummer + "\\$S" + iconSeasonSummer + " Jul-Sep 2023", "", S_Season == Season::Summer_2023, S_Season != Season::Summer_2023)) {
-                        S_Season = Season::Summer_2023;
-                        OnSettingsChanged();
-                    }
-                    if (UI::MenuItem(colorSeasonFall + "\\$S" + iconSeasonFall + " Oct-Dec 2023", "", S_Season == Season::Fall_2023, S_Season != Season::Fall_2023)) {
-                        S_Season = Season::Fall_2023;
-                        OnSettingsChanged();
-                    }
-                    if (UI::MenuItem(colorSeasonWinter + "\\$S" + iconSeasonWinter + " Jan-Mar 2024", "", S_Season == Season::Winter_2024, S_Season != Season::Winter_2024)) {
-                        S_Season = Season::Winter_2024;
-                        OnSettingsChanged();
-                    }
-                    if (UI::MenuItem(colorSeasonSpring + "\\$S" + iconSeasonSpring + " Apr-Jun 2024", "", S_Season == Season::Spring_2024, S_Season != Season::Spring_2024)) {
-                        S_Season = Season::Spring_2024;
-                        OnSettingsChanged();
-                    }
+
                     UI::EndMenu();
                 }
             }
@@ -604,6 +543,14 @@ void Loop() {
     const uint prevTime = nextMap.myTime;
 
     sleep(500);  // allow game to process PB, 500ms should be enough time
+
+    if (false
+        || App.Network.ClientManiaAppPlayground is null
+        || App.Network.ClientManiaAppPlayground.ScoreMgr is null
+        || App.UserManagerScript is null
+        || App.UserManagerScript.Users.Length == 0
+    )
+        return;
 
     nextMap.myTime = App.Network.ClientManiaAppPlayground.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, currentUid, "PersonalBest", "", "TimeAttack", "");
     nextMap.SetMedals();
