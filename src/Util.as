@@ -1,5 +1,42 @@
 // c 2024-01-02
-// m 2024-03-08
+// m 2024-09-02
+
+void GetAllPBsAsync() {
+    const uint64 start = Time::Now;
+    trace("getting all PBs");
+
+    trace("getting PBs for campaign maps (" + mapsCampaign.Length + ")");
+    GetAllPBsForMapSet(@mapsCampaign);
+
+    trace("getting PBs for TOTD maps (" + mapsTotd.Length + ")");
+    GetAllPBsForMapSet(@mapsTotd);
+
+    trace("getting all PBs done after " + (Time::Now - start) + "ms");
+
+    gettingNow = false;
+}
+
+void GetAllPBsForMapSet(Map@[]@ maps) {
+    uint64 lastYield = Time::Now;
+    const uint64 maxFrameTime = 50;
+
+    for (uint i = 0; i < maps.Length; i++) {
+        Map@ map = maps[i];
+
+        if (map is null)
+            continue;
+
+        map.GetPB();
+        map.SetMedals();
+        map.SetTargetDelta();
+
+        const uint64 now = Time::Now;
+        if (now - lastYield > maxFrameTime) {
+            lastYield = now;
+            yield();
+        }
+    }
+}
 
 void HoverTooltip(const string &in msg) {
     if (!UI::IsItemHovered())

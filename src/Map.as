@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-07-01
+// m 2024-09-02
 
 bool loadingMap = false;
 
@@ -80,6 +80,26 @@ class Map {
             warn("GetMapInfoFromManager error: task failed");
 
         trace("GetMapInfoFromManager done: " + (Time::Now - start) + "ms");
+    }
+
+    void GetPB() {
+        CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+        if (false
+            || App.MenuManager is null
+            || App.MenuManager.MenuCustom_CurrentManiaApp is null
+            || App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr is null
+            || App.UserManagerScript is null
+            || App.UserManagerScript.Users.Length == 0
+            || App.UserManagerScript.Users[0] is null
+        ) {
+            myTime = 0;
+            return;
+        }
+
+        const uint pb = App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, uid, "PersonalBest", "", "TimeAttack", "");
+        if (pb != uint(-1))
+            myTime = pb;
     }
 
     // courtesy of "Play Map" plugin - https://github.com/XertroV/tm-play-map

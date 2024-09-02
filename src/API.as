@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-06-04
+// m 2024-09-02
 
 uint64       latestNandoRequest   = 0;
 Json::Value@ mapsCampaignFromFile = Json::Object();
@@ -36,8 +36,7 @@ void GetMaps() {
     GetMapsFromFiles();
     GetMapInfoFromApi(Mode::NadeoCampaign);
     GetMapInfoFromApi(Mode::TrackOfTheDay);
-    GetRecordsFromApi(Mode::NadeoCampaign);
-    GetRecordsFromApi(Mode::TrackOfTheDay);
+    GetAllPBsAsync();
     SetNextMap();
 }
 
@@ -265,82 +264,7 @@ void GetMapInfoFromApi(Mode mode) {
     trace("getting " + modeName + " map info from API done");
 }
 
-void GetRecordsFromApi(Mode mode) {
-    if (!hasPlayPermission && mode == Mode::TrackOfTheDay)
-        return;
-
-    gettingNow = true;
-
-    yield();
-
-    const string modeName = tostring(mode);
-
-    trace("getting " + modeName + " records from API...");
-
-    uint index = 0;
-    string url;
-
-    Map@[]@ mapsToCheck = mode == Mode::NadeoCampaign ? mapsCampaign : mapsTotd;
-
-    while (index < mapsToCheck.Length - 1) {
-        url = NadeoServices::BaseURLCore() + "/mapRecords/?accountIdList=" + accountId + "&mapIdList=";
-
-        for (uint i = index; i < mapsToCheck.Length; i++) {
-            index = i;
-
-            if (url.Length < 8183)
-                url += mapsToCheck[i].id + ",";
-            else
-                break;
-        }
-
-        trace("getting " + modeName + " records (" + (index + 1) + "/" + mapsToCheck.Length + ")");
-
-        Meta::PluginCoroutine@ coro = startnew(NandoRequestWait);
-        while (coro.IsRunning())
-            yield();
-
-        Net::HttpRequest@ req = NadeoServices::Get(audienceCore, url.SubStr(0, url.Length - 1));
-        req.Start();
-        while (!req.Finished())
-            yield();
-
-        const int code = req.ResponseCode();
-        if (code != 200) {
-            warn("error getting " + modeName + " records: " + code + "; " + req.Error() + "; " + req.String());
-            gettingNow = false;
-            return;
-        }
-
-        Json::Value@ records = Json::Parse(req.String());
-
-        for (uint i = 0; i < records.Length; i++) {
-            const string id = records[i]["mapId"];
-
-            Map@ map;
-            if (mode == Mode::NadeoCampaign)
-                @map = cast<Map@>(mapsCampaignById[id]);
-            else
-                @map = cast<Map@>(mapsTotdById[id]);
-
-            if (map is null) {
-                warn("GetRecordsFromApi: null " + modeName + " map " + id);
-                continue;
-            }
-
-            map.myMedals = records[i]["medal"];
-            map.myTime = records[i]["recordScore"]["time"];
-
-            map.SetTargetDelta();
-        }
-    }
-
-    trace("getting " + modeName + " records done");
-
-    gettingNow = false;
-}
-
 void RefreshRecords() {
-    GetRecordsFromApi(S_Mode);
+    GetAllPBsAsync();
     SetNextMap();
 }
