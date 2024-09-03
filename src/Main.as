@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-07-01
+// m 2024-09-02
 
 string       accountId;
 bool         allTarget         = false;
@@ -552,9 +552,7 @@ void Loop() {
     )
         return;
 
-    nextMap.myTime = App.Network.ClientManiaAppPlayground.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, currentUid, "PersonalBest", "", "TimeAttack", "");
-    nextMap.SetMedals();
-    nextMap.SetTargetDelta();
+    nextMap.GetPB();
 
     Meta::PluginCoroutine@ coro = startnew(SetNextMap);
     while (coro.IsRunning())

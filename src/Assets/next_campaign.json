@@ -3598,5 +3598,230 @@
         "nameRaw": "Spring 2024 - 25",
         "silverTime": 86000,
         "uid": "bPpUQZuGgy56BE4ST2e9lb3Ln66"
+    },
+    "0400": {
+        "authorTime": 23923,
+        "bronzeTime": 36000,
+        "goldTime": 26000,
+        "id": "11f05603-58f4-4289-b643-d88e4d757015",
+        "nameRaw": "Summer 2024 - 01",
+        "silverTime": 29000,
+        "uid": "AmpiaayY57VnImgBMLMcWjxbOSh"
+    },
+    "0401": {
+        "authorTime": 29100,
+        "bronzeTime": 44000,
+        "goldTime": 31000,
+        "id": "573e12c7-7b9e-4002-898d-8f8c6b121c88",
+        "nameRaw": "Summer 2024 - 02",
+        "silverTime": 35000,
+        "uid": "DUzLndlMvwhFmzDkp4JSQFuuj1b"
+    },
+    "0402": {
+        "authorTime": 30438,
+        "bronzeTime": 46000,
+        "goldTime": 33000,
+        "id": "d94e9bba-528d-48d6-83c6-e9bfe3755ad9",
+        "nameRaw": "Summer 2024 - 03",
+        "silverTime": 37000,
+        "uid": "eaat8KYNipnW9LTnyeF5b3SP5O1"
+    },
+    "0403": {
+        "authorTime": 31507,
+        "bronzeTime": 48000,
+        "goldTime": 34000,
+        "id": "43c4f1d4-52c3-4611-830f-cc1412ed8696",
+        "nameRaw": "Summer 2024 - 04",
+        "silverTime": 38000,
+        "uid": "mdgN731icasa6UJz2xMhuuGp9pa"
+    },
+    "0404": {
+        "authorTime": 28595,
+        "bronzeTime": 43000,
+        "goldTime": 31000,
+        "id": "b93b4462-0d8a-42b2-a497-dc79c5373fbc",
+        "nameRaw": "Summer 2024 - 05",
+        "silverTime": 35000,
+        "uid": "xmefxgBBYybybCTR61gE55JfZ2e"
+    },
+    "0405": {
+        "authorTime": 31524,
+        "bronzeTime": 48000,
+        "goldTime": 34000,
+        "id": "29b5dc2c-4d6f-4d74-8ca3-5b6255ce2b7f",
+        "nameRaw": "Summer 2024 - 06",
+        "silverTime": 38000,
+        "uid": "OHhZEEW1Ly5nNvoEnwUZoz6ybdh"
+    },
+    "0406": {
+        "authorTime": 27744,
+        "bronzeTime": 42000,
+        "goldTime": 30000,
+        "id": "5adf2543-7841-4f28-88d3-f1f2c6cc63fc",
+        "nameRaw": "Summer 2024 - 07",
+        "silverTime": 34000,
+        "uid": "kXqFTKz_vffAWYqyWE_2NwFCtBf"
+    },
+    "0407": {
+        "authorTime": 28808,
+        "bronzeTime": 44000,
+        "goldTime": 31000,
+        "id": "ab512cb3-f415-4217-9d47-9344cece6461",
+        "nameRaw": "Summer 2024 - 08",
+        "silverTime": 35000,
+        "uid": "88db6i9B_8peTY2zx_FYZzMsWd4"
+    },
+    "0408": {
+        "authorTime": 34789,
+        "bronzeTime": 53000,
+        "goldTime": 37000,
+        "id": "f626bb59-ef59-453d-96c4-66e9b96d2b9b",
+        "nameRaw": "Summer 2024 - 09",
+        "silverTime": 42000,
+        "uid": "__g8iWcCCZYme_ZkPWDapvUDL_2"
+    },
+    "0409": {
+        "authorTime": 29000,
+        "bronzeTime": 44000,
+        "goldTime": 31000,
+        "id": "54f52217-2e15-42a5-b6b8-cb88f35a3230",
+        "nameRaw": "Summer 2024 - 10",
+        "silverTime": 35000,
+        "uid": "liHJc0b7adqKCo6ra9Sxv257UM0"
+    },
+    "0410": {
+        "authorTime": 42221,
+        "bronzeTime": 64000,
+        "goldTime": 45000,
+        "id": "91808e00-e4c5-4a30-9c41-6bea6c8101f9",
+        "nameRaw": "Summer 2024 - 11",
+        "silverTime": 51000,
+        "uid": "aWmFvwIFZTnNOe1gR2sbEjbTeEl"
+    },
+    "0411": {
+        "authorTime": 36511,
+        "bronzeTime": 55000,
+        "goldTime": 39000,
+        "id": "c3f421db-3a7a-4c27-8ba6-d153d770d0c3",
+        "nameRaw": "Summer 2024 - 12",
+        "silverTime": 44000,
+        "uid": "J6BRqbjArSidm0EW52kGPuOyLW8"
+    },
+    "0412": {
+        "authorTime": 40465,
+        "bronzeTime": 61000,
+        "goldTime": 43000,
+        "id": "1e70fc80-c7b8-44dd-9cb0-a1d0c762c913",
+        "nameRaw": "Summer 2024 - 13",
+        "silverTime": 49000,
+        "uid": "Nub2tB4j4rpdQ2M9LSUmuHegTV8"
+    },
+    "0413": {
+        "authorTime": 55321,
+        "bronzeTime": 83000,
+        "goldTime": 59000,
+        "id": "02308b7a-7179-4725-bc9f-af06fee86ad7",
+        "nameRaw": "Summer 2024 - 14",
+        "silverTime": 67000,
+        "uid": "diZZFuAQHepR8lZQYqNy7ogs_s2"
+    },
+    "0414": {
+        "authorTime": 37224,
+        "bronzeTime": 56000,
+        "goldTime": 40000,
+        "id": "0638b603-0e8d-440f-a11c-64d9007e8a0e",
+        "nameRaw": "Summer 2024 - 15",
+        "silverTime": 45000,
+        "uid": "YzTFETagiqGYvGYtuQN2EyY60K3"
+    },
+    "0415": {
+        "authorTime": 49322,
+        "bronzeTime": 74000,
+        "goldTime": 53000,
+        "id": "d4102b54-47d6-4400-a210-59c4043df499",
+        "nameRaw": "Summer 2024 - 16",
+        "silverTime": 60000,
+        "uid": "kAogsDZpfntyin3GuQWI8VfCAIc"
+    },
+    "0416": {
+        "authorTime": 48718,
+        "bronzeTime": 74000,
+        "goldTime": 52000,
+        "id": "d90022c2-4a5e-44e4-b1da-534d82ea9ee4",
+        "nameRaw": "Summer 2024 - 17",
+        "silverTime": 59000,
+        "uid": "kld8u7DegB2TZihhocwqU04pmqg"
+    },
+    "0417": {
+        "authorTime": 46002,
+        "bronzeTime": 70000,
+        "goldTime": 49000,
+        "id": "fc2bd10c-d6ac-4d41-b815-af751feccf13",
+        "nameRaw": "Summer 2024 - 18",
+        "silverTime": 56000,
+        "uid": "ZbPCXmP2MsVvURucRPP1cQnQXhb"
+    },
+    "0418": {
+        "authorTime": 46503,
+        "bronzeTime": 70000,
+        "goldTime": 50000,
+        "id": "3f243712-dc7d-473d-be6e-3a31f87d4214",
+        "nameRaw": "Summer 2024 - 19",
+        "silverTime": 56000,
+        "uid": "snEiZmH8YmFRE6Qu3rFpPHB81K"
+    },
+    "0419": {
+        "authorTime": 51617,
+        "bronzeTime": 78000,
+        "goldTime": 55000,
+        "id": "826e29d4-ff33-4a1a-b5a8-6a8d1211261b",
+        "nameRaw": "Summer 2024 - 20",
+        "silverTime": 62000,
+        "uid": "drAd2cABjEReAoKsVoC3wpZm6Nh"
+    },
+    "0420": {
+        "authorTime": 55452,
+        "bronzeTime": 84000,
+        "goldTime": 59000,
+        "id": "45d25b00-b0c5-48ac-97cf-4b9351b99cbd",
+        "nameRaw": "Summer 2024 - 21",
+        "silverTime": 67000,
+        "uid": "j3OZZrs99TWKZwUBYHKqPifQLbg"
+    },
+    "0421": {
+        "authorTime": 48448,
+        "bronzeTime": 73000,
+        "goldTime": 52000,
+        "id": "ea9582c6-c879-45a9-bf1f-6edbd11877e2",
+        "nameRaw": "Summer 2024 - 22",
+        "silverTime": 59000,
+        "uid": "lAZgKXuitTB4JEllDdA3GZt87T3"
+    },
+    "0422": {
+        "authorTime": 42721,
+        "bronzeTime": 65000,
+        "goldTime": 46000,
+        "id": "66c03ca3-b7e1-4a89-b31d-bdb329b45be2",
+        "nameRaw": "Summer 2024 - 23",
+        "silverTime": 52000,
+        "uid": "z9kDwhhJhVLS4td4mECAixxaVVd"
+    },
+    "0423": {
+        "authorTime": 63886,
+        "bronzeTime": 96000,
+        "goldTime": 68000,
+        "id": "5ad1a58e-0a13-4d34-832b-a50c9377f02c",
+        "nameRaw": "Summer 2024 - 24",
+        "silverTime": 77000,
+        "uid": "tspxUJekxkF7td_dMKmtJX6cJEe"
+    },
+    "0424": {
+        "authorTime": 70347,
+        "bronzeTime": 106000,
+        "goldTime": 75000,
+        "id": "0a12b854-a822-4d95-8add-49266fb9eca5",
+        "nameRaw": "Summer 2024 - 25",
+        "silverTime": 85000,
+        "uid": "qGS_eZRJejfv0VGmGPavl5WEDnj"
     }
 }
