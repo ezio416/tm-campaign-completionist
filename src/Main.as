@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-09-02
+// m 2024-09-10
 
 string       accountId;
 bool         allTarget         = false;
@@ -554,9 +554,7 @@ void Loop() {
 
     nextMap.GetPB();
 
-    Meta::PluginCoroutine@ coro = startnew(SetNextMap);
-    while (coro.IsRunning())
-        yield();
+    SetNextMap();
 
     if (nextMap is null)
         return;  // finished all maps
@@ -568,8 +566,10 @@ void Loop() {
             startnew(CoroutineFunc(nextMap.Play));
             sleep(10000);  // give some time for next map to load before checking again
         }
-    } else
+    } else {
+        print("nextMap.myTime: " + nextMap.myTime + " | prevTime: " + prevTime);
         NotifyTimeNeeded(prevTime == 0 || nextMap.myTime < prevTime);
+    }
 
     try {
         while (false
@@ -584,7 +584,7 @@ void SetNextMap() {
     while (gettingNow)
         yield();
 
-    trace("setting next map");
+    trace("setting next map (current: " + (nextMap is null ? "null" : nextMap.date + " | " + nextMap.nameClean) + ")");
 
     metTargetTotal = 0;
     @nextMap = null;
