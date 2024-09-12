@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-09-10
+// m 2024-09-12
 
 void GetAllPBsAsync() {
     const uint64 start = Time::Now;
@@ -82,17 +82,16 @@ void NotifyTimeNeeded(bool pb) {
     )
         return;
 
-    int target;
+    int target = 0;
 
     switch (S_Target) {
         case TargetMedal::Author: target = nextMap.authorTime; break;
         case TargetMedal::Gold:   target = nextMap.goldTime;   break;
         case TargetMedal::Silver: target = nextMap.silverTime; break;
         case TargetMedal::Bronze: target = nextMap.bronzeTime; break;
-        default: target = 0;
+        default:;
     }
 
-    print("nextMap.myTime: " + nextMap.myTime + " | target: " + target + " | S_Target: " + tostring(S_Target));
     const string text = (pb ? "Better, but y" : "Not fast enough! Y") + "ou still need " + Time::Format(int(nextMap.myTime) - target) + " for " + tostring(S_Target);
     trace(text);
     UI::ShowNotification(title, text, vec4(S_ColorTimeNeeded.x, S_ColorTimeNeeded.y, S_ColorTimeNeeded.z, 0.8f));

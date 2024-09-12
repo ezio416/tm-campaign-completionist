@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-09-10
+// m 2024-09-12
 
 string       accountId;
 bool         allTarget         = false;
@@ -566,10 +566,8 @@ void Loop() {
             startnew(CoroutineFunc(nextMap.Play));
             sleep(10000);  // give some time for next map to load before checking again
         }
-    } else {
-        print("nextMap.myTime: " + nextMap.myTime + " | prevTime: " + prevTime);
+    } else
         NotifyTimeNeeded(prevTime == 0 || nextMap.myTime < prevTime);
-    }
 
     try {
         while (false
@@ -584,7 +582,7 @@ void SetNextMap() {
     while (gettingNow)
         yield();
 
-    trace("setting next map (current: " + (nextMap is null ? "null" : nextMap.date + " | " + nextMap.nameClean) + ")");
+    trace("setting next map");
 
     metTargetTotal = 0;
     @nextMap = null;
