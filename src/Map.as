@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-09-10
+// m 2024-09-14
 
 bool loadingMap = false;
 
@@ -134,13 +134,13 @@ class Map {
     void SetMedals() {
         if (myTime == 0)
             myMedals = 0;
-        else if (myTime < authorTime)
+        else if (myTime <= authorTime)
             myMedals = 4;
-        else if (myTime < goldTime)
+        else if (myTime <= goldTime)
             myMedals = 3;
-        else if (myTime < silverTime)
+        else if (myTime <= silverTime)
             myMedals = 2;
-        else if (myTime < bronzeTime)
+        else if (myTime <= bronzeTime)
             myMedals = 1;
         else
             myMedals = 0;
