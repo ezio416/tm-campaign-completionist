@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-09-02
+// m 2024-09-10
 
 bool loadingMap = false;
 
@@ -100,6 +100,9 @@ class Map {
         const uint pb = App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, uid, "PersonalBest", "", "TimeAttack", "");
         if (pb != uint(-1))
             myTime = pb;
+
+        SetMedals();
+        SetTargetDelta();
     }
 
     // courtesy of "Play Map" plugin - https://github.com/XertroV/tm-play-map
@@ -246,6 +249,6 @@ class Map {
         else
             targetDelta += colorDeltaAbove3;
 
-        targetDelta += "\\$S(+" + Time::Format(delta) + ") \\$Z ";
+        targetDelta += "\\$S(" + (delta < 0 ? "" : "+") + Time::Format(delta) + ") \\$Z ";  // should never be negative
     }
 }

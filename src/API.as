@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-09-02
+// m 2024-09-12
 
 uint64       latestNandoRequest   = 0;
 Json::Value@ mapsCampaignFromFile = Json::Object();
@@ -113,7 +113,7 @@ void GetMapsFromFiles() {
     trace("getting maps from files...");
 
     if (mapsCampaignFromFile.Length == 0) {
-        @mapsCampaignFromFile = Json::FromFile("src/Assets/next_campaign.json");
+        @mapsCampaignFromFile = Json::FromFile("assets/next_campaign.json");
 
         for (uint i = 0; i < mapsCampaignFromFile.Length; i++) {
             Json::Value@ mapFromFile = mapsCampaignFromFile[ZPad4(i)];
@@ -141,7 +141,7 @@ void GetMapsFromFiles() {
     }
 
     if (mapsTotdFromFile.Length == 0) {
-        @mapsTotdFromFile = Json::FromFile("src/Assets/next_totd.json");
+        @mapsTotdFromFile = Json::FromFile("assets/next_totd.json");
 
         for (uint i = 0; i < mapsTotdFromFile.Length; i++) {
             Json::Value@ mapFromFile = mapsTotdFromFile[ZPad4(i)];

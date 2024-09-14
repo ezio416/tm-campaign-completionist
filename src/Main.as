@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-09-02
+// m 2024-09-12
 
 string       accountId;
 bool         allTarget         = false;
@@ -554,9 +554,7 @@ void Loop() {
 
     nextMap.GetPB();
 
-    Meta::PluginCoroutine@ coro = startnew(SetNextMap);
-    while (coro.IsRunning())
-        yield();
+    SetNextMap();
 
     if (nextMap is null)
         return;  // finished all maps
