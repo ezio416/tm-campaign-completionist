@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-09-12
+// m 2024-10-01
 
 string       accountId;
 bool         allTarget         = false;
@@ -22,7 +22,7 @@ dictionary@  mapsTotdById      = dictionary();
 dictionary@  mapsTotdByUid     = dictionary();
 uint         metTargetTotal    = 0;
 Map@         nextMap;
-const uint   seasonCount       = 17;  // update every season
+const uint   seasonCount       = 18;  // update every season
 const string title             = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
 
 void Main() {
