@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-09-14
+// m 2024-10-17
 
 bool loadingMap = false;
 
@@ -82,54 +82,54 @@ class Map {
         trace("GetMapInfoFromManager done: " + (Time::Now - start) + "ms");
     }
 
-    void GetPB() {
-        CTrackMania@ App = cast<CTrackMania@>(GetApp());
+    // void GetPB() {
+    //     CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
-        if (false
-            || App.MenuManager is null
-            || App.MenuManager.MenuCustom_CurrentManiaApp is null
-            || App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr is null
-            || App.UserManagerScript is null
-            || App.UserManagerScript.Users.Length == 0
-            || App.UserManagerScript.Users[0] is null
-        ) {
-            myTime = 0;
-            return;
-        }
+    //     if (false
+    //         || App.MenuManager is null
+    //         || App.MenuManager.MenuCustom_CurrentManiaApp is null
+    //         || App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr is null
+    //         || App.UserManagerScript is null
+    //         || App.UserManagerScript.Users.Length == 0
+    //         || App.UserManagerScript.Users[0] is null
+    //     ) {
+    //         myTime = 0;
+    //         return;
+    //     }
 
-        const uint pb = App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, uid, "PersonalBest", "", "TimeAttack", "");
-        if (pb != uint(-1))
-            myTime = pb;
+    //     const uint pb = App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, uid, "PersonalBest", "", "TimeAttack", "");
+    //     if (pb != uint(-1))
+    //         myTime = pb;
 
-        SetMedals();
-        SetTargetDelta();
-    }
+    //     SetMedals();
+        // SetTargetDelta();
+    // }
 
     // courtesy of "Play Map" plugin - https://github.com/XertroV/tm-play-map
-    void Play() {
-        if (loadingMap || !hasPlayPermission)
-            return;
+    // void Play() {
+    //     if (loadingMap || !hasPlayPermission)
+    //         return;
 
-        loadingMap = true;
+    //     loadingMap = true;
 
-        trace("loading map " + nameQuoted + " for playing");
+    //     trace("loading map " + nameQuoted + " for playing");
 
-        GetMapInfoFromManager();
+    //     GetMapInfoFromManager();
 
-        ReturnToMenu();
+    //     ReturnToMenu();
 
-        CTrackMania@ App = cast<CTrackMania@>(GetApp());
+    //     CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
-        App.ManiaTitleControlScriptAPI.PlayMap(downloadUrl, "TrackMania/TM_PlayMap_Local", "");
+    //     App.ManiaTitleControlScriptAPI.PlayMap(downloadUrl, "TrackMania/TM_PlayMap_Local", "");
 
-        const uint64 waitToPlayAgain = 5000;
-        const uint64 now = Time::Now;
+    //     const uint64 waitToPlayAgain = 5000;
+    //     const uint64 now = Time::Now;
 
-        while (Time::Now - now < waitToPlayAgain)
-            yield();
+    //     while (Time::Now - now < waitToPlayAgain)
+    //         yield();
 
-        loadingMap = false;
-    }
+    //     loadingMap = false;
+    // }
 
     void SetMedals() {
         if (myTime == 0)
@@ -219,36 +219,36 @@ class Map {
         }
     }
 
-    void SetTargetDelta() {
-        int delta;
-        targetDelta = "";
+    // void SetTargetDelta() {
+    //     int delta;
+    //     targetDelta = "";
 
-        switch (S_Target) {
-            case TargetMedal::Author: delta = myTime > 0 ? int(myTime) - int(authorTime) : int(authorTime); break;
-            case TargetMedal::Gold:   delta = myTime > 0 ? int(myTime) - int(goldTime)   : int(goldTime);   break;
-            case TargetMedal::Silver: delta = myTime > 0 ? int(myTime) - int(silverTime) : int(silverTime); break;
-            case TargetMedal::Bronze: delta = myTime > 0 ? int(myTime) - int(bronzeTime) : int(bronzeTime); break;
-            default:                  delta = 0;
-        }
+    //     switch (S_Target) {
+    //         case TargetMedal::Author: delta = myTime > 0 ? int(myTime) - int(authorTime) : int(authorTime); break;
+    //         case TargetMedal::Gold:   delta = myTime > 0 ? int(myTime) - int(goldTime)   : int(goldTime);   break;
+    //         case TargetMedal::Silver: delta = myTime > 0 ? int(myTime) - int(silverTime) : int(silverTime); break;
+    //         case TargetMedal::Bronze: delta = myTime > 0 ? int(myTime) - int(bronzeTime) : int(bronzeTime); break;
+    //         default:                  delta = 0;
+    //     }
 
-        if (delta == 0) {
-            targetDelta = "";
-            return;
-        }
+    //     if (delta == 0) {
+    //         targetDelta = "";
+    //         return;
+    //     }
 
-        if (delta < 100)
-            targetDelta += colorDeltaSub01;
-        else if (delta < 500)
-            targetDelta += colorDelta01to05;
-        else if (delta < 1000)
-            targetDelta += colorDelta05to1;
-        else if (delta < 2000)
-            targetDelta += colorDelta1to2;
-        else if (delta < 3000)
-            targetDelta += colorDelta2to3;
-        else
-            targetDelta += colorDeltaAbove3;
+    //     if (delta < 100)
+    //         targetDelta += colorDeltaSub01;
+    //     else if (delta < 500)
+    //         targetDelta += colorDelta01to05;
+    //     else if (delta < 1000)
+    //         targetDelta += colorDelta05to1;
+    //     else if (delta < 2000)
+    //         targetDelta += colorDelta1to2;
+    //     else if (delta < 3000)
+    //         targetDelta += colorDelta2to3;
+    //     else
+    //         targetDelta += colorDeltaAbove3;
 
-        targetDelta += "\\$S(" + (delta < 0 ? "" : "+") + Time::Format(delta) + ") \\$Z ";  // should never be negative
-    }
+    //     targetDelta += "\\$S(" + (delta < 0 ? "" : "+") + Time::Format(delta) + ") \\$Z ";  // should never be negative
+    // }
 }
