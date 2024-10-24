@@ -1,28 +1,27 @@
 // c 2024-01-02
-// m 2024-10-17
+// m 2024-10-24
 
-Json::Value@ mapsCampaignFromFile = Json::Object();
-Json::Value@ mapsTotdFromFile     = Json::Object();
+// Json::Value@ mapsCampaignFromFile = Json::Object();
+// Json::Value@ mapsTotdFromFile     = Json::Object();
 
 void GetMaps() {
-    if (gettingNow)
-        return;
-
-    gettingNow = true;
-
+    for (uint i = 0; i < mapsCampaign.Length; i++)
+        @mapsCampaign[i] = null;
     mapsCampaign = {};
     mapsCampaignById.DeleteAll();
     mapsCampaignByUid.DeleteAll();
+    API::GetMapsAsync(Mode::NadeoCampaign);
 
+    for (uint i = 0; i < mapsTotd.Length; i++)
+        @mapsTotd[i] = null;
     mapsTotd = {};
     mapsTotdById.DeleteAll();
     mapsTotdByUid.DeleteAll();
-
-    API::GetMapsAsync(Mode::NadeoCampaign);
     API::GetMapsAsync(Mode::TrackOfTheDay);
+
     // GetMapsFromFiles();
-    // GetMapInfoFromApi(Mode::NadeoCampaign);
-    // GetMapInfoFromApi(Mode::TrackOfTheDay);
+    API::GetMapInfos(Mode::NadeoCampaign);
+    API::GetMapInfos(Mode::TrackOfTheDay);
     // GetAllPBsAsync();
     // SetNextMap();
 }
@@ -92,7 +91,7 @@ void GetMaps() {
 //     trace("getting maps from files done");
 // }
 
-// void GetMapInfoFromApi(Mode mode) {
+// void GetMapInfos(Mode mode) {
 //     yield();
 
 //     while (!NadeoServices::IsAuthenticated(audienceCore))
@@ -156,7 +155,7 @@ void GetMaps() {
 //                 @map = cast<Map@>(mapsTotdByUid[uid]);
 
 //             if (map is null) {
-//                 warn("GetMapInfoFromApi: null " + modeName + " map: " + uid);
+//                 warn("GetMapInfos: null " + modeName + " map: " + uid);
 //                 continue;
 //             }
 
@@ -231,6 +230,93 @@ namespace API {
         return GetAsync(audienceLive, urlLive + endpoint, start);
     }
 
+    void GetMapInfos(Mode mode) {
+        const string modeName = tostring(mode);
+
+        trace("getting " + modeName + " map infos from API...");
+
+        uint index = 0;
+        string endpoint;
+
+        Map@[] mapsStillNeedInfo;
+        Map@[]@ mapsToCheck = mode == Mode::NadeoCampaign ? mapsCampaign : mapsTotd;
+
+        for (uint i = 0; i < mapsToCheck.Length; i++) {
+            Map@ map = mapsToCheck[i];
+
+            if (map.name is null)
+                mapsStillNeedInfo.InsertLast(map);
+        }
+
+        while (mapsStillNeedInfo.Length > 0 && (index == 0 || index < mapsStillNeedInfo.Length - 1)) {
+            endpoint = "/maps/?mapUidList=";
+
+            for (uint i = index; i < mapsStillNeedInfo.Length; i++) {
+                index = i;
+
+                if (endpoint.Length < 8124)  // 8192 - 41 (base url) - 27 (map uid max), allows ~291 maps depending on uid lengths
+                    endpoint += mapsStillNeedInfo[i].uid + ",";
+                else
+                    break;
+            }
+
+            WaitAsync();
+
+            trace("getting " + modeName + " map info from API (" + (index + 1) + "/" + mapsStillNeedInfo.Length + ")");
+
+            Net::HttpRequest@ req = GetCoreAsync(endpoint.SubStr(0, endpoint.Length - 1));
+            // IO::SetClipboard(req.Url);
+
+            const int code = req.ResponseCode();
+            if (code != 200) {
+                warn("error getting " + modeName + " map info from API: " + code + "; " + req.Error() + "; " + req.String());
+                return;
+            }
+
+            Json::Value@ mapInfo = req.Json();
+            if (!JsonExt::CheckType(mapInfo, Json::Type::Array))
+                continue;
+
+            // IO::SetClipboard(Json::Write(mapInfo));
+            // throw("hi");
+
+            for (uint i = 0; i < mapInfo.Length; i++) {
+                const string uid = JsonExt::GetString(mapInfo[i], "mapUid");
+
+                if (uid.Length > 0) {
+                    // Map@ map = mode == Mode::NadeoCampaign ? cast<Map@>(mapsCampaignByUid[uid]) : cast<Map@>(mapsTotdByUid[uid]);
+                    Map@ map = cast<Map@>(mode == Mode::NadeoCampaign ? mapsCampaignByUid[uid] : mapsTotdByUid[uid]);
+
+                    if (map is null) {
+                        warn("GetMapInfos: null " + modeName + " map: " + uid);
+                        continue;
+                    }
+
+                    map.authorTime  = JsonExt::GetUint(mapInfo[i], "authorScore");
+                    map.bronzeTime  = JsonExt::GetUint(mapInfo[i], "bronzeScore");
+                    map.downloadUrl = JsonExt::GetString(mapInfo[i], "fileUrl");
+                    map.goldTime    = JsonExt::GetUint(mapInfo[i], "goldScore");
+                    map.id          = JsonExt::GetString(mapInfo[i], "mapId");
+                    @map.name       = FormattedString(JsonExt::GetString(mapInfo[i], "name"));
+                    map.silverTime  = JsonExt::GetUint(mapInfo[i], "silverScore");
+
+                    map.SetSeason(mode);
+
+                    if (mode == Mode::NadeoCampaign && !mapsCampaignById.Exists(map.id))
+                        mapsCampaignById.Set(map.id, @map);
+
+                    else if (mode == Mode::TrackOfTheDay && !mapsTotdById.Exists(map.id))
+                        mapsTotdById.Set(map.id, @map);
+                }
+            }
+
+            if (mapsStillNeedInfo.Length == 1)
+                break;
+        }
+
+        trace("got " + modeName + " map info from API");
+    }
+
     void GetMapsAsync(Mode mode) {
         const string modeName = tostring(mode);
 
@@ -260,42 +346,56 @@ namespace API {
                 for (int i = campaignList.Length - 1; i >= 0; i--) {
                     Json::Value@ playlist = JsonExt::GetValue(campaignList[i], "playlist", Json::Type::Array);
 
-                    for (uint j = 0; j < playlist.Length; j++) {
-                        Map@ map = Map(playlist[j]);
+                    if (playlist !is null) {
+                        for (uint j = 0; j < playlist.Length; j++) {
+                            Map@ map = Map(playlist[j]);
 
-                        if (mapsCampaignByUid.Exists(map.uid))
-                            continue;  // should never happen but this code has ghosts
+                            map.SetSeason(Mode::NadeoCampaign);
 
-                        mapsCampaign.InsertLast(map);
-                        mapsCampaignByUid.Set(map.uid, @map);
-                    }
+                            if (mapsCampaignByUid.Exists(map.uid))
+                                continue;  // should never happen but this code has ghosts
+
+                            mapsCampaign.InsertLast(@map);
+                            mapsCampaignByUid.Set(map.uid, @map);
+                        }
+                    } else
+                        warn("playlist null");
                 }
-            }
+            } else
+                warn("campaignList null");
         } else {
             Json::Value@ monthList = JsonExt::GetValue(json, "monthList", Json::Type::Array);
 
-            for (int i = monthList.Length - 1; i >= 0; i--) {
-                Json::Value@ days = JsonExt::GetValue(monthList[i], "days", Json::Type::Array);
+            if (monthList !is null) {
+                for (int i = monthList.Length - 1; i >= 0; i--) {
+                    Json::Value@ days = JsonExt::GetValue(monthList[i], "days", Json::Type::Array);
 
-                for (uint j = 0; j < days.Length; j++) {
-                    Map@ map = Map(
-                        JsonExt::GetInt(monthList[i], "year"),
-                        JsonExt::GetInt(monthList[i], "month"),
-                        days[j]
-                    );
+                    if (days !is null) {
+                        for (uint j = 0; j < days.Length; j++) {
+                            Map@ map = Map(
+                                JsonExt::GetInt(monthList[i], "year"),
+                                JsonExt::GetInt(monthList[i], "month"),
+                                days[j]
+                            );
 
-                    if (map.uid.Length > 0) {
-                        if (mapsTotdByUid.Exists(map.uid))
-                            continue;  // should never happen but it did on 2024-01-06
+                            map.SetSeason(Mode::TrackOfTheDay);
 
-                        mapsTotd.InsertLast(map);
-                        mapsTotdByUid.Set(map.uid, @map);
-                    }
+                            if (map.uid.Length > 0) {
+                                if (mapsTotdByUid.Exists(map.uid))
+                                    continue;  // should never happen but it did on 2024-01-06
+
+                                mapsTotd.InsertLast(@map);
+                                mapsTotdByUid.Set(map.uid, @map);
+                            }
+                        }
+                    } else
+                        warn("days null");
                 }
-            }
+            } else
+                warn("monthList null");
         }
 
-        trace("got " + modeName + " maps from API");
+        trace("got " + (mode == Mode::NadeoCampaign ? mapsCampaign.Length : mapsTotd.Length) + " " + modeName + " maps from API");
     }
 
     Net::HttpRequest@ GetMeetAsync(const string &in endpoint, bool start = true) {

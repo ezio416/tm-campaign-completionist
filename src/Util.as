@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-10-17
+// m 2024-10-18
 
 // void GetAllPBsAsync() {
 //     const uint64 start = Time::Now;
@@ -98,17 +98,17 @@
 // }
 
 // courtesy of "BetterTOTD" plugin - https://github.com/XertroV/tm-better-totd
-// void ReturnToMenu() {
-//     CTrackMania@ App = cast<CTrackMania@>(GetApp());
+void ReturnToMenu() {
+    CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
-//     if (App.Network.PlaygroundClientScriptAPI.IsInGameMenuDisplayed)
-//         App.Network.PlaygroundInterfaceScriptHandler.CloseInGameMenu(CGameScriptHandlerPlaygroundInterface::EInGameMenuResult::Quit);
+    if (App.Network.PlaygroundClientScriptAPI.IsInGameMenuDisplayed)
+        App.Network.PlaygroundInterfaceScriptHandler.CloseInGameMenu(CGameScriptHandlerPlaygroundInterface::EInGameMenuResult::Quit);
 
-//     App.BackToMainMenu();
+    App.BackToMainMenu();
 
-//     while (!App.ManiaTitleControlScriptAPI.IsReady)
-//         yield();
-// }
+    while (!App.ManiaTitleControlScriptAPI.IsReady)
+        yield();
+}
 
 // string TimeFormatColored(uint u, bool format = true) {
 //     if (u > 0)

@@ -1,25 +1,22 @@
 // c 2024-01-02
-// m 2024-10-17
+// m 2024-10-18
 
 bool loadingMap = false;
 
 class Map {
-    uint   authorTime;
-    uint   bronzeTime;
-    string date;
-    string downloadUrl;
-    uint   goldTime;
-    string id;
-    uint   myMedals = 0;
-    uint   myTime   = 0;
-    string nameClean;
-    string nameColored;
-    string nameQuoted;
-    string nameRaw;
-    Season season   = Season::Unknown;
-    uint   silverTime;
-    string targetDelta;
-    string uid;
+    uint             authorTime;
+    uint             bronzeTime;
+    string           date;
+    string           downloadUrl;
+    uint             goldTime;
+    string           id;
+    uint             myMedals = 0;
+    uint             myTime   = 0;
+    FormattedString@ name;
+    Season           season   = Season::Unknown;
+    uint             silverTime;
+    string           targetDelta;
+    string           uid;
 
     Map() { }
     Map(Json::Value@ map) {  // campaign
@@ -68,16 +65,19 @@ class Map {
 
         CWebServicesTaskResult_NadeoServicesMapScript@ task = FileMgr.Map_NadeoServices_GetFromUid(User.Id, uid);
 
-        while (task.IsProcessing)
+        while (task !is null && task.IsProcessing)
             yield();
 
-        if (task.HasSucceeded) {
+        if (task !is null && task.HasSucceeded) {
             CNadeoServicesMap@ taskMap = task.Map;
             downloadUrl = taskMap.FileUrl;
 
-            FileMgr.TaskResult_Release(task.Id);
         } else
             warn("GetMapInfoFromManager error: task failed");
+
+        try {
+            FileMgr.TaskResult_Release(task.Id);
+        } catch {}
 
         trace("GetMapInfoFromManager done: " + (Time::Now - start) + "ms");
     }
@@ -102,34 +102,34 @@ class Map {
     //         myTime = pb;
 
     //     SetMedals();
-        // SetTargetDelta();
+    //     SetTargetDelta();
     // }
 
     // courtesy of "Play Map" plugin - https://github.com/XertroV/tm-play-map
-    // void Play() {
-    //     if (loadingMap || !hasPlayPermission)
-    //         return;
+    void Play() {
+        if (loadingMap || !hasPlayPermission)
+            return;
 
-    //     loadingMap = true;
+        loadingMap = true;
 
-    //     trace("loading map " + nameQuoted + " for playing");
+        trace("loading map " + (name !is null ? name.stripped : uid) + " for playing");
 
-    //     GetMapInfoFromManager();
+        GetMapInfoFromManager();
 
-    //     ReturnToMenu();
+        ReturnToMenu();
 
-    //     CTrackMania@ App = cast<CTrackMania@>(GetApp());
+        CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
-    //     App.ManiaTitleControlScriptAPI.PlayMap(downloadUrl, "TrackMania/TM_PlayMap_Local", "");
+        App.ManiaTitleControlScriptAPI.PlayMap(downloadUrl, "TrackMania/TM_PlayMap_Local", "");
 
-    //     const uint64 waitToPlayAgain = 5000;
-    //     const uint64 now = Time::Now;
+        const uint64 waitToPlayAgain = 5000;
+        const uint64 now = Time::Now;
 
-    //     while (Time::Now - now < waitToPlayAgain)
-    //         yield();
+        while (Time::Now - now < waitToPlayAgain)
+            yield();
 
-    //     loadingMap = false;
-    // }
+        loadingMap = false;
+    }
 
     void SetMedals() {
         if (myTime == 0)
@@ -146,19 +146,15 @@ class Map {
             myMedals = 0;
     }
 
-    void SetNames() {
-        nameRaw     = nameRaw.Trim();
-        nameClean   = Text::StripFormatCodes(nameRaw).Trim();
-        nameColored = Text::OpenplanetFormatCodes(nameRaw).Trim();
-        nameQuoted  = "\"" + nameClean + "\"";
-    }
-
     void SetSeason(Mode mode) {
         if (mode == Mode::NadeoCampaign) {
+            if (name is null)
+                return;
+
             for (uint i = 0; i < seasonCount; i++) {
                 Season _season = Season(i + 2);
 
-                if (nameClean.StartsWith(tostring(_season).Replace("_", " "))) {
+                if (name.stripped.StartsWith(tostring(_season).Replace("_", " "))) {
                     season = _season;
                     return;
                 }

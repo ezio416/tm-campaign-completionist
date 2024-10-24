@@ -1,5 +1,105 @@
 // c 2024-01-08
-// m 2024-10-17
+// m 2024-10-18
+
+[SettingsTab name="Debug" icon="Bug"]
+void SettingsTab_Debug() {
+    UI::Text("maps: " + maps.Length);
+    UI::Text("mapsCampaign: " + mapsCampaign.Length);
+    UI::Text("mapsTotd: " + mapsTotd.Length);
+
+    UI::BeginTabBar("##tabbar-debug");
+
+    Tab_DebugMaps();
+    Tab_DebugMapsCampaign();
+    Tab_DebugMapsTotd();
+
+    UI::EndTabBar();
+}
+
+void Tab_DebugMaps() {
+    if (!UI::BeginTabItem("maps"))
+        return;
+
+    ;
+
+    UI::EndTabItem();
+}
+
+void Tab_DebugMapsCampaign() {
+    if (!UI::BeginTabItem("mapsCampaign"))
+        return;
+
+    if (UI::BeginTable("##table-mapsCampaign", 4, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
+        UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(0.0f), 0.5f));
+
+        UI::TableSetupScrollFreeze(0, 1);
+        UI::TableSetupColumn("uid");
+        UI::TableSetupColumn("season");
+        UI::TableSetupColumn("name");
+        UI::TableSetupColumn("dl url");
+        UI::TableHeadersRow();
+
+        UI::ListClipper clipper(mapsCampaign.Length);
+        while (clipper.Step()) {
+            for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
+                Map@ map = mapsCampaign[i];
+
+                UI::TableNextRow();
+
+                UI::TableNextColumn();
+                UI::Text(map.uid);
+
+                UI::TableNextColumn();
+                UI::Text(tostring(map.season));
+
+                UI::TableNextColumn();
+                UI::Text((map.name !is null ? map.name.stripped : ""));
+
+                UI::TableNextColumn();
+                UI::Text(map.downloadUrl);
+            }
+        }
+
+        UI::PopStyleColor();
+        UI::EndTable();
+    }
+
+    UI::EndTabItem();
+}
+
+void Tab_DebugMapsTotd() {
+    if (!UI::BeginTabItem("mapsTotd"))
+        return;
+
+    if (UI::BeginTable("##table-mapsTotd", 2, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
+        UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(0.0f), 0.5f));
+
+        UI::TableSetupScrollFreeze(0, 1);
+        UI::TableSetupColumn("uid");
+        UI::TableSetupColumn("date");
+        UI::TableHeadersRow();
+
+        UI::ListClipper clipper(mapsTotd.Length);
+        while (clipper.Step()) {
+            for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
+                Map@ map = mapsTotd[i];
+
+                UI::TableNextRow();
+
+                UI::TableNextColumn();
+                UI::Text(map.uid);
+
+                UI::TableNextColumn();
+                UI::Text(map.date);
+            }
+        }
+
+        UI::PopStyleColor();
+        UI::EndTable();
+    }
+
+    UI::EndTabItem();
+}
 
 // void RenderDebug() {
 //     if (!S_Debug)

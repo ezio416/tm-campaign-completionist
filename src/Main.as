@@ -37,9 +37,6 @@ void Main() {
             UI::ShowNotification(pluginTitle, "Paid access is required to play maps, but you can still track your progress on the current Nadeo Campaign", vec4(1.0f, 0.1f, 0.1f, 0.8f));
     }
 
-    API::GetMapsAsync(Mode::NadeoCampaign);
-    API::GetMapsAsync(Mode::TrackOfTheDay);
-
     // lastMode = S_Mode;
     // lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
     // lastSeason = S_Season;
@@ -57,7 +54,7 @@ void Main() {
     // LoadSkips();
     // yield();
 
-    // GetMaps();
+    GetMaps();
 
     // while (true) {
     //     Loop();
@@ -74,9 +71,7 @@ void Render() {
         return;
 
     if (UI::Begin(pluginTitle, S_Enabled, UI::WindowFlags::NoFocusOnAppearing)) {
-        UI::Text("maps: " + maps.Length);
-        UI::Text("mapsCampaign: " + mapsCampaign.Length);
-        UI::Text("mapsTotd: " + mapsTotd.Length);
+        ;
     }
     UI::End();
 }
