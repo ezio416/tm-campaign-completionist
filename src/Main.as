@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-10-18
+// m 2024-10-24
 
 const string  pluginColor = "\\$0F0";
 const string  pluginIcon  = Icons::Check;
@@ -14,6 +14,8 @@ string       colorSeason;
 string       colorSeries;
 string       colorTarget;
 string       currentUid;
+UI::Font@    fontHeader;
+UI::Font@    fontSubHeader;
 bool         gettingNow        = false;
 bool         hasPlayPermission = false;
 string       iconSeason;
@@ -27,6 +29,8 @@ dictionary@  mapsTotdById      = dictionary();
 dictionary@  mapsTotdByUid     = dictionary();
 uint         metTargetTotal    = 0;
 Map@         nextMap;
+const float  scale             = UI::GetScale();
+const float  indentWidth       = scale * 20.0f;
 const uint   seasonCount       = 18;  // update every season
 
 void Main() {
@@ -36,6 +40,9 @@ void Main() {
         if (S_NotifyStarter)
             UI::ShowNotification(pluginTitle, "Paid access is required to play maps, but you can still track your progress on the current Nadeo Campaign", vec4(1.0f, 0.1f, 0.1f, 0.8f));
     }
+
+    @fontSubHeader = UI::LoadFont("DroidSans.ttf", 20);
+    @fontHeader    = UI::LoadFont("DroidSans.ttf", 26);
 
     // lastMode = S_Mode;
     // lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
@@ -54,7 +61,7 @@ void Main() {
     // LoadSkips();
     // yield();
 
-    GetMaps();
+    // GetMaps();
 
     // while (true) {
     //     Loop();
@@ -63,22 +70,62 @@ void Main() {
 }
 
 void Render() {
-    if (false
-        || !S_Enabled
-        || (S_HideWithGame && !UI::IsGameUIVisible())
-        || (S_HideWithOP && !UI::IsOverlayShown())
-    )
-        return;
+    // if (false
+    //     || !S_Enabled
+    //     || (S_HideWithGame && !UI::IsGameUIVisible())
+    //     || (S_HideWithOP && !UI::IsOverlayShown())
+    // )
+    //     return;
 
-    if (UI::Begin(pluginTitle, S_Enabled, UI::WindowFlags::NoFocusOnAppearing)) {
-        ;
-    }
-    UI::End();
+    // if (UI::Begin(pluginTitle, S_Enabled, UI::WindowFlags::NoFocusOnAppearing)) {
+    //     ;
+    // }
+    // UI::End();
+
+    RenderWindowDetached();
 }
 
 void RenderMenu() {
-    if (UI::MenuItem(pluginTitle, "", S_Enabled))
-        S_Enabled = !S_Enabled;
+    // if (UI::MenuItem(pluginTitle, "", S_Enabled))
+    //     S_Enabled = !S_Enabled;
+
+    // if (UI::MenuItem(pluginTitle, "", S_MainWindowDetached))
+    //     S_MainWindowDetached = !S_MainWindowDetached;
+
+    if (UI::BeginMenu(pluginTitle)) {
+        // S_MainWindowDetached = UI::Checkbox(
+        //     "\\$0F0" + Icons::WindowMaximize + "\\$G Detached main window",
+        //     S_MainWindowDetached
+        // );
+
+        // Settings_General();
+
+        // UI::BeginTabBar("##tabbar-menu");
+
+        // if (UI::BeginTabItem(Icons::Cogs + " General")) {
+        //     SettingsTab_General();
+        //     UI::EndTabItem();
+        // }
+
+        // if (UI::BeginTabItem(Icons::WindowMaximize + " Window")) {
+        //     SettingsTab_Window();
+        //     UI::EndTabItem();
+        // }
+
+        // if (UI::BeginTabItem(Icons::Check + " Campaign Completionist")) {
+            Window(2);
+        //     UI::EndTabItem();
+        // }
+
+        // if (UI::BeginTabItem(Icons::Bug + " Debug")) {
+        //     SettingsTab_Debug();
+        //     UI::EndTabItem();
+        // }
+
+        // UI::EndTabBar();
+
+        UI::EndMenu();
+    }
 }
 
 // void RenderMenu() {

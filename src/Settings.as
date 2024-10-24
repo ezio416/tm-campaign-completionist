@@ -1,51 +1,138 @@
 // c 2024-01-02
-// m 2024-10-18
+// m 2024-10-24
 
-[Setting category="General" name="Enabled"]
-bool S_Enabled = true;
+bool[] settingsOpen = { false, false, false };
 
-[Setting category="General" name="Show/hide with game UI"]
-bool S_HideWithGame = true;
+[Setting hidden] bool S_AutoSwitch    = true;
+[Setting hidden] bool S_NotifyStarter = true;
 
-[Setting category="General" name="Show/hide with Openplanet UI"]
-bool S_HideWithOP = false;
+[Setting hidden] bool S_WindowAutoResize   = false;
+[Setting hidden] bool S_WindowDetached     = false;
+[Setting hidden] bool S_WindowHideWithGame = true;
+[Setting hidden] bool S_WindowHideWithOP   = true;
+
+[SettingsTab name="Campaign Completionist" icon="Check" order=0]
+void SettingsTab_RenderWindow() {
+    Window(0);
+}
+
+void WindowSettings(int id = -1) {
+    bool save = false;
+
+    if (id > -1)
+        save = true;
+
+    if (save && uint(id) >= settingsOpen.Length)
+        return;
+
+    if (!UI::CollapsingHeader(Icons::Cogs + " Settings")) {
+        if (save && settingsOpen[id]) {
+            settingsOpen[id] = false;
+            Meta::SaveSettings();
+        }
+
+        return;
+    }
+
+    if (save)
+        settingsOpen[id] = true;
+
+    UI::Indent(indentWidth);
+
+    SectionGeneral();
+    SectionWindow();
+
+    UI::Indent(-indentWidth);
+}
+
+void SectionGeneral() {
+    if (!UI::CollapsingHeader(Icons::Cog + " General"))
+        return;
+
+    UI::Indent(indentWidth);
+
+    if (UI::Button("Reset to default##general")) {
+        pluginMeta.GetSetting("S_AutoSwitch").Reset();
+        pluginMeta.GetSetting("S_NotifyStarter").Reset();
+
+        Meta::SaveSettings();
+    }
+
+    S_NotifyStarter = UI::Checkbox(
+        "Notify when Starter Access is detected",
+        S_NotifyStarter
+    );
+
+    if (hasPlayPermission) {
+        S_AutoSwitch = UI::Checkbox(
+            "Automatically switch maps when target is reached",
+            S_AutoSwitch
+        );
+    }
+
+    UI::Indent(-indentWidth);
+}
+
+void SectionWindow() {
+    if (!UI::CollapsingHeader(Icons::WindowMaximize + " Window"))
+        return;
+
+    UI::Indent(indentWidth);
+
+    if (UI::Button("Reset to default##window")) {
+        pluginMeta.GetSetting("S_WindowAutoResize").Reset();
+        pluginMeta.GetSetting("S_WindowDetached").Reset();
+        pluginMeta.GetSetting("S_WindowHideWithGame").Reset();
+        pluginMeta.GetSetting("S_WindowHideWithOP").Reset();
+
+        Meta::SaveSettings();
+    }
+
+    S_WindowDetached = UI::Checkbox(
+        "Show a detached window",
+        S_WindowDetached
+    );
+
+    if (S_WindowDetached) {
+        UI::Indent(indentWidth);
+
+        S_WindowHideWithGame = UI::Checkbox(
+            "Show/hide with game UI",
+            S_WindowHideWithGame
+        );
+
+        S_WindowHideWithOP = UI::Checkbox(
+            "Show/hide with Openplanet UI",
+            S_WindowHideWithOP
+        );
+
+        S_WindowAutoResize = UI::Checkbox(
+            "Auto-resize",
+            S_WindowAutoResize
+        );
+
+        UI::Indent(-indentWidth);
+    }
+
+    UI::Indent(-indentWidth);
+}
+
+void HoverTooltipSetting(const string &in msg, const string &in color = "666") {
+    UI::SameLine();
+    UI::Text("\\$" + color + Icons::QuestionCircle);
+    if (!UI::IsItemHovered())
+        return;
+
+    UI::SetNextWindowSize(int(Math::Min(Draw::MeasureString(msg).x, 400.0f)), 0.0f);
+    UI::BeginTooltip();
+    UI::TextWrapped(msg);
+    UI::EndTooltip();
+}
 
 enum Mode {
     NadeoCampaign,
     TrackOfTheDay
 }
-
-// [Setting hidden]
-// Mode S_Mode = Mode::NadeoCampaign;
-// Mode lastMode = S_Mode;
-
-// enum TargetMedal {
-//     Author,
-//     Gold,
-//     Silver,
-//     Bronze,
-//     None
-// }
-
-// [Setting hidden]
-// TargetMedal S_Target = TargetMedal::Author;
-
-
-[Setting category="General" name="Notify when Starter Access is detected"]
-bool S_NotifyStarter = true;
-
-// [Setting category="General" name="Automatically switch maps when target is reached" description="Always disabled for Starter Access"]
-// bool S_AutoSwitch = true;
-
-// [Setting category="General" name="Show 'Auto Switch' button" description="Always disabled for Starter Access"]
-// bool S_MenuAutoSwitch = true;
-
-// [Setting category="General" name="Only show the current 25 Nadeo Campaign maps" description="Always enabled for Starter Access (only first 10 maps)"]
-// bool S_OnlyCurrentCampaign = false;
-// bool lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
-
-// [Setting category="General" name="Show 'Only Current Campaign' button" description="Always disabled for Starter Access"]
-// bool S_MenuOnlyCurrentCampaign = true;
 
 enum Season {  // update every season
     All,
@@ -69,6 +156,90 @@ enum Season {  // update every season
     Summer_2024,
     Fall_2024
 }
+
+// [Setting category="General" name="Automatically switch maps when target is reached" description="Always disabled for Starter Access"]
+
+// [SettingsTab name="General" icon="Cogs" order=0]
+// void SettingsTab_General() {
+//     if (UI::Button("Reset to default##general")) {
+//         pluginMeta.GetSetting("S_NotifyStarter").Reset();
+//     }
+
+//     if (hasPlayPermission)
+//         S_AutoSwitch = UI::Checkbox(
+//             "Automatically switch maps when target is reached",
+//             S_AutoSwitch
+//         );
+
+//     S_NotifyStarter = UI::Checkbox(
+//         "Notify when Starter Access is detected",
+//         S_NotifyStarter
+//     );
+// }
+
+// [SettingsTab name="Window" icon="WindowMaximize" order=1]
+// void SettingsTab_Window() {
+    // if (UI::Button("Reset to default##window")) {
+    //     pluginMeta.GetSetting("S_WindowDetached").Reset();
+    //     pluginMeta.GetSetting("S_WindowHideWithGame").Reset();
+    //     pluginMeta.GetSetting("S_WindowHideWithOP").Reset();
+    //     pluginMeta.GetSetting("S_WindowAutoResize").Reset();
+    // }
+
+    // S_WindowDetached = UI::Checkbox(
+    //     "Show a detached window",
+    //     S_WindowDetached
+    // );
+
+    // if (S_WindowDetached) {
+    //     UI::NewLine(); UI::SameLine();
+    //     S_WindowHideWithGame = UI::Checkbox(
+    //         "Show/hide with game UI",
+    //         S_WindowHideWithGame
+    //     );
+
+    //     UI::NewLine(); UI::SameLine();
+    //     S_WindowHideWithOP = UI::Checkbox(
+    //         "Show/hide with Openplanet UI",
+    //         S_WindowHideWithOP
+    //     );
+
+    //     UI::NewLine(); UI::SameLine();
+    //     S_WindowAutoResize = UI::Checkbox(
+    //         "Auto-resize",
+    //         S_WindowAutoResize
+    //     );
+    // }
+// }
+
+// [Setting hidden]
+// Mode S_Mode = Mode::NadeoCampaign;
+// Mode lastMode = S_Mode;
+
+// enum TargetMedal {
+//     Author,
+//     Gold,
+//     Silver,
+//     Bronze,
+//     None
+// }
+
+// [Setting hidden]
+// TargetMedal S_Target = TargetMedal::Author;
+
+
+// [Setting category="General" name="Automatically switch maps when target is reached" description="Always disabled for Starter Access"]
+// bool S_AutoSwitch = true;
+
+// [Setting category="General" name="Show 'Auto Switch' button" description="Always disabled for Starter Access"]
+// bool S_MenuAutoSwitch = true;
+
+// [Setting category="General" name="Only show the current 25 Nadeo Campaign maps" description="Always enabled for Starter Access (only first 10 maps)"]
+// bool S_OnlyCurrentCampaign = false;
+// bool lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
+
+// [Setting category="General" name="Show 'Only Current Campaign' button" description="Always disabled for Starter Access"]
+// bool S_MenuOnlyCurrentCampaign = true;
 
 // [Setting category="General" name="Season to show" description="Tracks of the Day are categorized into 3-month periods which may differ slightly from the time periods of Nadeo Campaigns. Does nothing for Starter Access"]
 // Season S_Season = Season::All;

@@ -1,7 +1,7 @@
 // c 2024-01-08
-// m 2024-10-18
+// m 2024-10-24
 
-[SettingsTab name="Debug" icon="Bug"]
+[SettingsTab name="Debug" icon="Bug" order=1]
 void SettingsTab_Debug() {
     UI::Text("maps: " + maps.Length);
     UI::Text("mapsCampaign: " + mapsCampaign.Length);
