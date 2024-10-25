@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-10-24
+// m 2024-10-25
 
 enum CampaignSeries {
     White,
@@ -49,8 +49,8 @@ enum TargetMedal {
 [Setting hidden] vec3           S_ColorSeasonWinter      = vec3(0.0f,  1.0f,  1.0f);
 [Setting hidden] vec3           S_ColorSeriesAll         = vec3(0.5f,  0.0f,  0.8f);
 [Setting hidden] vec3           S_ColorSeriesBlack       = vec3(0.4f,  0.4f,  0.4f);
-[Setting hidden] vec3           S_ColorSeriesBlue        = vec3(0.4f,  0.8f,  1.0f);
-[Setting hidden] vec3           S_ColorSeriesGreen       = vec3(0.0f,  1.0f,  0.0f);
+[Setting hidden] vec3           S_ColorSeriesBlue        = vec3(0.24f, 0.39f, 1.0f);
+[Setting hidden] vec3           S_ColorSeriesGreen       = vec3(0.43f, 0.98f, 0.63f);
 [Setting hidden] vec3           S_ColorSeriesRed         = vec3(1.0f,  0.0f,  0.0f);
 [Setting hidden] vec3           S_ColorSeriesUnknown     = vec3(1.0f,  0.5f,  1.0f);
 [Setting hidden] vec3           S_ColorSeriesWhite       = vec3(1.0f,  1.0f,  1.0f);
@@ -62,6 +62,7 @@ enum TargetMedal {
 [Setting hidden] bool           S_ShowSettingsInDetached = false;
 [Setting hidden] bool           S_ShowSettingsInMenu     = false;
 [Setting hidden] TargetMedal    S_Target                 = TargetMedal::Author;
+[Setting hidden] float          S_TimeLimit              = 0.0f;
 [Setting hidden] bool           S_WindowAutoResize       = false;
 [Setting hidden] bool           S_WindowDetached         = false;
 [Setting hidden] bool           S_WindowHideWithGame     = true;

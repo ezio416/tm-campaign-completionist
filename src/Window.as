@@ -1,5 +1,5 @@
 // c 2024-10-24
-// m 2024-10-24
+// m 2024-10-25
 
 void RenderWindowDetached() {
     if (false
@@ -37,15 +37,18 @@ void Window(WindowSource source = WindowSource::Unknown) {
     }
 
     SectionTarget();
+    UI::Separator();
     SectionSeries();
+    UI::Separator();
     SectionOrdering();
-
-    ;
+    UI::Separator();
+    SectionTimeLimit();
+    UI::Separator();
 }
 
 void SectionOrdering() {
     UI::AlignTextToFramePadding();
-    UI::Text("Ordering: ");
+    UI::Text("Ordering:");
 
     UI::SameLine();
     if (UI::RadioButton(Icons::ArrowRight + " Normal", S_Ordering == MapOrdering::InOrder))
@@ -62,7 +65,7 @@ void SectionOrdering() {
 
 void SectionSeries() {
     UI::AlignTextToFramePadding();
-    UI::Text("Series: ");
+    UI::Text("Series:");
 
     int styleColors = 0;
 
@@ -106,7 +109,7 @@ void SectionSeries() {
 
 void SectionTarget() {
     UI::AlignTextToFramePadding();
-    UI::Text("Target: ");
+    UI::Text("Target:");
 
     int styleColors = 0;
 
@@ -136,6 +139,52 @@ void SectionTarget() {
         S_Target = TargetMedal::None;
 
     UI::PopStyleColor(styleColors);
+}
+
+void SectionTimeLimit() {
+    UI::AlignTextToFramePadding();
+    UI::Text("Time limit per map (s):");
+
+    UI::SameLine();
+    const string fmt = Time::Format(int64(S_TimeLimit * 1000.0f));
+    UI::SetNextItemWidth((UI::GetContentRegionAvail().x) / scale - Draw::MeasureString(fmt).x + (scale * 5.0f));
+    S_TimeLimit = UI::InputFloat(fmt + "###input-timelimit", S_TimeLimit, 10.0f);
+    if (S_TimeLimit < 0.0f)
+        S_TimeLimit = 0.0f;
+
+    DrawPresetButton("none", 0.0f, false);
+    DrawPresetButton("1m",   60.0f);
+    DrawPresetButton("2m",   120.0f);
+    DrawPresetButton("3m",   180.0f);
+    DrawPresetButton("5m",   300.0f);
+    DrawPresetButton("10m",  600.0f);
+    DrawPresetButton("15m",  900.0f);
+    DrawPresetButton("20m",  1200.0f);
+    DrawPresetButton("25m",  1500.0f);
+    DrawPresetButton("30m",  1800.0f);
+    DrawPresetButton("45m",  2700.0f);
+    DrawPresetButton("1h",   3600.0f);
+    DrawPresetButton("2h",   7200.0f);
+}
+
+void DrawPresetButton(const string &in name, float num, bool offset = true) {
+    if (offset) {
+        UI::SameLine();
+        UI::SetCursorPos(UI::GetCursorPos() + vec2(scale * -5.0f, 0.0f));
+    }
+
+    const bool current = S_TimeLimit == num;
+
+    if (current)
+        UI::PushStyleColor(UI::Col::Button, vec4());
+
+    UI::BeginDisabled(current);
+    if (UI::Button(name))
+        S_TimeLimit = num;
+    UI::EndDisabled();
+
+    if (current)
+        UI::PopStyleColor();
 }
 
 int PushRadioButtonStyles(vec3 color) {
