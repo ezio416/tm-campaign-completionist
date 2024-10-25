@@ -40,41 +40,58 @@ void Window(WindowSource source = WindowSource::Unknown) {
     UI::Separator();
     SectionSeries();
     UI::Separator();
-    SectionOrdering();
+    SectionFilters();
+    UI::Separator();
+    SectionOrder();
     UI::Separator();
     SectionTimeLimit();
     UI::Separator();
 }
 
-// void Section
-
-void SectionOrdering() {
+void SectionFilters() {
     UI::AlignTextToFramePadding();
-    UI::Text("Ordering:");
+    UI::Text("Filters:");
 
     UI::SameLine();
-    if (UI::RadioButton(Icons::ArrowRight, S_Ordering == MapOrdering::InOrder))
-        S_Ordering = MapOrdering::InOrder;
+    if (UI::Checkbox("Played", S_Filter & MapFilter::Played == MapFilter::Played))
+        S_Filter |= MapFilter::Played;
+    else
+        S_Filter = S_Filter & (S_Filter ^ MapFilter::Played);
+
+    UI::SameLine();
+    if (UI::Checkbox("Unplayed", S_Filter & MapFilter::Unplayed == MapFilter::Unplayed))
+        S_Filter |= MapFilter::Unplayed;
+    else
+        S_Filter = S_Filter & (S_Filter ^ MapFilter::Unplayed);
+}
+
+void SectionOrder() {
+    UI::AlignTextToFramePadding();
+    UI::Text("Order:");
+
+    UI::SameLine();
+    if (UI::RadioButton(Icons::ArrowRight, S_Order == MapOrder::Normal))
+        S_Order = MapOrder::Normal;
     HoverTooltip("Normal");
 
     UI::SameLine();
-    if (UI::RadioButton(Icons::ArrowLeft, S_Ordering == MapOrdering::Reverse))
-        S_Ordering = MapOrdering::Reverse;
+    if (UI::RadioButton(Icons::ArrowLeft, S_Order == MapOrder::Reverse))
+        S_Order = MapOrder::Reverse;
     HoverTooltip("Reverse");
 
     UI::SameLine();
-    if (UI::RadioButton(Icons::Random, S_Ordering == MapOrdering::Random))
-        S_Ordering = MapOrdering::Random;
+    if (UI::RadioButton(Icons::Random, S_Order == MapOrder::Random))
+        S_Order = MapOrder::Random;
     HoverTooltip("Random");
 
     UI::SameLine();
-    if (UI::RadioButton(Icons::Crosshairs, S_Ordering == MapOrdering::ClosestAbs))
-        S_Ordering = MapOrdering::ClosestAbs;
+    if (UI::RadioButton(Icons::Crosshairs, S_Order == MapOrder::ClosestAbs))
+        S_Order = MapOrder::ClosestAbs;
     HoverTooltip("Closest (absolute)");
 
     UI::SameLine();
-    if (UI::RadioButton(Icons::Percent, S_Ordering == MapOrdering::ClosestRel))
-        S_Ordering = MapOrdering::ClosestRel;
+    if (UI::RadioButton(Icons::Percent, S_Order == MapOrder::ClosestRel))
+        S_Order = MapOrder::ClosestRel;
     HoverTooltip("Closest (relative)");
 }
 
@@ -161,28 +178,28 @@ void SectionTimeLimit() {
     UI::Text("Time limit per map (s):");
 
     UI::SameLine();
-    const string fmt = Time::Format(int64(S_TimeLimit * 1000.0f));
+    const string fmt = Time::Format(int(S_TimeLimit * 1000));
     UI::SetNextItemWidth((UI::GetContentRegionAvail().x) / scale - Draw::MeasureString(fmt).x + (scale * 5.0f));
-    S_TimeLimit = UI::InputFloat(fmt + "###input-timelimit", S_TimeLimit, 10.0f);
-    if (S_TimeLimit < 0.0f)
-        S_TimeLimit = 0.0f;
+    S_TimeLimit = UI::InputInt(fmt + "###input-timelimit", S_TimeLimit, 10);
+    if (S_TimeLimit < 0)
+        S_TimeLimit = 0;
 
-    DrawPresetButton("none", 0.0f, false);
-    DrawPresetButton("1m",   60.0f);
-    DrawPresetButton("2m",   120.0f);
-    DrawPresetButton("3m",   180.0f);
-    DrawPresetButton("5m",   300.0f);
-    DrawPresetButton("10m",  600.0f);
-    DrawPresetButton("15m",  900.0f);
-    DrawPresetButton("20m",  1200.0f);
-    DrawPresetButton("25m",  1500.0f);
-    DrawPresetButton("30m",  1800.0f);
-    DrawPresetButton("45m",  2700.0f);
-    DrawPresetButton("1h",   3600.0f);
-    DrawPresetButton("2h",   7200.0f);
+    DrawPresetButton("none", 0, false);
+    DrawPresetButton("1m",   60);
+    DrawPresetButton("2m",   120);
+    DrawPresetButton("3m",   180);
+    DrawPresetButton("5m",   300);
+    DrawPresetButton("10m",  600);
+    DrawPresetButton("15m",  900);
+    DrawPresetButton("20m",  1200);
+    DrawPresetButton("25m",  1500);
+    DrawPresetButton("30m",  1800);
+    DrawPresetButton("45m",  2700);
+    DrawPresetButton("1h",   3600);
+    DrawPresetButton("2h",   7200);
 }
 
-void DrawPresetButton(const string &in name, float num, bool offset = true) {
+void DrawPresetButton(const string &in name, int num, bool offset = true) {
     if (offset) {
         UI::SameLine();
         UI::SetCursorPos(UI::GetCursorPos() + vec2(scale * -5.0f, 0.0f));

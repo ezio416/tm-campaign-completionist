@@ -11,8 +11,13 @@ enum CampaignSeries {
     Unknown
 }
 
-enum MapOrdering {
-    InOrder,
+enum MapFilter {
+    Played   = 1,
+    Unplayed = 2
+}
+
+enum MapOrder {
+    Normal,
     Reverse,
     ClosestAbs,
     ClosestRel,
@@ -56,15 +61,16 @@ enum TargetMedal {
 [Setting hidden] vec3           S_ColorSeriesRed         = vec3(1.0f,  0.0f,  0.0f);
 [Setting hidden] vec3           S_ColorSeriesUnknown     = vec3(1.0f,  0.5f,  1.0f);
 [Setting hidden] vec3           S_ColorSeriesWhite       = vec3(1.0f,  1.0f,  1.0f);
+[Setting hidden] int            S_Filter                 = MapFilter::Played | MapFilter::Unplayed;
 [Setting hidden] bool           S_NotifyStarter          = true;
 [Setting hidden] bool           S_OnlyCurrentCampaign    = false;
-[Setting hidden] MapOrdering    S_Ordering               = MapOrdering::InOrder;
+[Setting hidden] MapOrder       S_Order                  = MapOrder::Normal;
 [Setting hidden] bool           S_SaveSettingsOnClose    = true;
 [Setting hidden] CampaignSeries S_Series                 = CampaignSeries::All;
 [Setting hidden] bool           S_ShowSettingsInDetached = false;
 [Setting hidden] bool           S_ShowSettingsInMenu     = false;
 [Setting hidden] TargetMedal    S_Target                 = TargetMedal::Author;
-[Setting hidden] float          S_TimeLimit              = 0.0f;
+[Setting hidden] int            S_TimeLimit              = 0;
 [Setting hidden] bool           S_WindowAutoResize       = false;
 [Setting hidden] bool           S_WindowDetached         = false;
 [Setting hidden] bool           S_WindowHideWithGame     = true;
