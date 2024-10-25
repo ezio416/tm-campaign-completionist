@@ -144,74 +144,74 @@ class Map {
             myMedals = 0;
     }
 
-    void SetSeason(Mode mode) {
-        if (mode == Mode::NadeoCampaign) {
-            if (name is null)
-                return;
+    // void SetSeason(Mode mode) {
+        // if (mode == Mode::NadeoCampaign) {
+        //     if (name is null)
+        //         return;
 
-            for (uint i = 0; i < seasonCount; i++) {
-                Season _season = Season(i + 2);
+        //     for (uint i = 0; i < seasonCount; i++) {
+        //         Season _season = Season(i + 2);
 
-                if (name.stripped.StartsWith(tostring(_season).Replace("_", " "))) {
-                    season = _season;
-                    return;
-                }
-            }
+        //         if (name.stripped.StartsWith(tostring(_season).Replace("_", " "))) {
+        //             season = _season;
+        //             return;
+        //         }
+        //     }
 
-            return;
-        }
+        //     return;
+        // }
 
-        const string dateRaw = date.SubStr(3, date.Length - 3);
-        const int year = Text::ParseInt(dateRaw.SubStr(0, 4));
-        const int month = Text::ParseInt(dateRaw.SubStr(5, 2));
+        // const string dateRaw = date.SubStr(3, date.Length - 3);
+        // const int year = Text::ParseInt(dateRaw.SubStr(0, 4));
+        // const int month = Text::ParseInt(dateRaw.SubStr(5, 2));
 
-        switch (year) {  // update every season
-            case 2020:
-                switch (month) {
-                    case 7:  case 8:  case 9:  season = Season::Summer_2020; break;
-                    case 10: case 11: case 12: season = Season::Fall_2020;   break;
-                    default:;
-                }
-                break;
-            case 2021:
-                switch (month) {
-                    case 1:  case 2:  case 3:  season = Season::Winter_2021; break;
-                    case 4:  case 5:  case 6:  season = Season::Spring_2021; break;
-                    case 7:  case 8:  case 9:  season = Season::Summer_2021; break;
-                    case 10: case 11: case 12: season = Season::Fall_2021;   break;
-                    default:;
-                }
-                break;
-            case 2022:
-                switch (month) {
-                    case 1:  case 2:  case 3:  season = Season::Winter_2022; break;
-                    case 4:  case 5:  case 6:  season = Season::Spring_2022; break;
-                    case 7:  case 8:  case 9:  season = Season::Summer_2022; break;
-                    case 10: case 11: case 12: season = Season::Fall_2022;   break;
-                    default:;
-                }
-                break;
-            case 2023:
-                switch (month) {
-                    case 1:  case 2:  case 3:  season = Season::Winter_2023; break;
-                    case 4:  case 5:  case 6:  season = Season::Spring_2023; break;
-                    case 7:  case 8:  case 9:  season = Season::Summer_2023; break;
-                    case 10: case 11: case 12: season = Season::Fall_2023;   break;
-                    default:;
-                }
-                break;
-            case 2024:
-                switch (month) {
-                    case 1:  case 2:  case 3:  season = Season::Winter_2024; break;
-                    case 4:  case 5:  case 6:  season = Season::Spring_2024; break;
-                    case 7:  case 8:  case 9:  season = Season::Summer_2024; break;
-                    // case 10: case 11: case 12: season = Season::Fall_2024;   break;
-                    default:;
-                }
-                break;
-            default:;
-        }
-    }
+        // switch (year) {  // update every season
+        //     case 2020:
+        //         switch (month) {
+        //             case 7:  case 8:  case 9:  season = Season::Summer_2020; break;
+        //             case 10: case 11: case 12: season = Season::Fall_2020;   break;
+        //             default:;
+        //         }
+        //         break;
+        //     case 2021:
+        //         switch (month) {
+        //             case 1:  case 2:  case 3:  season = Season::Winter_2021; break;
+        //             case 4:  case 5:  case 6:  season = Season::Spring_2021; break;
+        //             case 7:  case 8:  case 9:  season = Season::Summer_2021; break;
+        //             case 10: case 11: case 12: season = Season::Fall_2021;   break;
+        //             default:;
+        //         }
+        //         break;
+        //     case 2022:
+        //         switch (month) {
+        //             case 1:  case 2:  case 3:  season = Season::Winter_2022; break;
+        //             case 4:  case 5:  case 6:  season = Season::Spring_2022; break;
+        //             case 7:  case 8:  case 9:  season = Season::Summer_2022; break;
+        //             case 10: case 11: case 12: season = Season::Fall_2022;   break;
+        //             default:;
+        //         }
+        //         break;
+        //     case 2023:
+        //         switch (month) {
+        //             case 1:  case 2:  case 3:  season = Season::Winter_2023; break;
+        //             case 4:  case 5:  case 6:  season = Season::Spring_2023; break;
+        //             case 7:  case 8:  case 9:  season = Season::Summer_2023; break;
+        //             case 10: case 11: case 12: season = Season::Fall_2023;   break;
+        //             default:;
+        //         }
+        //         break;
+        //     case 2024:
+        //         switch (month) {
+        //             case 1:  case 2:  case 3:  season = Season::Winter_2024; break;
+        //             case 4:  case 5:  case 6:  season = Season::Spring_2024; break;
+        //             case 7:  case 8:  case 9:  season = Season::Summer_2024; break;
+        //             // case 10: case 11: case 12: season = Season::Fall_2024;   break;
+        //             default:;
+        //         }
+        //         break;
+        //     default:;
+        // }
+    // }
 
     // void SetTargetDelta() {
         // int delta;

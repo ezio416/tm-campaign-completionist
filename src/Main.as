@@ -488,12 +488,13 @@ void OnSettingsChanged() {
     //         }
     // }
 
-    colorSeriesAll   = Text::FormatOpenplanetColor(S_ColorSeriesAll);
-    colorSeriesBlack = Text::FormatOpenplanetColor(S_ColorSeriesBlack);
-    colorSeriesBlue  = Text::FormatOpenplanetColor(S_ColorSeriesBlue);
-    colorSeriesGreen = Text::FormatOpenplanetColor(S_ColorSeriesGreen);
-    colorSeriesRed   = Text::FormatOpenplanetColor(S_ColorSeriesRed);
-    colorSeriesWhite = Text::FormatOpenplanetColor(S_ColorSeriesWhite);
+    colorSeriesAll     = Text::FormatOpenplanetColor(S_ColorSeriesAll);
+    colorSeriesBlack   = Text::FormatOpenplanetColor(S_ColorSeriesBlack);
+    colorSeriesBlue    = Text::FormatOpenplanetColor(S_ColorSeriesBlue);
+    colorSeriesGreen   = Text::FormatOpenplanetColor(S_ColorSeriesGreen);
+    colorSeriesRed     = Text::FormatOpenplanetColor(S_ColorSeriesRed);
+    colorSeriesUnknown = Text::FormatOpenplanetColor(S_ColorSeriesUnknown);
+    colorSeriesWhite   = Text::FormatOpenplanetColor(S_ColorSeriesWhite);
 
     // switch (S_Series) {
     //     case CampaignSeries::All:   colorSeries = colorSeriesAll;   break;

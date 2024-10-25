@@ -1,6 +1,22 @@
 // c 2024-01-02
 // m 2024-10-24
 
+enum CampaignSeries {
+    White,
+    Green,
+    Blue,
+    Red,
+    Black,
+    All,
+    Unknown
+}
+
+enum MapOrdering {
+    InOrder,
+    Reverse,
+    Random
+}
+
 enum TargetMedal {
     Author = 1,
     Gold   = 2,
@@ -9,44 +25,47 @@ enum TargetMedal {
     None   = 5
 }
 
-[Setting hidden] bool        S_AutoSwitch             = true;
-[Setting hidden] bool        S_ColoredMapNames        = false;
-[Setting hidden] vec3        S_ColorDelta0001to0100   = vec3(0.0f,  1.0f,  1.0f);
-[Setting hidden] vec3        S_ColorDelta0101to0250   = vec3(0.0f,  0.6f,  1.0f);
-[Setting hidden] vec3        S_ColorDelta0251to0500   = vec3(0.3f,  0.0f,  1.0f);
-[Setting hidden] vec3        S_ColorDelta0501to1000   = vec3(0.7f,  0.0f,  1.0f);
-[Setting hidden] vec3        S_ColorDelta1001to2000   = vec3(1.0f,  0.0f,  0.8f);
-[Setting hidden] vec3        S_ColorDelta2001to3000   = vec3(1.0f,  0.0f,  0.3f);
-[Setting hidden] vec3        S_ColorDelta3001to5000   = vec3(1.0f,  0.3f,  0.0f);
-[Setting hidden] vec3        S_ColorDelta5001Above    = vec3(1.0f,  0.6f,  0.0f);
-[Setting hidden] vec3        S_ColorDeltaUnder        = vec3(0.0f,  1.0f,  0.0f);
-[Setting hidden] vec3        S_ColorMedalAuthor       = vec3(0.17f, 0.75f, 0.0f);
-[Setting hidden] vec3        S_ColorMedalBronze       = vec3(0.69f, 0.5f,  0.0f);
-[Setting hidden] vec3        S_ColorMedalGold         = vec3(1.0f,  0.97f, 0.0f);
-[Setting hidden] vec3        S_ColorMedalNone         = vec3(0.7f,  0.0f,  0.0f);
-[Setting hidden] vec3        S_ColorMedalSilver       = vec3(0.75f, 0.75f, 0.75f);
-[Setting hidden] vec3        S_ColorSeasonAll         = vec3(0.8f,  0.0f,  0.8f);
-[Setting hidden] vec3        S_ColorSeasonFall        = vec3(1.0f,  0.5f,  0.0f);
-[Setting hidden] vec3        S_ColorSeasonSpring      = vec3(0.3f,  0.9f,  0.3f);
-[Setting hidden] vec3        S_ColorSeasonSummer      = vec3(1.0f,  0.8f,  0.0f);
-[Setting hidden] vec3        S_ColorSeasonUnknown     = vec3(0.7f,  0.0f,  0.0f);
-[Setting hidden] vec3        S_ColorSeasonWinter      = vec3(0.0f,  1.0f,  1.0f);
-[Setting hidden] vec3        S_ColorSeriesAll         = vec3(0.8f,  0.0f,  0.8f);
-[Setting hidden] vec3        S_ColorSeriesBlack       = vec3(0.4f,  0.4f,  0.4f);
-[Setting hidden] vec3        S_ColorSeriesBlue        = vec3(0.4f,  0.8f,  1.0f);
-[Setting hidden] vec3        S_ColorSeriesGreen       = vec3(0.0f,  1.0f,  0.0f);
-[Setting hidden] vec3        S_ColorSeriesRed         = vec3(1.0f,  0.0f,  0.0f);
-[Setting hidden] vec3        S_ColorSeriesWhite       = vec3(1.0f,  1.0f,  1.0f);
-[Setting hidden] bool        S_NotifyStarter          = true;
-[Setting hidden] bool        S_OnlyCurrentCampaign    = false;
-[Setting hidden] bool        S_SaveSettingsOnClose    = true;
-[Setting hidden] bool        S_ShowSettingsInDetached = false;
-[Setting hidden] bool        S_ShowSettingsInMenu     = false;
-[Setting hidden] TargetMedal S_Target                 = TargetMedal::Author;
-[Setting hidden] bool        S_WindowAutoResize       = false;
-[Setting hidden] bool        S_WindowDetached         = false;
-[Setting hidden] bool        S_WindowHideWithGame     = true;
-[Setting hidden] bool        S_WindowHideWithOP       = true;
+[Setting hidden] bool           S_AutoSwitch             = true;
+[Setting hidden] bool           S_ColoredMapNames        = false;
+[Setting hidden] vec3           S_ColorDelta0001to0100   = vec3(0.0f,  1.0f,  1.0f);
+[Setting hidden] vec3           S_ColorDelta0101to0250   = vec3(0.0f,  0.6f,  1.0f);
+[Setting hidden] vec3           S_ColorDelta0251to0500   = vec3(0.3f,  0.0f,  1.0f);
+[Setting hidden] vec3           S_ColorDelta0501to1000   = vec3(0.7f,  0.0f,  1.0f);
+[Setting hidden] vec3           S_ColorDelta1001to2000   = vec3(1.0f,  0.0f,  0.8f);
+[Setting hidden] vec3           S_ColorDelta2001to3000   = vec3(1.0f,  0.0f,  0.3f);
+[Setting hidden] vec3           S_ColorDelta3001to5000   = vec3(1.0f,  0.3f,  0.0f);
+[Setting hidden] vec3           S_ColorDelta5001Above    = vec3(1.0f,  0.6f,  0.0f);
+[Setting hidden] vec3           S_ColorDeltaUnder        = vec3(0.0f,  1.0f,  0.0f);
+[Setting hidden] vec3           S_ColorMedalAuthor       = vec3(0.17f, 0.75f, 0.0f);
+[Setting hidden] vec3           S_ColorMedalBronze       = vec3(0.69f, 0.5f,  0.0f);
+[Setting hidden] vec3           S_ColorMedalGold         = vec3(1.0f,  0.97f, 0.0f);
+[Setting hidden] vec3           S_ColorMedalNone         = vec3(1.0f,  0.5f,  1.0f);
+[Setting hidden] vec3           S_ColorMedalSilver       = vec3(0.75f, 0.75f, 0.75f);
+[Setting hidden] vec3           S_ColorSeasonAll         = vec3(0.5f,  0.0f,  0.8f);
+[Setting hidden] vec3           S_ColorSeasonFall        = vec3(1.0f,  0.5f,  0.0f);
+[Setting hidden] vec3           S_ColorSeasonSpring      = vec3(0.3f,  0.9f,  0.3f);
+[Setting hidden] vec3           S_ColorSeasonSummer      = vec3(1.0f,  0.8f,  0.0f);
+[Setting hidden] vec3           S_ColorSeasonUnknown     = vec3(1.0f,  0.5f,  1.0f);
+[Setting hidden] vec3           S_ColorSeasonWinter      = vec3(0.0f,  1.0f,  1.0f);
+[Setting hidden] vec3           S_ColorSeriesAll         = vec3(0.5f,  0.0f,  0.8f);
+[Setting hidden] vec3           S_ColorSeriesBlack       = vec3(0.4f,  0.4f,  0.4f);
+[Setting hidden] vec3           S_ColorSeriesBlue        = vec3(0.4f,  0.8f,  1.0f);
+[Setting hidden] vec3           S_ColorSeriesGreen       = vec3(0.0f,  1.0f,  0.0f);
+[Setting hidden] vec3           S_ColorSeriesRed         = vec3(1.0f,  0.0f,  0.0f);
+[Setting hidden] vec3           S_ColorSeriesUnknown     = vec3(1.0f,  0.5f,  1.0f);
+[Setting hidden] vec3           S_ColorSeriesWhite       = vec3(1.0f,  1.0f,  1.0f);
+[Setting hidden] bool           S_NotifyStarter          = true;
+[Setting hidden] bool           S_OnlyCurrentCampaign    = false;
+[Setting hidden] MapOrdering    S_Ordering               = MapOrdering::InOrder;
+[Setting hidden] bool           S_SaveSettingsOnClose    = true;
+[Setting hidden] CampaignSeries S_Series                 = CampaignSeries::All;
+[Setting hidden] bool           S_ShowSettingsInDetached = false;
+[Setting hidden] bool           S_ShowSettingsInMenu     = false;
+[Setting hidden] TargetMedal    S_Target                 = TargetMedal::Author;
+[Setting hidden] bool           S_WindowAutoResize       = false;
+[Setting hidden] bool           S_WindowDetached         = false;
+[Setting hidden] bool           S_WindowHideWithGame     = true;
+[Setting hidden] bool           S_WindowHideWithOP       = true;
 
 string       colorDelta0001to0100;
 string       colorDelta0101to0250;
@@ -73,6 +92,7 @@ string       colorSeriesBlack;
 string       colorSeriesBlue;
 string       colorSeriesGreen;
 string       colorSeriesRed;
+string       colorSeriesUnknown;
 string       colorSeriesWhite;
 const string iconSeasonAll     = Icons::ListAlt;
 const string iconSeasonFall    = Icons::Leaf;
@@ -92,7 +112,7 @@ void SettingsTab_RenderWindow() {
 void WindowSettings(WindowSource source = WindowSource::Unknown) {
     const bool save = S_SaveSettingsOnClose && source != WindowSource::Unknown;
 
-    if (save && int(source) >= settingsOpen.Length)
+    if (save && uint(source) >= settingsOpen.Length)
         return;
 
     if (!UI::CollapsingHeader(Icons::Cogs + " Settings")) {
@@ -246,9 +266,6 @@ void SectionColorsSeasons() {
         Meta::SaveSettings();
     }
 
-    if (S_ColorSeasonAll != (S_ColorSeasonAll = UI::InputColor3("All##seasons", S_ColorSeasonAll)))
-        colorSeasonAll = Text::FormatOpenplanetColor(S_ColorSeasonAll);
-
     if (S_ColorSeasonWinter != (S_ColorSeasonWinter = UI::InputColor3("Winter / Jan-Mar", S_ColorSeasonWinter)))
         colorSeasonWinter = Text::FormatOpenplanetColor(S_ColorSeasonWinter);
 
@@ -261,7 +278,10 @@ void SectionColorsSeasons() {
     if (S_ColorSeasonFall != (S_ColorSeasonFall = UI::InputColor3("Fall / Oct-Dec", S_ColorSeasonFall)))
         colorSeasonFall = Text::FormatOpenplanetColor(S_ColorSeasonFall);
 
-    if (S_ColorSeasonUnknown != (S_ColorSeasonUnknown = UI::InputColor3("Unknown", S_ColorSeasonUnknown)))
+    if (S_ColorSeasonAll != (S_ColorSeasonAll = UI::InputColor3("All##seasons", S_ColorSeasonAll)))
+        colorSeasonAll = Text::FormatOpenplanetColor(S_ColorSeasonAll);
+
+    if (S_ColorSeasonUnknown != (S_ColorSeasonUnknown = UI::InputColor3("Unknown##seasons", S_ColorSeasonUnknown)))
         colorSeasonUnknown = Text::FormatOpenplanetColor(S_ColorSeasonUnknown);
 
     UI::Indent(-indentWidth);
@@ -279,13 +299,11 @@ void SectionColorsSeries() {
         pluginMeta.GetSetting("S_ColorSeriesBlue").Reset();
         pluginMeta.GetSetting("S_ColorSeriesGreen").Reset();
         pluginMeta.GetSetting("S_ColorSeriesRed").Reset();
+        pluginMeta.GetSetting("S_ColorSeriesUnknown").Reset();
         pluginMeta.GetSetting("S_ColorSeriesWhite").Reset();
 
         Meta::SaveSettings();
     }
-
-    if (S_ColorSeriesAll != (S_ColorSeriesAll = UI::InputColor3("All##series", S_ColorSeriesAll)))
-        colorSeriesAll = Text::FormatOpenplanetColor(S_ColorSeriesAll);
 
     if (S_ColorSeriesWhite != (S_ColorSeriesWhite = UI::InputColor3("White", S_ColorSeriesWhite)))
         colorSeriesWhite = Text::FormatOpenplanetColor(S_ColorSeriesWhite);
@@ -301,6 +319,12 @@ void SectionColorsSeries() {
 
     if (S_ColorSeriesBlack != (S_ColorSeriesBlack = UI::InputColor3("Black", S_ColorSeriesBlack)))
         colorSeriesBlack = Text::FormatOpenplanetColor(S_ColorSeriesBlack);
+
+    if (S_ColorSeriesAll != (S_ColorSeriesAll = UI::InputColor3("All##series", S_ColorSeriesAll)))
+        colorSeriesAll = Text::FormatOpenplanetColor(S_ColorSeriesAll);
+
+    if (S_ColorSeriesUnknown != (S_ColorSeriesUnknown = UI::InputColor3("Unknown##series", S_ColorSeriesUnknown)))
+        colorSeriesUnknown = Text::FormatOpenplanetColor(S_ColorSeriesUnknown);
 
     UI::Indent(-indentWidth);
 }
@@ -435,21 +459,11 @@ void HoverTooltipSetting(const string &in msg, const string &in color = "666") {
     UI::EndTooltip();
 }
 
-enum CampaignSeries {
-    All,
-    White,
-    Green,
-    Blue,
-    Red,
-    Black,
-    Unknown = 7
-}
-
-enum Mode {
-    NadeoCampaign,
-    TrackOfTheDay,
-    Unknown = 3
-}
+// enum Mode {
+//     NadeoCampaign,
+//     TrackOfTheDay,
+//     Unknown = 3
+// }
 
 enum Season {  // update every season
     All,
