@@ -27,165 +27,165 @@ void GetMaps() {
 }
 
 // void GetMapsFromFiles() {
-//     yield();
+    // yield();
 
-//     trace("getting maps from files...");
+    // trace("getting maps from files...");
 
-//     if (mapsCampaignFromFile.Length == 0) {
-//         @mapsCampaignFromFile = Json::FromFile("assets/next_campaign.json");
+    // if (mapsCampaignFromFile.Length == 0) {
+    //     @mapsCampaignFromFile = Json::FromFile("assets/next_campaign.json");
 
-//         for (uint i = 0; i < mapsCampaignFromFile.Length; i++) {
-//             Json::Value@ mapFromFile = mapsCampaignFromFile[ZPad4(i)];
-//             const string uid = mapFromFile["uid"];
+    //     for (uint i = 0; i < mapsCampaignFromFile.Length; i++) {
+    //         Json::Value@ mapFromFile = mapsCampaignFromFile[ZPad4(i)];
+    //         const string uid = mapFromFile["uid"];
 
-//             Map@ map = cast<Map@>(mapsCampaignByUid[uid]);
+    //         Map@ map = cast<Map@>(mapsCampaignByUid[uid]);
 
-//             if (map is null) {
-//                 warn("GetMapsFromFiles: null Campaign map " + uid);
-//                 continue;
-//             }
+    //         if (map is null) {
+    //             warn("GetMapsFromFiles: null Campaign map " + uid);
+    //             continue;
+    //         }
 
-//             map.authorTime = mapFromFile["authorTime"];
-//             map.bronzeTime = mapFromFile["bronzeTime"];
-//             map.goldTime   = mapFromFile["goldTime"];
-//             map.id         = mapFromFile["id"];
-//             map.nameRaw    = mapFromFile["nameRaw"];
-//             map.silverTime = mapFromFile["silverTime"];
+    //         map.authorTime = mapFromFile["authorTime"];
+    //         map.bronzeTime = mapFromFile["bronzeTime"];
+    //         map.goldTime   = mapFromFile["goldTime"];
+    //         map.id         = mapFromFile["id"];
+    //         map.nameRaw    = mapFromFile["nameRaw"];
+    //         map.silverTime = mapFromFile["silverTime"];
 
-//             map.SetNames();
-//             map.SetSeason(Mode::NadeoCampaign);
+    //         map.SetNames();
+    //         map.SetSeason(Mode::NadeoCampaign);
 
-//             mapsCampaignById.Set(map.id, @map);
-//         }
-//     }
+    //         mapsCampaignById.Set(map.id, @map);
+    //     }
+    // }
 
-//     if (mapsTotdFromFile.Length == 0) {
-//         @mapsTotdFromFile = Json::FromFile("assets/next_totd.json");
+    // if (mapsTotdFromFile.Length == 0) {
+    //     @mapsTotdFromFile = Json::FromFile("assets/next_totd.json");
 
-//         for (uint i = 0; i < mapsTotdFromFile.Length; i++) {
-//             Json::Value@ mapFromFile = mapsTotdFromFile[ZPad4(i)];
-//             const string uid = mapFromFile["uid"];
+    //     for (uint i = 0; i < mapsTotdFromFile.Length; i++) {
+    //         Json::Value@ mapFromFile = mapsTotdFromFile[ZPad4(i)];
+    //         const string uid = mapFromFile["uid"];
 
-//             Map@ map = cast<Map@>(mapsTotdByUid[uid]);
+    //         Map@ map = cast<Map@>(mapsTotdByUid[uid]);
 
-//             if (map is null) {
-//                 warn("GetMapsFromFiles: null TOTD map " + uid);
-//                 continue;
-//             }
+    //         if (map is null) {
+    //             warn("GetMapsFromFiles: null TOTD map " + uid);
+    //             continue;
+    //         }
 
-//             map.authorTime = mapFromFile["authorTime"];
-//             map.bronzeTime = mapFromFile["bronzeTime"];
-//             map.date       = "\\$S" + string(mapFromFile["date"]);
-//             map.goldTime   = mapFromFile["goldTime"];
-//             map.id         = mapFromFile["id"];
-//             map.nameRaw    = mapFromFile["nameRaw"];
-//             map.silverTime = mapFromFile["silverTime"];
+    //         map.authorTime = mapFromFile["authorTime"];
+    //         map.bronzeTime = mapFromFile["bronzeTime"];
+    //         map.date       = "\\$S" + string(mapFromFile["date"]);
+    //         map.goldTime   = mapFromFile["goldTime"];
+    //         map.id         = mapFromFile["id"];
+    //         map.nameRaw    = mapFromFile["nameRaw"];
+    //         map.silverTime = mapFromFile["silverTime"];
 
-//             map.SetNames();
-//             map.SetSeason(Mode::TrackOfTheDay);
+    //         map.SetNames();
+    //         map.SetSeason(Mode::TrackOfTheDay);
 
-//             mapsTotdById.Set(map.id, @map);
-//         }
-//     }
+    //         mapsTotdById.Set(map.id, @map);
+    //     }
+    // }
 
-//     trace("getting maps from files done");
+    // trace("getting maps from files done");
 // }
 
 // void GetMapInfos(Mode mode) {
-//     yield();
+    // yield();
 
-//     while (!NadeoServices::IsAuthenticated(audienceCore))
-//         yield();
+    // while (!NadeoServices::IsAuthenticated(audienceCore))
+    //     yield();
 
-//     const string modeName = tostring(mode);
+    // const string modeName = tostring(mode);
 
-//     trace("getting " + modeName + " map info from API...");
+    // trace("getting " + modeName + " map info from API...");
 
-//     uint index = 0;
-//     string url;
+    // uint index = 0;
+    // string url;
 
-//     Map@[] mapsStillNeedInfo;
-//     Map@[]@ mapsToCheck = mode == Mode::NadeoCampaign ? mapsCampaign : mapsTotd;
+    // Map@[] mapsStillNeedInfo;
+    // Map@[]@ mapsToCheck = mode == Mode::NadeoCampaign ? mapsCampaign : mapsTotd;
 
-//     for (uint i = 0; i < mapsToCheck.Length; i++) {
-//         Map@ map = mapsToCheck[i];
+    // for (uint i = 0; i < mapsToCheck.Length; i++) {
+    //     Map@ map = mapsToCheck[i];
 
-//         if (map.nameRaw.Length == 0)
-//             mapsStillNeedInfo.InsertLast(map);
-//     }
+    //     if (map.nameRaw.Length == 0)
+    //         mapsStillNeedInfo.InsertLast(map);
+    // }
 
-//     while (mapsStillNeedInfo.Length > 0 && (index == 0 || index < mapsStillNeedInfo.Length - 1)) {
-//         url = NadeoServices::BaseURLCore() + "/maps/?mapUidList=";
+    // while (mapsStillNeedInfo.Length > 0 && (index == 0 || index < mapsStillNeedInfo.Length - 1)) {
+    //     url = NadeoServices::BaseURLCore() + "/maps/?mapUidList=";
 
-//         for (uint i = index; i < mapsStillNeedInfo.Length; i++) {
-//             index = i;
+    //     for (uint i = index; i < mapsStillNeedInfo.Length; i++) {
+    //         index = i;
 
-//             if (url.Length < 8192)
-//                 url += mapsStillNeedInfo[i].uid + ",";
-//             else
-//                 break;
-//         }
+    //         if (url.Length < 8192)
+    //             url += mapsStillNeedInfo[i].uid + ",";
+    //         else
+    //             break;
+    //     }
 
-//         Meta::PluginCoroutine@ coro = startnew(NandoRequestWait);
-//         while (coro.IsRunning())
-//             yield();
+    //     Meta::PluginCoroutine@ coro = startnew(NandoRequestWait);
+    //     while (coro.IsRunning())
+    //         yield();
 
-//         trace("getting " + modeName + " map info from API (" + (index + 1) + "/" + mapsStillNeedInfo.Length + ")");
+    //     trace("getting " + modeName + " map info from API (" + (index + 1) + "/" + mapsStillNeedInfo.Length + ")");
 
-//         Net::HttpRequest@ req = NadeoServices::Get(audienceCore, url.SubStr(0, url.Length - 1));
-//         req.Start();
-//         while (!req.Finished())
-//             yield();
+    //     Net::HttpRequest@ req = NadeoServices::Get(audienceCore, url.SubStr(0, url.Length - 1));
+    //     req.Start();
+    //     while (!req.Finished())
+    //         yield();
 
-//         const int code = req.ResponseCode();
-//         if (code != 200) {
-//             warn("error getting " + modeName + " map info from API: " + code + "; " + req.Error() + "; " + req.String());
-//             return;
-//         }
+    //     const int code = req.ResponseCode();
+    //     if (code != 200) {
+    //         warn("error getting " + modeName + " map info from API: " + code + "; " + req.Error() + "; " + req.String());
+    //         return;
+    //     }
 
-//         Json::Value@ mapInfo = Json::Parse(req.String());
+    //     Json::Value@ mapInfo = Json::Parse(req.String());
 
-//         for (uint i = 0; i < mapInfo.Length; i++) {
-//             const string uid = mapInfo[i]["mapUid"];
+    //     for (uint i = 0; i < mapInfo.Length; i++) {
+    //         const string uid = mapInfo[i]["mapUid"];
 
-//             Map@ map;
-//             if (mode == Mode::NadeoCampaign)
-//                 @map = cast<Map@>(mapsCampaignByUid[uid]);
-//             else
-//                 @map = cast<Map@>(mapsTotdByUid[uid]);
+    //         Map@ map;
+    //         if (mode == Mode::NadeoCampaign)
+    //             @map = cast<Map@>(mapsCampaignByUid[uid]);
+    //         else
+    //             @map = cast<Map@>(mapsTotdByUid[uid]);
 
-//             if (map is null) {
-//                 warn("GetMapInfos: null " + modeName + " map: " + uid);
-//                 continue;
-//             }
+    //         if (map is null) {
+    //             warn("GetMapInfos: null " + modeName + " map: " + uid);
+    //             continue;
+    //         }
 
-//             map.authorTime = mapInfo[i]["authorScore"];
-//             map.bronzeTime = mapInfo[i]["bronzeScore"];
-//             map.goldTime   = mapInfo[i]["goldScore"];
-//             map.id         = mapInfo[i]["mapId"];
-//             map.nameRaw    = mapInfo[i]["name"];
-//             map.silverTime = mapInfo[i]["silverScore"];
+    //         map.authorTime = mapInfo[i]["authorScore"];
+    //         map.bronzeTime = mapInfo[i]["bronzeScore"];
+    //         map.goldTime   = mapInfo[i]["goldScore"];
+    //         map.id         = mapInfo[i]["mapId"];
+    //         map.nameRaw    = mapInfo[i]["name"];
+    //         map.silverTime = mapInfo[i]["silverScore"];
 
-//             map.SetNames();
-//             map.SetSeason(mode);
+    //         map.SetNames();
+    //         map.SetSeason(mode);
 
-//             if (mode == Mode::NadeoCampaign && !mapsCampaignById.Exists(map.id))
-//                 mapsCampaignById.Set(map.id, @map);
+    //         if (mode == Mode::NadeoCampaign && !mapsCampaignById.Exists(map.id))
+    //             mapsCampaignById.Set(map.id, @map);
 
-//             else if (mode == Mode::TrackOfTheDay && !mapsTotdById.Exists(map.id))
-//                 mapsTotdById.Set(map.id, @map);
-//         }
+    //         else if (mode == Mode::TrackOfTheDay && !mapsTotdById.Exists(map.id))
+    //             mapsTotdById.Set(map.id, @map);
+    //     }
 
-//         if (mapsStillNeedInfo.Length == 1)
-//             break;
-//     }
+    //     if (mapsStillNeedInfo.Length == 1)
+    //         break;
+    // }
 
-//     trace("getting " + modeName + " map info from API done");
+    // trace("getting " + modeName + " map info from API done");
 // }
 
 // void RefreshRecords() {
-//     GetAllPBsAsync();
-//     SetNextMap();
+    // GetAllPBsAsync();
+    // SetNextMap();
 // }
 
 namespace API {

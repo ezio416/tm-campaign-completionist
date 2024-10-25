@@ -14,15 +14,24 @@ void RenderWindowDetached() {
         flags |= UI::WindowFlags::AlwaysAutoResize;
 
     if (UI::Begin(pluginTitle, S_WindowDetached, flags))
-        Window(1);
+        Window(WindowSource::Detached);
 
     UI::End();
 }
 
-void Window(int id = -1) {
-    WindowSettings(id);
+enum WindowSource {
+    Settings,
+    Menu,
+    Detached,
+    Unknown
+}
 
-    UI::Separator();
+void Window(WindowSource source = WindowSource::Unknown) {
+    if (source != WindowSource::Menu || S_ShowSettingsInMenu) {
+        WindowSettings(source);
+
+        UI::Separator();
+    }
 
     SectionTarget();
 

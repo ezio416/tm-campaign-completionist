@@ -81,26 +81,26 @@ class Map {
     }
 
     // void GetPB() {
-    //     CTrackMania@ App = cast<CTrackMania@>(GetApp());
+        // CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
-    //     if (false
-    //         || App.MenuManager is null
-    //         || App.MenuManager.MenuCustom_CurrentManiaApp is null
-    //         || App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr is null
-    //         || App.UserManagerScript is null
-    //         || App.UserManagerScript.Users.Length == 0
-    //         || App.UserManagerScript.Users[0] is null
-    //     ) {
-    //         myTime = 0;
-    //         return;
-    //     }
+        // if (false
+        //     || App.MenuManager is null
+        //     || App.MenuManager.MenuCustom_CurrentManiaApp is null
+        //     || App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr is null
+        //     || App.UserManagerScript is null
+        //     || App.UserManagerScript.Users.Length == 0
+        //     || App.UserManagerScript.Users[0] is null
+        // ) {
+        //     myTime = 0;
+        //     return;
+        // }
 
-    //     const uint pb = App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, uid, "PersonalBest", "", "TimeAttack", "");
-    //     if (pb != uint(-1))
-    //         myTime = pb;
+        // const uint pb = App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, uid, "PersonalBest", "", "TimeAttack", "");
+        // if (pb != uint(-1))
+        //     myTime = pb;
 
-    //     SetMedals();
-    //     SetTargetDelta();
+        // SetMedals();
+        // SetTargetDelta();
     // }
 
     // courtesy of "Play Map" plugin - https://github.com/XertroV/tm-play-map
@@ -214,35 +214,35 @@ class Map {
     }
 
     // void SetTargetDelta() {
-    //     int delta;
-    //     targetDelta = "";
+        // int delta;
+        // targetDelta = "";
 
-    //     switch (S_Target) {
-    //         case TargetMedal::Author: delta = myTime > 0 ? int(myTime) - int(authorTime) : int(authorTime); break;
-    //         case TargetMedal::Gold:   delta = myTime > 0 ? int(myTime) - int(goldTime)   : int(goldTime);   break;
-    //         case TargetMedal::Silver: delta = myTime > 0 ? int(myTime) - int(silverTime) : int(silverTime); break;
-    //         case TargetMedal::Bronze: delta = myTime > 0 ? int(myTime) - int(bronzeTime) : int(bronzeTime); break;
-    //         default:                  delta = 0;
-    //     }
+        // switch (S_Target) {
+        //     case TargetMedal::Author: delta = myTime > 0 ? int(myTime) - int(authorTime) : int(authorTime); break;
+        //     case TargetMedal::Gold:   delta = myTime > 0 ? int(myTime) - int(goldTime)   : int(goldTime);   break;
+        //     case TargetMedal::Silver: delta = myTime > 0 ? int(myTime) - int(silverTime) : int(silverTime); break;
+        //     case TargetMedal::Bronze: delta = myTime > 0 ? int(myTime) - int(bronzeTime) : int(bronzeTime); break;
+        //     default:                  delta = 0;
+        // }
 
-    //     if (delta == 0) {
-    //         targetDelta = "";
-    //         return;
-    //     }
+        // if (delta == 0) {
+        //     targetDelta = "";
+        //     return;
+        // }
 
-    //     if (delta < 100)
-    //         targetDelta += colorDeltaSub01;
-    //     else if (delta < 500)
-    //         targetDelta += colorDelta01to05;
-    //     else if (delta < 1000)
-    //         targetDelta += colorDelta05to1;
-    //     else if (delta < 2000)
-    //         targetDelta += colorDelta1to2;
-    //     else if (delta < 3000)
-    //         targetDelta += colorDelta2to3;
-    //     else
-    //         targetDelta += colorDeltaAbove3;
+        // if (delta < 100)
+        //     targetDelta += colorDeltaSub01;
+        // else if (delta < 500)
+        //     targetDelta += colorDelta01to05;
+        // else if (delta < 1000)
+        //     targetDelta += colorDelta05to1;
+        // else if (delta < 2000)
+        //     targetDelta += colorDelta1to2;
+        // else if (delta < 3000)
+        //     targetDelta += colorDelta2to3;
+        // else
+        //     targetDelta += colorDeltaAbove3;
 
-    //     targetDelta += "\\$S(" + (delta < 0 ? "" : "+") + Time::Format(delta) + ") \\$Z ";  // should never be negative
+        // targetDelta += "\\$S(" + (delta < 0 ? "" : "+") + Time::Format(delta) + ") \\$Z ";  // should never be negative
     // }
 }
