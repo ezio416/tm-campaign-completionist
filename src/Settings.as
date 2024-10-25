@@ -9,43 +9,44 @@ enum TargetMedal {
     None   = 5
 }
 
-[Setting hidden] bool        S_AutoSwitch           = true;
-[Setting hidden] bool        S_ColoredMapNames      = false;
-[Setting hidden] vec3        S_ColorDelta0001to0100 = vec3(0.0f,  1.0f,  1.0f);
-[Setting hidden] vec3        S_ColorDelta0101to0250 = vec3(0.0f,  0.6f,  1.0f);
-[Setting hidden] vec3        S_ColorDelta0251to0500 = vec3(0.3f,  0.0f,  1.0f);
-[Setting hidden] vec3        S_ColorDelta0501to1000 = vec3(0.7f,  0.0f,  1.0f);
-[Setting hidden] vec3        S_ColorDelta1001to2000 = vec3(1.0f,  0.0f,  0.8f);
-[Setting hidden] vec3        S_ColorDelta2001to3000 = vec3(1.0f,  0.0f,  0.3f);
-[Setting hidden] vec3        S_ColorDelta3001to5000 = vec3(1.0f,  0.3f,  0.0f);
-[Setting hidden] vec3        S_ColorDelta5001Above  = vec3(1.0f,  0.6f,  0.0f);
-[Setting hidden] vec3        S_ColorDeltaUnder      = vec3(0.0f,  1.0f,  0.0f);
-[Setting hidden] vec3        S_ColorMedalAuthor     = vec3(0.17f, 0.75f, 0.0f);
-[Setting hidden] vec3        S_ColorMedalBronze     = vec3(0.69f, 0.5f,  0.0f);
-[Setting hidden] vec3        S_ColorMedalGold       = vec3(1.0f,  0.97f, 0.0f);
-[Setting hidden] vec3        S_ColorMedalNone       = vec3(0.7f,  0.0f,  0.0f);
-[Setting hidden] vec3        S_ColorMedalSilver     = vec3(0.75f, 0.75f, 0.75f);
-[Setting hidden] vec3        S_ColorSeasonAll       = vec3(0.8f,  0.0f,  0.8f);
-[Setting hidden] vec3        S_ColorSeasonFall      = vec3(1.0f,  0.5f,  0.0f);
-[Setting hidden] vec3        S_ColorSeasonSpring    = vec3(0.3f,  0.9f,  0.3f);
-[Setting hidden] vec3        S_ColorSeasonSummer    = vec3(1.0f,  0.8f,  0.0f);
-[Setting hidden] vec3        S_ColorSeasonUnknown   = vec3(0.7f,  0.0f,  0.0f);
-[Setting hidden] vec3        S_ColorSeasonWinter    = vec3(0.0f,  1.0f,  1.0f);
-[Setting hidden] vec3        S_ColorSeriesAll       = vec3(0.8f,  0.0f,  0.8f);
-[Setting hidden] vec3        S_ColorSeriesBlack     = vec3(0.4f,  0.4f,  0.4f);
-[Setting hidden] vec3        S_ColorSeriesBlue      = vec3(0.4f,  0.8f,  1.0f);
-[Setting hidden] vec3        S_ColorSeriesGreen     = vec3(0.0f,  1.0f,  0.0f);
-[Setting hidden] vec3        S_ColorSeriesRed       = vec3(1.0f,  0.0f,  0.0f);
-[Setting hidden] vec3        S_ColorSeriesWhite     = vec3(1.0f,  1.0f,  1.0f);
-[Setting hidden] bool        S_NotifyStarter        = true;
-[Setting hidden] bool        S_OnlyCurrentCampaign  = false;
-[Setting hidden] bool        S_SaveSettingsOnClose  = true;
-[Setting hidden] bool        S_ShowSettingsInMenu   = false;
-[Setting hidden] TargetMedal S_Target               = TargetMedal::Author;
-[Setting hidden] bool        S_WindowAutoResize     = false;
-[Setting hidden] bool        S_WindowDetached       = false;
-[Setting hidden] bool        S_WindowHideWithGame   = true;
-[Setting hidden] bool        S_WindowHideWithOP     = true;
+[Setting hidden] bool        S_AutoSwitch             = true;
+[Setting hidden] bool        S_ColoredMapNames        = false;
+[Setting hidden] vec3        S_ColorDelta0001to0100   = vec3(0.0f,  1.0f,  1.0f);
+[Setting hidden] vec3        S_ColorDelta0101to0250   = vec3(0.0f,  0.6f,  1.0f);
+[Setting hidden] vec3        S_ColorDelta0251to0500   = vec3(0.3f,  0.0f,  1.0f);
+[Setting hidden] vec3        S_ColorDelta0501to1000   = vec3(0.7f,  0.0f,  1.0f);
+[Setting hidden] vec3        S_ColorDelta1001to2000   = vec3(1.0f,  0.0f,  0.8f);
+[Setting hidden] vec3        S_ColorDelta2001to3000   = vec3(1.0f,  0.0f,  0.3f);
+[Setting hidden] vec3        S_ColorDelta3001to5000   = vec3(1.0f,  0.3f,  0.0f);
+[Setting hidden] vec3        S_ColorDelta5001Above    = vec3(1.0f,  0.6f,  0.0f);
+[Setting hidden] vec3        S_ColorDeltaUnder        = vec3(0.0f,  1.0f,  0.0f);
+[Setting hidden] vec3        S_ColorMedalAuthor       = vec3(0.17f, 0.75f, 0.0f);
+[Setting hidden] vec3        S_ColorMedalBronze       = vec3(0.69f, 0.5f,  0.0f);
+[Setting hidden] vec3        S_ColorMedalGold         = vec3(1.0f,  0.97f, 0.0f);
+[Setting hidden] vec3        S_ColorMedalNone         = vec3(0.7f,  0.0f,  0.0f);
+[Setting hidden] vec3        S_ColorMedalSilver       = vec3(0.75f, 0.75f, 0.75f);
+[Setting hidden] vec3        S_ColorSeasonAll         = vec3(0.8f,  0.0f,  0.8f);
+[Setting hidden] vec3        S_ColorSeasonFall        = vec3(1.0f,  0.5f,  0.0f);
+[Setting hidden] vec3        S_ColorSeasonSpring      = vec3(0.3f,  0.9f,  0.3f);
+[Setting hidden] vec3        S_ColorSeasonSummer      = vec3(1.0f,  0.8f,  0.0f);
+[Setting hidden] vec3        S_ColorSeasonUnknown     = vec3(0.7f,  0.0f,  0.0f);
+[Setting hidden] vec3        S_ColorSeasonWinter      = vec3(0.0f,  1.0f,  1.0f);
+[Setting hidden] vec3        S_ColorSeriesAll         = vec3(0.8f,  0.0f,  0.8f);
+[Setting hidden] vec3        S_ColorSeriesBlack       = vec3(0.4f,  0.4f,  0.4f);
+[Setting hidden] vec3        S_ColorSeriesBlue        = vec3(0.4f,  0.8f,  1.0f);
+[Setting hidden] vec3        S_ColorSeriesGreen       = vec3(0.0f,  1.0f,  0.0f);
+[Setting hidden] vec3        S_ColorSeriesRed         = vec3(1.0f,  0.0f,  0.0f);
+[Setting hidden] vec3        S_ColorSeriesWhite       = vec3(1.0f,  1.0f,  1.0f);
+[Setting hidden] bool        S_NotifyStarter          = true;
+[Setting hidden] bool        S_OnlyCurrentCampaign    = false;
+[Setting hidden] bool        S_SaveSettingsOnClose    = true;
+[Setting hidden] bool        S_ShowSettingsInDetached = false;
+[Setting hidden] bool        S_ShowSettingsInMenu     = false;
+[Setting hidden] TargetMedal S_Target                 = TargetMedal::Author;
+[Setting hidden] bool        S_WindowAutoResize       = false;
+[Setting hidden] bool        S_WindowDetached         = false;
+[Setting hidden] bool        S_WindowHideWithGame     = true;
+[Setting hidden] bool        S_WindowHideWithOP       = true;
 
 string       colorDelta0001to0100;
 string       colorDelta0101to0250;
@@ -354,6 +355,11 @@ void SectionSettings() {
     S_SaveSettingsOnClose = UI::Checkbox(
         "Save settings when the top 'Settings' menu is closed",
         S_SaveSettingsOnClose
+    );
+
+    S_ShowSettingsInDetached = UI::Checkbox(
+        "Show settings in the detached window",
+        S_ShowSettingsInDetached
     );
 
     S_ShowSettingsInMenu = UI::Checkbox(

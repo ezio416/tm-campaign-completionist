@@ -27,7 +27,10 @@ enum WindowSource {
 }
 
 void Window(WindowSource source = WindowSource::Unknown) {
-    if (source != WindowSource::Menu || S_ShowSettingsInMenu) {
+    if (true
+        && (source != WindowSource::Menu     || S_ShowSettingsInMenu)
+        && (source != WindowSource::Detached || S_ShowSettingsInDetached)
+    ) {
         WindowSettings(source);
 
         UI::Separator();
