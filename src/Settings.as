@@ -3,15 +3,15 @@
 
 [Setting hidden] bool S_AutoSwitch           = true;
 [Setting hidden] bool S_ColoredMapNames      = false;
-[Setting hidden] vec3 S_ColorDelta0001to0100 = vec3(0.0f, 1.0f, 1.0f);
-[Setting hidden] vec3 S_ColorDelta0101to0250 = vec3(0.0f, 0.6f, 1.0f);
-[Setting hidden] vec3 S_ColorDelta0251to0500 = vec3(0.3f, 0.0f, 1.0f);
-[Setting hidden] vec3 S_ColorDelta0501to1000 = vec3(0.7f, 0.0f, 1.0f);
-[Setting hidden] vec3 S_ColorDelta1001to2000 = vec3(1.0f, 0.0f, 0.8f);
-[Setting hidden] vec3 S_ColorDelta2001to3000 = vec3(1.0f, 0.0f, 0.3f);
-[Setting hidden] vec3 S_ColorDelta3001to5000 = vec3(1.0f, 0.3f, 0.0f);
-[Setting hidden] vec3 S_ColorDelta5001Above  = vec3(1.0f, 0.6f, 0.0f);
-[Setting hidden] vec3 S_ColorDeltaUnder      = vec3(0.0f, 1.0f, 0.0f);
+[Setting hidden] vec3 S_ColorDelta0001to0100 = vec3(0.0f,  1.0f,  1.0f);
+[Setting hidden] vec3 S_ColorDelta0101to0250 = vec3(0.0f,  0.6f,  1.0f);
+[Setting hidden] vec3 S_ColorDelta0251to0500 = vec3(0.3f,  0.0f,  1.0f);
+[Setting hidden] vec3 S_ColorDelta0501to1000 = vec3(0.7f,  0.0f,  1.0f);
+[Setting hidden] vec3 S_ColorDelta1001to2000 = vec3(1.0f,  0.0f,  0.8f);
+[Setting hidden] vec3 S_ColorDelta2001to3000 = vec3(1.0f,  0.0f,  0.3f);
+[Setting hidden] vec3 S_ColorDelta3001to5000 = vec3(1.0f,  0.3f,  0.0f);
+[Setting hidden] vec3 S_ColorDelta5001Above  = vec3(1.0f,  0.6f,  0.0f);
+[Setting hidden] vec3 S_ColorDeltaUnder      = vec3(0.0f,  1.0f,  0.0f);
 [Setting hidden] vec3 S_ColorMedalAuthor     = vec3(0.17f, 0.75f, 0.0f);
 [Setting hidden] vec3 S_ColorMedalBronze     = vec3(0.69f, 0.5f,  0.0f);
 [Setting hidden] vec3 S_ColorMedalGold       = vec3(1.0f,  0.97f, 0.0f);
@@ -441,20 +441,20 @@ enum Season {  // update every season
     Unknown = 20
 }
 
-// enum TargetMedal {
-//     Author,
-//     Gold,
-//     Silver,
-//     Bronze,
-//     None = 5
-// }
+enum TargetMedal {
+    Author = 1,
+    Gold   = 2,
+    Silver = 3,
+    Bronze = 4,
+    None   = 5
+}
 
 // [Setting hidden]
 // Mode S_Mode = Mode::NadeoCampaign;
 // Mode lastMode = S_Mode;
 
-// [Setting hidden]
-// TargetMedal S_Target = TargetMedal::Author;
+[Setting hidden]
+TargetMedal S_Target = TargetMedal::Author;
 
 // [Setting category="General" name="Season to show" description="Tracks of the Day are categorized into 3-month periods which may differ slightly from the time periods of Nadeo Campaigns. Does nothing for Starter Access"]
 // Season S_Season = Season::All;

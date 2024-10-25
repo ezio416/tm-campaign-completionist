@@ -1,7 +1,5 @@
 // c 2024-01-02
-// m 2024-10-18
-
-bool loadingMap = false;
+// m 2024-10-24
 
 class Map {
     uint             authorTime;
