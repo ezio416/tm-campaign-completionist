@@ -46,21 +46,36 @@ void Window(WindowSource source = WindowSource::Unknown) {
     UI::Separator();
 }
 
+// void Section
+
 void SectionOrdering() {
     UI::AlignTextToFramePadding();
     UI::Text("Ordering:");
 
     UI::SameLine();
-    if (UI::RadioButton(Icons::ArrowRight + " Normal", S_Ordering == MapOrdering::InOrder))
+    if (UI::RadioButton(Icons::ArrowRight, S_Ordering == MapOrdering::InOrder))
         S_Ordering = MapOrdering::InOrder;
+    HoverTooltip("Normal");
 
     UI::SameLine();
-    if (UI::RadioButton(Icons::ArrowLeft + " Reversed", S_Ordering == MapOrdering::Reverse))
+    if (UI::RadioButton(Icons::ArrowLeft, S_Ordering == MapOrdering::Reverse))
         S_Ordering = MapOrdering::Reverse;
+    HoverTooltip("Reverse");
 
     UI::SameLine();
-    if (UI::RadioButton(Icons::Random + " Random", S_Ordering == MapOrdering::Random))
+    if (UI::RadioButton(Icons::Random, S_Ordering == MapOrdering::Random))
         S_Ordering = MapOrdering::Random;
+    HoverTooltip("Random");
+
+    UI::SameLine();
+    if (UI::RadioButton(Icons::Crosshairs, S_Ordering == MapOrdering::ClosestAbs))
+        S_Ordering = MapOrdering::ClosestAbs;
+    HoverTooltip("Closest (absolute)");
+
+    UI::SameLine();
+    if (UI::RadioButton(Icons::Percent, S_Ordering == MapOrdering::ClosestRel))
+        S_Ordering = MapOrdering::ClosestRel;
+    HoverTooltip("Closest (relative)");
 }
 
 void SectionSeries() {

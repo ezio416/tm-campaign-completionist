@@ -14,6 +14,8 @@ enum CampaignSeries {
 enum MapOrdering {
     InOrder,
     Reverse,
+    ClosestAbs,
+    ClosestRel,
     Random
 }
 
