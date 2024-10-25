@@ -1,15 +1,77 @@
 // c 2024-01-02
 // m 2024-10-24
 
-bool[] settingsOpen = { false, false, false };
+[Setting hidden] bool S_AutoSwitch           = true;
+[Setting hidden] bool S_ColoredMapNames      = false;
+[Setting hidden] vec3 S_ColorDelta0001to0100 = vec3(0.0f, 1.0f, 1.0f);
+[Setting hidden] vec3 S_ColorDelta0101to0250 = vec3(0.0f, 0.6f, 1.0f);
+[Setting hidden] vec3 S_ColorDelta0251to0500 = vec3(0.3f, 0.0f, 1.0f);
+[Setting hidden] vec3 S_ColorDelta0501to1000 = vec3(0.7f, 0.0f, 1.0f);
+[Setting hidden] vec3 S_ColorDelta1001to2000 = vec3(1.0f, 0.0f, 0.8f);
+[Setting hidden] vec3 S_ColorDelta2001to3000 = vec3(1.0f, 0.0f, 0.3f);
+[Setting hidden] vec3 S_ColorDelta3001to5000 = vec3(1.0f, 0.3f, 0.0f);
+[Setting hidden] vec3 S_ColorDelta5001Above  = vec3(1.0f, 0.6f, 0.0f);
+[Setting hidden] vec3 S_ColorDeltaUnder      = vec3(0.0f, 1.0f, 0.0f);
+[Setting hidden] vec3 S_ColorMedalAuthor     = vec3(0.17f, 0.75f, 0.0f);
+[Setting hidden] vec3 S_ColorMedalBronze     = vec3(0.69f, 0.5f,  0.0f);
+[Setting hidden] vec3 S_ColorMedalGold       = vec3(1.0f,  0.97f, 0.0f);
+[Setting hidden] vec3 S_ColorMedalNone       = vec3(0.7f,  0.0f,  0.0f);
+[Setting hidden] vec3 S_ColorMedalSilver     = vec3(0.75f, 0.75f, 0.75f);
+[Setting hidden] vec3 S_ColorSeasonAll       = vec3(0.8f,  0.0f,  0.8f);
+[Setting hidden] vec3 S_ColorSeasonFall      = vec3(1.0f,  0.5f,  0.0f);
+[Setting hidden] vec3 S_ColorSeasonSpring    = vec3(0.3f,  0.9f,  0.3f);
+[Setting hidden] vec3 S_ColorSeasonSummer    = vec3(1.0f,  0.8f,  0.0f);
+[Setting hidden] vec3 S_ColorSeasonUnknown   = vec3(0.7f,  0.0f,  0.0f);
+[Setting hidden] vec3 S_ColorSeasonWinter    = vec3(0.0f,  1.0f,  1.0f);
+[Setting hidden] vec3 S_ColorSeriesAll       = vec3(0.8f,  0.0f,  0.8f);
+[Setting hidden] vec3 S_ColorSeriesBlack     = vec3(0.4f,  0.4f,  0.4f);
+[Setting hidden] vec3 S_ColorSeriesBlue      = vec3(0.4f,  0.8f,  1.0f);
+[Setting hidden] vec3 S_ColorSeriesGreen     = vec3(0.0f,  1.0f,  0.0f);
+[Setting hidden] vec3 S_ColorSeriesRed       = vec3(1.0f,  0.0f,  0.0f);
+[Setting hidden] vec3 S_ColorSeriesWhite     = vec3(1.0f,  1.0f,  1.0f);
+[Setting hidden] bool S_NotifyStarter        = true;
+[Setting hidden] bool S_OnlyCurrentCampaign  = false;
+[Setting hidden] bool S_SaveSettingsOnClose  = true;
+[Setting hidden] bool S_WindowAutoResize     = false;
+[Setting hidden] bool S_WindowDetached       = false;
+[Setting hidden] bool S_WindowHideWithGame   = true;
+[Setting hidden] bool S_WindowHideWithOP     = true;
 
-[Setting hidden] bool S_AutoSwitch    = true;
-[Setting hidden] bool S_NotifyStarter = true;
+string       colorDelta0001to0100;
+string       colorDelta0101to0250;
+string       colorDelta0251to0500;
+string       colorDelta0501to1000;
+string       colorDelta1001to2000;
+string       colorDelta2001to3000;
+string       colorDelta3001to5000;
+string       colorDelta5001Above;
+string       colorDeltaUnder;
+string       colorMedalAuthor;
+string       colorMedalBronze;
+string       colorMedalGold;
+string       colorMedalNone;
+string       colorMedalSilver;
+string       colorSeasonAll;
+string       colorSeasonFall;
+string       colorSeasonSpring;
+string       colorSeasonSummer;
+string       colorSeasonUnknown;
+string       colorSeasonWinter;
+string       colorSeriesAll;
+string       colorSeriesBlack;
+string       colorSeriesBlue;
+string       colorSeriesGreen;
+string       colorSeriesRed;
+string       colorSeriesWhite;
+const string iconSeasonAll     = Icons::ListAlt;
+const string iconSeasonFall    = Icons::Leaf;
+const string iconSeasonSpring  = Icons::Tree;
+const string iconSeasonSummer  = Icons::Sun;
+const string iconSeasonUnknown = Icons::QuestionCircle;
+const string iconSeasonWinter  = Icons::SnowflakeO;
 
-[Setting hidden] bool S_WindowAutoResize   = false;
-[Setting hidden] bool S_WindowDetached     = false;
-[Setting hidden] bool S_WindowHideWithGame = true;
-[Setting hidden] bool S_WindowHideWithOP   = true;
+bool   lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
+bool[] settingsOpen            = { false, false, false };
 
 [SettingsTab name="Campaign Completionist" icon="Check" order=0]
 void SettingsTab_RenderWindow() {
@@ -17,10 +79,7 @@ void SettingsTab_RenderWindow() {
 }
 
 void WindowSettings(int id = -1) {
-    bool save = false;
-
-    if (id > -1)
-        save = true;
+    const bool save = S_SaveSettingsOnClose && id > -1;
 
     if (save && uint(id) >= settingsOpen.Length)
         return;
@@ -34,13 +93,203 @@ void WindowSettings(int id = -1) {
         return;
     }
 
-    if (save)
+    if (save) {
+        HoverTooltip(Icons::Times + " Close to Save " + Icons::FloppyO);
         settingsOpen[id] = true;
+    }
 
     UI::Indent(indentWidth);
 
     SectionGeneral();
     SectionWindow();
+    SectionColors();
+
+    UI::Indent(-indentWidth);
+}
+
+void SectionColors() {
+    if (!UI::CollapsingHeader(Icons::PaintBrush + " Colors"))
+        return;
+
+    UI::Indent(indentWidth);
+
+    if (UI::Button("Reset to default##colors")) {
+        pluginMeta.GetSetting("S_ColoredMapNames").Reset();
+
+        Meta::SaveSettings();
+    }
+
+    S_ColoredMapNames = UI::Checkbox(
+        "Show map names in color",
+        S_ColoredMapNames
+    );
+
+    SectionColorsDeltas();
+    SectionColorsMedals();
+    SectionColorsSeasons();
+    SectionColorsSeries();
+
+    UI::Indent(-indentWidth);
+}
+
+void SectionColorsDeltas() {
+    if (!UI::CollapsingHeader(Icons::ThermometerHalf + " Deltas"))
+        return;
+
+    UI::Indent(indentWidth);
+
+    UI::TextWrapped("Deltas describe buckets of time your PB falls into based on the target time.");
+
+    if (UI::Button("Reset to default##deltas")) {
+        pluginMeta.GetSetting("S_ColorDeltaUnder").Reset();
+        pluginMeta.GetSetting("S_ColorDelta0001to0100").Reset();
+        pluginMeta.GetSetting("S_ColorDelta0101to0250").Reset();
+        pluginMeta.GetSetting("S_ColorDelta0251to0500").Reset();
+        pluginMeta.GetSetting("S_ColorDelta0501to1000").Reset();
+        pluginMeta.GetSetting("S_ColorDelta1001to2000").Reset();
+        pluginMeta.GetSetting("S_ColorDelta2001to3000").Reset();
+        pluginMeta.GetSetting("S_ColorDelta3001to5000").Reset();
+        pluginMeta.GetSetting("S_ColorDelta5001Above").Reset();
+
+        Meta::SaveSettings();
+    }
+
+    if (S_ColorDeltaUnder != (S_ColorDeltaUnder = UI::InputColor3("Achieved", S_ColorDeltaUnder)))
+        colorDeltaUnder = Text::FormatOpenplanetColor(S_ColorDeltaUnder);
+
+    if (S_ColorDelta0001to0100 != (S_ColorDelta0001to0100 = UI::InputColor3("+0.001 - 0.100", S_ColorDelta0001to0100)))
+        colorDelta0001to0100 = Text::FormatOpenplanetColor(S_ColorDelta0001to0100);
+
+    if (S_ColorDelta0101to0250 != (S_ColorDelta0101to0250 = UI::InputColor3("+0.101 - 0.250", S_ColorDelta0101to0250)))
+        colorDelta0101to0250 = Text::FormatOpenplanetColor(S_ColorDelta0101to0250);
+
+    if (S_ColorDelta0251to0500 != (S_ColorDelta0251to0500 = UI::InputColor3("+0.251 - 0.500", S_ColorDelta0251to0500)))
+        colorDelta0251to0500 = Text::FormatOpenplanetColor(S_ColorDelta0251to0500);
+
+    if (S_ColorDelta0501to1000 != (S_ColorDelta0501to1000 = UI::InputColor3("+0.501 - 1.000", S_ColorDelta0501to1000)))
+        colorDelta0501to1000 = Text::FormatOpenplanetColor(S_ColorDelta0501to1000);
+
+    if (S_ColorDelta1001to2000 != (S_ColorDelta1001to2000 = UI::InputColor3("+1.001 - 2.000", S_ColorDelta1001to2000)))
+        colorDelta1001to2000 = Text::FormatOpenplanetColor(S_ColorDelta1001to2000);
+
+    if (S_ColorDelta2001to3000 != (S_ColorDelta2001to3000 = UI::InputColor3("+2.001 - 3.000", S_ColorDelta2001to3000)))
+        colorDelta2001to3000 = Text::FormatOpenplanetColor(S_ColorDelta2001to3000);
+
+    if (S_ColorDelta3001to5000 != (S_ColorDelta3001to5000 = UI::InputColor3("+3.001 - 5.000", S_ColorDelta3001to5000)))
+        colorDelta3001to5000 = Text::FormatOpenplanetColor(S_ColorDelta3001to5000);
+
+    if (S_ColorDelta5001Above != (S_ColorDelta5001Above = UI::InputColor3("Skill Issue", S_ColorDelta5001Above)))
+        colorDelta5001Above = Text::FormatOpenplanetColor(S_ColorDelta5001Above);
+
+    UI::Indent(-indentWidth);
+}
+
+void SectionColorsMedals() {
+    if (!UI::CollapsingHeader(Icons::Circle + " Medals"))
+        return;
+
+    UI::Indent(indentWidth);
+
+    if (UI::Button("Reset to default##medals")) {
+        pluginMeta.GetSetting("S_ColorMedalAuthor").Reset();
+        pluginMeta.GetSetting("S_ColorMedalBronze").Reset();
+        pluginMeta.GetSetting("S_ColorMedalGold").Reset();
+        pluginMeta.GetSetting("S_ColorMedalNone").Reset();
+        pluginMeta.GetSetting("S_ColorMedalSilver").Reset();
+
+        Meta::SaveSettings();
+    }
+
+    if (S_ColorMedalAuthor != (S_ColorMedalAuthor = UI::InputColor3("Author", S_ColorMedalAuthor)))
+        colorMedalAuthor = Text::FormatOpenplanetColor(S_ColorMedalAuthor);
+
+    if (S_ColorMedalGold != (S_ColorMedalGold = UI::InputColor3("Gold", S_ColorMedalGold)))
+        colorMedalGold = Text::FormatOpenplanetColor(S_ColorMedalGold);
+
+    if (S_ColorMedalSilver != (S_ColorMedalSilver = UI::InputColor3("Silver", S_ColorMedalSilver)))
+        colorMedalSilver = Text::FormatOpenplanetColor(S_ColorMedalSilver);
+
+    if (S_ColorMedalBronze != (S_ColorMedalBronze = UI::InputColor3("Bronze", S_ColorMedalBronze)))
+        colorMedalBronze = Text::FormatOpenplanetColor(S_ColorMedalBronze);
+
+    if (S_ColorMedalNone != (S_ColorMedalNone = UI::InputColor3("None", S_ColorMedalNone)))
+        colorMedalNone = Text::FormatOpenplanetColor(S_ColorMedalNone);
+
+    UI::Indent(-indentWidth);
+}
+
+void SectionColorsSeasons() {
+    if (!UI::CollapsingHeader(Icons::SnowflakeO + " Seasons"))
+        return;
+
+    UI::Indent(indentWidth);
+
+    if (UI::Button("Reset to default##seasons")) {
+        pluginMeta.GetSetting("S_ColorSeasonAll").Reset();
+        pluginMeta.GetSetting("S_ColorSeasonFall").Reset();
+        pluginMeta.GetSetting("S_ColorSeasonSpring").Reset();
+        pluginMeta.GetSetting("S_ColorSeasonSummer").Reset();
+        pluginMeta.GetSetting("S_ColorSeasonUnknown").Reset();
+        pluginMeta.GetSetting("S_ColorSeasonWinter").Reset();
+
+        Meta::SaveSettings();
+    }
+
+    if (S_ColorSeasonAll != (S_ColorSeasonAll = UI::InputColor3("All##seasons", S_ColorSeasonAll)))
+        colorSeasonAll = Text::FormatOpenplanetColor(S_ColorSeasonAll);
+
+    if (S_ColorSeasonWinter != (S_ColorSeasonWinter = UI::InputColor3("Winter / Jan-Mar", S_ColorSeasonWinter)))
+        colorSeasonWinter = Text::FormatOpenplanetColor(S_ColorSeasonWinter);
+
+    if (S_ColorSeasonSpring != (S_ColorSeasonSpring = UI::InputColor3("Spring / Apr-Jun", S_ColorSeasonSpring)))
+        colorSeasonSpring = Text::FormatOpenplanetColor(S_ColorSeasonSpring);
+
+    if (S_ColorSeasonSummer != (S_ColorSeasonSummer = UI::InputColor3("Summer / Jul-Sep", S_ColorSeasonSummer)))
+        colorSeasonSummer = Text::FormatOpenplanetColor(S_ColorSeasonSummer);
+
+    if (S_ColorSeasonFall != (S_ColorSeasonFall = UI::InputColor3("Fall / Oct-Dec", S_ColorSeasonFall)))
+        colorSeasonFall = Text::FormatOpenplanetColor(S_ColorSeasonFall);
+
+    if (S_ColorSeasonUnknown != (S_ColorSeasonUnknown = UI::InputColor3("Unknown", S_ColorSeasonUnknown)))
+        colorSeasonUnknown = Text::FormatOpenplanetColor(S_ColorSeasonUnknown);
+
+    UI::Indent(-indentWidth);
+}
+
+void SectionColorsSeries() {
+    if (!UI::CollapsingHeader(Icons::Columns + " Series"))
+        return;
+
+    UI::Indent(indentWidth);
+
+    if (UI::Button("Reset to default##series")) {
+        pluginMeta.GetSetting("S_ColorSeriesAll").Reset();
+        pluginMeta.GetSetting("S_ColorSeriesBlack").Reset();
+        pluginMeta.GetSetting("S_ColorSeriesBlue").Reset();
+        pluginMeta.GetSetting("S_ColorSeriesGreen").Reset();
+        pluginMeta.GetSetting("S_ColorSeriesRed").Reset();
+        pluginMeta.GetSetting("S_ColorSeriesWhite").Reset();
+
+        Meta::SaveSettings();
+    }
+
+    if (S_ColorSeriesAll != (S_ColorSeriesAll = UI::InputColor3("All##series", S_ColorSeriesAll)))
+        colorSeriesAll = Text::FormatOpenplanetColor(S_ColorSeriesAll);
+
+    if (S_ColorSeriesWhite != (S_ColorSeriesWhite = UI::InputColor3("White", S_ColorSeriesWhite)))
+        colorSeriesWhite = Text::FormatOpenplanetColor(S_ColorSeriesWhite);
+
+    if (S_ColorSeriesGreen != (S_ColorSeriesGreen = UI::InputColor3("Green", S_ColorSeriesGreen)))
+        colorSeriesGreen = Text::FormatOpenplanetColor(S_ColorSeriesGreen);
+
+    if (S_ColorSeriesBlue != (S_ColorSeriesBlue = UI::InputColor3("Blue", S_ColorSeriesBlue)))
+        colorSeriesBlue = Text::FormatOpenplanetColor(S_ColorSeriesBlue);
+
+    if (S_ColorSeriesRed != (S_ColorSeriesRed = UI::InputColor3("Red", S_ColorSeriesRed)))
+        colorSeriesRed = Text::FormatOpenplanetColor(S_ColorSeriesRed);
+
+    if (S_ColorSeriesBlack != (S_ColorSeriesBlack = UI::InputColor3("Black", S_ColorSeriesBlack)))
+        colorSeriesBlack = Text::FormatOpenplanetColor(S_ColorSeriesBlack);
 
     UI::Indent(-indentWidth);
 }
@@ -54,6 +303,8 @@ void SectionGeneral() {
     if (UI::Button("Reset to default##general")) {
         pluginMeta.GetSetting("S_AutoSwitch").Reset();
         pluginMeta.GetSetting("S_NotifyStarter").Reset();
+        pluginMeta.GetSetting("S_OnlyCurrentCampaign").Reset();
+        pluginMeta.GetSetting("S_SaveSettingsOnClose").Reset();
 
         Meta::SaveSettings();
     }
@@ -69,6 +320,19 @@ void SectionGeneral() {
             S_AutoSwitch
         );
     }
+
+    UI::BeginDisabled(!hasPlayPermission);
+    S_OnlyCurrentCampaign = UI::Checkbox(
+        "Only show the current 25 seasonal campaign maps",
+        S_OnlyCurrentCampaign
+    );
+    UI::EndDisabled();
+
+    S_SaveSettingsOnClose = UI::Checkbox(
+        "Save settings when this 'Settings' menu is closed",
+        S_SaveSettingsOnClose
+    );
+    HoverTooltipSetting("This is very meta, I know.");
 
     UI::Indent(-indentWidth);
 }
@@ -117,6 +381,15 @@ void SectionWindow() {
     UI::Indent(-indentWidth);
 }
 
+void HoverTooltip(const string &in msg) {
+    if (!UI::IsItemHovered())
+        return;
+
+    UI::BeginTooltip();
+        UI::Text(msg);
+    UI::EndTooltip();
+}
+
 void HoverTooltipSetting(const string &in msg, const string &in color = "666") {
     UI::SameLine();
     UI::Text("\\$" + color + Icons::QuestionCircle);
@@ -129,14 +402,24 @@ void HoverTooltipSetting(const string &in msg, const string &in color = "666") {
     UI::EndTooltip();
 }
 
+enum CampaignSeries {
+    All,
+    White,
+    Green,
+    Blue,
+    Red,
+    Black,
+    Unknown = 7
+}
+
 enum Mode {
     NadeoCampaign,
-    TrackOfTheDay
+    TrackOfTheDay,
+    Unknown = 3
 }
 
 enum Season {  // update every season
     All,
-    Unknown,
     Summer_2020,
     Fall_2020,
     Winter_2021,
@@ -154,92 +437,24 @@ enum Season {  // update every season
     Winter_2024,
     Spring_2024,
     Summer_2024,
-    Fall_2024
+    Fall_2024,
+    Unknown = 20
 }
-
-// [Setting category="General" name="Automatically switch maps when target is reached" description="Always disabled for Starter Access"]
-
-// [SettingsTab name="General" icon="Cogs" order=0]
-// void SettingsTab_General() {
-//     if (UI::Button("Reset to default##general")) {
-//         pluginMeta.GetSetting("S_NotifyStarter").Reset();
-//     }
-
-//     if (hasPlayPermission)
-//         S_AutoSwitch = UI::Checkbox(
-//             "Automatically switch maps when target is reached",
-//             S_AutoSwitch
-//         );
-
-//     S_NotifyStarter = UI::Checkbox(
-//         "Notify when Starter Access is detected",
-//         S_NotifyStarter
-//     );
-// }
-
-// [SettingsTab name="Window" icon="WindowMaximize" order=1]
-// void SettingsTab_Window() {
-    // if (UI::Button("Reset to default##window")) {
-    //     pluginMeta.GetSetting("S_WindowDetached").Reset();
-    //     pluginMeta.GetSetting("S_WindowHideWithGame").Reset();
-    //     pluginMeta.GetSetting("S_WindowHideWithOP").Reset();
-    //     pluginMeta.GetSetting("S_WindowAutoResize").Reset();
-    // }
-
-    // S_WindowDetached = UI::Checkbox(
-    //     "Show a detached window",
-    //     S_WindowDetached
-    // );
-
-    // if (S_WindowDetached) {
-    //     UI::NewLine(); UI::SameLine();
-    //     S_WindowHideWithGame = UI::Checkbox(
-    //         "Show/hide with game UI",
-    //         S_WindowHideWithGame
-    //     );
-
-    //     UI::NewLine(); UI::SameLine();
-    //     S_WindowHideWithOP = UI::Checkbox(
-    //         "Show/hide with Openplanet UI",
-    //         S_WindowHideWithOP
-    //     );
-
-    //     UI::NewLine(); UI::SameLine();
-    //     S_WindowAutoResize = UI::Checkbox(
-    //         "Auto-resize",
-    //         S_WindowAutoResize
-    //     );
-    // }
-// }
-
-// [Setting hidden]
-// Mode S_Mode = Mode::NadeoCampaign;
-// Mode lastMode = S_Mode;
 
 // enum TargetMedal {
 //     Author,
 //     Gold,
 //     Silver,
 //     Bronze,
-//     None
+//     None = 5
 // }
 
 // [Setting hidden]
+// Mode S_Mode = Mode::NadeoCampaign;
+// Mode lastMode = S_Mode;
+
+// [Setting hidden]
 // TargetMedal S_Target = TargetMedal::Author;
-
-
-// [Setting category="General" name="Automatically switch maps when target is reached" description="Always disabled for Starter Access"]
-// bool S_AutoSwitch = true;
-
-// [Setting category="General" name="Show 'Auto Switch' button" description="Always disabled for Starter Access"]
-// bool S_MenuAutoSwitch = true;
-
-// [Setting category="General" name="Only show the current 25 Nadeo Campaign maps" description="Always enabled for Starter Access (only first 10 maps)"]
-// bool S_OnlyCurrentCampaign = false;
-// bool lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
-
-// [Setting category="General" name="Show 'Only Current Campaign' button" description="Always disabled for Starter Access"]
-// bool S_MenuOnlyCurrentCampaign = true;
 
 // [Setting category="General" name="Season to show" description="Tracks of the Day are categorized into 3-month periods which may differ slightly from the time periods of Nadeo Campaigns. Does nothing for Starter Access"]
 // Season S_Season = Season::All;
@@ -248,21 +463,9 @@ enum Season {  // update every season
 // [Setting category="General" name="Show 'Season' menu" description="Does nothing for Starter Access"]
 // bool S_MenuSeason = true;
 
-// enum CampaignSeries {
-//     All,
-//     White,
-//     Green,
-//     Blue,
-//     Red,
-//     Black
-// }
-
 // [Setting category="General" name="Campaign series to show"]
 // CampaignSeries S_Series = CampaignSeries::All;
 // CampaignSeries lastSeries = S_Series;
-
-// [Setting category="General" name="Show 'Series' menu"]
-// bool S_MenuSeries = true;
 
 // const string[] seriesWhite = { "01", "02", "03", "04", "05" };
 // const string[] seriesGreen = { "06", "07", "08", "09", "10" };
@@ -270,17 +473,11 @@ enum Season {  // update every season
 // const string[] seriesRed   = { "16", "17", "18", "19", "20" };
 // const string[] seriesBlack = { "21", "22", "23", "24", "25" };
 
-// [Setting category="General" name="Show 'Refresh Records' button"]
-// bool S_MenuRefresh = true;
-
 // [Setting category="General" name="Show a list of remaining maps"]
 // bool S_MenuAllMaps = true;
 
 // [Setting category="General" name="Show hover text for clicking" description="Left-click to play, middle-click to skip, right-click to bookmark"]
 // bool S_MenuClickHover = true;
-
-// [Setting category="General" name="Show skip icons"]
-// bool S_MenuSkipIcons = true;
 
 // [Setting category="General" name="Exclude skipped maps from 'remaining maps'"]
 // bool S_MenuExcludeSkips = true;
@@ -288,9 +485,6 @@ enum Season {  // update every season
 
 // [Setting category="General" name="Show a list of skipped maps"]
 // bool S_MenuAllSkips = true;
-
-// [Setting category="General" name="Show bookmark icons"]
-// bool S_MenuBookmarkIcons = true;
 
 // [Setting category="General" name="Show a list of bookmarked maps"]
 // bool S_MenuAllBookmarks = true;
@@ -306,112 +500,3 @@ enum Season {  // update every season
 
 // [Setting category="General" name="Notify of time still needed after a run"]
 // NotifyAfterRun S_NotifyAfterRun = NotifyAfterRun::OnlyAfterPB;
-
-
-// [Setting category="Colors" name="Colored map names"]
-// bool S_ColorMapNames = false;
-
-// [Setting category="Colors" name="'Time still needed' notification" color]
-// vec3 S_ColorTimeNeeded = vec3(1.0f, 0.1f, 0.5f);
-
-// [Setting category="Colors" name="All seasons" color]
-// vec3 S_ColorSeasonAll = vec3(1.0f, 0.4f, 1.0f);
-// string colorSeasonAll;
-// const string iconSeasonAll = Icons::ListAlt;
-
-// [Setting category="Colors" name="Unknown season" color]
-// vec3 S_ColorSeasonUnknown = vec3(1.0f, 0.0f, 0.0f);
-// string colorSeasonUnknown;
-// const string iconSeasonUnknown = Icons::QuestionCircle;
-
-// [Setting category="Colors" name="Winter/Jan-Mar" color]
-// vec3 S_ColorSeasonWinter = vec3(0.0f, 1.0f, 1.0f);
-// string colorSeasonWinter;
-// const string iconSeasonWinter = Icons::SnowflakeO;
-
-// [Setting category="Colors" name="Spring/Apr-Jun" color]
-// vec3 S_ColorSeasonSpring = vec3(0.3f, 0.9f, 0.3f);
-// string colorSeasonSpring;
-// const string iconSeasonSpring = Icons::Tree;
-
-// [Setting category="Colors" name="Summer/Jul-Sep" color]
-// vec3 S_ColorSeasonSummer = vec3(1.0f, 0.8f, 0.0f);
-// string colorSeasonSummer;
-// const string iconSeasonSummer = Icons::Sun;
-
-// [Setting category="Colors" name="Fall/Oct-Dec" color]
-// vec3 S_ColorSeasonFall = vec3(1.0f, 0.5f, 0.0f);
-// string colorSeasonFall;
-// const string iconSeasonFall = Icons::Leaf;
-
-// [Setting category="Colors" name="All series" color]
-// vec3 S_ColorSeriesAll = vec3(1.0f, 0.4f, 1.0f);
-// string colorSeriesAll;
-
-// [Setting category="Colors" name="White series" color]
-// vec3 S_ColorSeriesWhite = vec3(1.0f, 1.0f, 1.0f);
-// string colorSeriesWhite;
-
-// [Setting category="Colors" name="Green series" color]
-// vec3 S_ColorSeriesGreen = vec3(0.0f, 1.0f, 0.0f);
-// string colorSeriesGreen;
-
-// [Setting category="Colors" name="Blue series" color]
-// vec3 S_ColorSeriesBlue = vec3(0.4f, 0.8f, 1.0f);
-// string colorSeriesBlue;
-
-// [Setting category="Colors" name="Red series" color]
-// vec3 S_ColorSeriesRed = vec3(1.0f, 0.0f, 0.0f);
-// string colorSeriesRed;
-
-// [Setting category="Colors" name="Black series" color]
-// vec3 S_ColorSeriesBlack = vec3(0.4f, 0.4f, 0.4f);
-// string colorSeriesBlack;
-
-// [Setting category="Colors" name="Author medal" color]
-// vec3 S_ColorMedalAuthor = vec3(0.17f, 0.75f, 0.0f);
-// string colorMedalAuthor;
-
-// [Setting category="Colors" name="Gold medal" color]
-// vec3 S_ColorMedalGold = vec3(1.0f, 0.97f, 0.0f);
-// string colorMedalGold;
-
-// [Setting category="Colors" name="Silver medal" color]
-// vec3 S_ColorMedalSilver = vec3(0.75f, 0.75f, 0.75f);
-// string colorMedalSilver;
-
-// [Setting category="Colors" name="Bronze medal" color]
-// vec3 S_ColorMedalBronze = vec3(0.69f, 0.5f, 0.0f);
-// string colorMedalBronze;
-
-// [Setting category="Colors" name="No medal" color]
-// vec3 S_ColorMedalNone = vec3(1.0f, 0.0f, 1.0f);
-// string colorMedalNone;
-
-// [Setting category="Colors" name="Time needed < 0.1s" color description="For the menu, not the notification"]
-// vec3 S_ColorDeltaSub01 = vec3(0.0f, 1.0f, 1.0f);
-// string colorDeltaSub01;
-
-// [Setting category="Colors" name="Time needed 0.1-0.5s" color description="For the menu, not the notification"]
-// vec3 S_ColorDelta01to05 = vec3(0.0f, 1.0f, 0.6f);
-// string colorDelta01to05;
-
-// [Setting category="Colors" name="Time needed 0.5-1s" color description="For the menu, not the notification"]
-// vec3 S_ColorDelta05to1 = vec3(0.5f, 1.0f, 0.0f);
-// string colorDelta05to1;
-
-// [Setting category="Colors" name="Time needed 1-2s" color description="For the menu, not the notification"]
-// vec3 S_ColorDelta1to2 = vec3(1.0f, 0.8f, 0.0f);
-// string colorDelta1to2;
-
-// [Setting category="Colors" name="Time needed 2-3s" color description="For the menu, not the notification"]
-// vec3 S_ColorDelta2to3 = vec3(1.0f, 0.5f, 0.0f);
-// string colorDelta2to3;
-
-// [Setting category="Colors" name="Time needed >= 3s" color description="For the menu, not the notification"]
-// vec3 S_ColorDeltaAbove3 = vec3(1.0f, 0.0f, 0.0f);
-// string colorDeltaAbove3;
-
-
-// [Setting category="Debug" name="Show debug window"]
-// bool S_Debug = false;

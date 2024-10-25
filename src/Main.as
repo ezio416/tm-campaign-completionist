@@ -45,11 +45,11 @@ void Main() {
     @fontHeader    = UI::LoadFont("DroidSans.ttf", 26);
 
     // lastMode = S_Mode;
-    // lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
+    lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
     // lastSeason = S_Season;
     // lastSeries = S_Series;
     // lastMenuExcludeSkips = S_MenuExcludeSkips;
-    // OnSettingsChanged();
+    OnSettingsChanged();
 
     // accountId = GetApp().LocalPlayerInfo.WebServicesUserId;
 
@@ -467,7 +467,7 @@ void RenderMenu() {
 //     RenderDebug();
 // }
 
-// void OnSettingsChanged() {
+void OnSettingsChanged() {
 //     if (
 //         lastMode != S_Mode
 //         || lastOnlyCurrentCampaign != S_OnlyCurrentCampaign
@@ -483,12 +483,12 @@ void RenderMenu() {
 //         startnew(SetNextMap);
 //     }
 
-//     colorSeasonAll     = Text::FormatOpenplanetColor(S_ColorSeasonAll);
-//     colorSeasonUnknown = Text::FormatOpenplanetColor(S_ColorSeasonUnknown);
-//     colorSeasonWinter  = Text::FormatOpenplanetColor(S_ColorSeasonWinter);
-//     colorSeasonSpring  = Text::FormatOpenplanetColor(S_ColorSeasonSpring);
-//     colorSeasonSummer  = Text::FormatOpenplanetColor(S_ColorSeasonSummer);
-//     colorSeasonFall    = Text::FormatOpenplanetColor(S_ColorSeasonFall);
+    colorSeasonAll     = Text::FormatOpenplanetColor(S_ColorSeasonAll);
+    colorSeasonFall    = Text::FormatOpenplanetColor(S_ColorSeasonFall);
+    colorSeasonSpring  = Text::FormatOpenplanetColor(S_ColorSeasonSpring);
+    colorSeasonSummer  = Text::FormatOpenplanetColor(S_ColorSeasonSummer);
+    colorSeasonUnknown = Text::FormatOpenplanetColor(S_ColorSeasonUnknown);
+    colorSeasonWinter  = Text::FormatOpenplanetColor(S_ColorSeasonWinter);
 
 //     string season;
 //     string seasonCategory;
@@ -521,12 +521,12 @@ void RenderMenu() {
 //             }
 //     }
 
-//     colorSeriesAll   = Text::FormatOpenplanetColor(S_ColorSeriesAll);
-//     colorSeriesWhite = Text::FormatOpenplanetColor(S_ColorSeriesWhite);
-//     colorSeriesGreen = Text::FormatOpenplanetColor(S_ColorSeriesGreen);
-//     colorSeriesBlue  = Text::FormatOpenplanetColor(S_ColorSeriesBlue);
-//     colorSeriesRed   = Text::FormatOpenplanetColor(S_ColorSeriesRed);
-//     colorSeriesBlack = Text::FormatOpenplanetColor(S_ColorSeriesBlack);
+    colorSeriesAll   = Text::FormatOpenplanetColor(S_ColorSeriesAll);
+    colorSeriesBlack = Text::FormatOpenplanetColor(S_ColorSeriesBlack);
+    colorSeriesBlue  = Text::FormatOpenplanetColor(S_ColorSeriesBlue);
+    colorSeriesGreen = Text::FormatOpenplanetColor(S_ColorSeriesGreen);
+    colorSeriesRed   = Text::FormatOpenplanetColor(S_ColorSeriesRed);
+    colorSeriesWhite = Text::FormatOpenplanetColor(S_ColorSeriesWhite);
 
 //     switch (S_Series) {
 //         case CampaignSeries::All:   colorSeries = colorSeriesAll;   break;
@@ -538,11 +538,11 @@ void RenderMenu() {
 //         default:;
 //     }
 
-//     colorMedalAuthor = Text::FormatOpenplanetColor(S_ColorMedalAuthor);
-//     colorMedalGold   = Text::FormatOpenplanetColor(S_ColorMedalGold);
-//     colorMedalSilver = Text::FormatOpenplanetColor(S_ColorMedalSilver);
-//     colorMedalBronze = Text::FormatOpenplanetColor(S_ColorMedalBronze);
-//     colorMedalNone   = Text::FormatOpenplanetColor(S_ColorMedalNone);
+    colorMedalAuthor = Text::FormatOpenplanetColor(S_ColorMedalAuthor);
+    colorMedalBronze = Text::FormatOpenplanetColor(S_ColorMedalBronze);
+    colorMedalGold   = Text::FormatOpenplanetColor(S_ColorMedalGold);
+    colorMedalNone   = Text::FormatOpenplanetColor(S_ColorMedalNone);
+    colorMedalSilver = Text::FormatOpenplanetColor(S_ColorMedalSilver);
 
 //     switch (S_Target) {
 //         case TargetMedal::Author: colorTarget = colorMedalAuthor; break;
@@ -552,16 +552,19 @@ void RenderMenu() {
 //         default:                  colorTarget = colorMedalNone;
 //     }
 
-//     colorDeltaSub01  = Text::FormatOpenplanetColor(S_ColorDeltaSub01);
-//     colorDelta01to05 = Text::FormatOpenplanetColor(S_ColorDelta01to05);
-//     colorDelta05to1  = Text::FormatOpenplanetColor(S_ColorDelta05to1);
-//     colorDelta1to2   = Text::FormatOpenplanetColor(S_ColorDelta1to2);
-//     colorDelta2to3   = Text::FormatOpenplanetColor(S_ColorDelta2to3);
-//     colorDeltaAbove3 = Text::FormatOpenplanetColor(S_ColorDeltaAbove3);
+    colorDeltaUnder      = Text::FormatOpenplanetColor(S_ColorDeltaUnder);
+    colorDelta0001to0100 = Text::FormatOpenplanetColor(S_ColorDelta0001to0100);
+    colorDelta0101to0250 = Text::FormatOpenplanetColor(S_ColorDelta0101to0250);
+    colorDelta0251to0500 = Text::FormatOpenplanetColor(S_ColorDelta0251to0500);
+    colorDelta0501to1000 = Text::FormatOpenplanetColor(S_ColorDelta0501to1000);
+    colorDelta1001to2000 = Text::FormatOpenplanetColor(S_ColorDelta1001to2000);
+    colorDelta2001to3000 = Text::FormatOpenplanetColor(S_ColorDelta2001to3000);
+    colorDelta3001to5000 = Text::FormatOpenplanetColor(S_ColorDelta3001to5000);
+    colorDelta5001Above  = Text::FormatOpenplanetColor(S_ColorDelta5001Above);
 
 //     for (uint i = 0; i < maps.Length; i++)
 //         maps[i].SetTargetDelta();
-// }
+}
 
 // void Loop() {
     // if (!hasPlayPermission) {
