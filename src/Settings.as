@@ -1,17 +1,12 @@
 // c 2024-01-02
-// m 2024-10-25
+// m 2024-10-30
 
-enum CampaignSeries {
-    White,
-    Green,
-    Blue,
-    Red,
-    Black,
-    All,
-    Unknown
-}
+// enum CustomSource {
+//     Club,
+//     TMX
+// }
 
-enum MapFilter {
+enum ExtraFilters {
     Played   = 1,
     Unplayed = 2
 }
@@ -22,6 +17,45 @@ enum MapOrder {
     ClosestAbs,
     ClosestRel,
     Random
+}
+
+enum Mode {
+    Seasonal,
+    TrackOfTheDay,
+    Campaign,
+    Unknown
+}
+
+enum Season {  // update every season
+    Summer_2020,
+    Fall_2020,
+    Winter_2021,
+    Spring_2021,
+    Summer_2021,
+    Fall_2021,
+    Winter_2022,
+    Spring_2022,
+    Summer_2022,
+    Fall_2022,
+    Winter_2023,
+    Spring_2023,
+    Summer_2023,
+    Fall_2023,
+    Winter_2024,
+    Spring_2024,
+    Summer_2024,
+    Fall_2024,
+    All,
+    Unknown = 18
+}
+
+enum Series {
+    White   = 1,
+    Green   = 2,
+    Blue    = 4,
+    Red     = 8,
+    Black   = 16,
+    Unknown = 32
 }
 
 enum TargetMedal {
@@ -61,12 +95,14 @@ enum TargetMedal {
 [Setting hidden] vec3           S_ColorSeriesRed         = vec3(1.0f,  0.0f,  0.0f);
 [Setting hidden] vec3           S_ColorSeriesUnknown     = vec3(1.0f,  0.5f,  1.0f);
 [Setting hidden] vec3           S_ColorSeriesWhite       = vec3(1.0f,  1.0f,  1.0f);
-[Setting hidden] int            S_Filter                 = MapFilter::Played | MapFilter::Unplayed;
+// [Setting hidden] CustomSource   S_CustomSource           = CustomSource::Club;
+// [Setting hidden] int            S_Filter                 = ExtraFilters::Played | ExtraFilters::Unplayed;
 [Setting hidden] bool           S_NotifyStarter          = true;
 [Setting hidden] bool           S_OnlyCurrentCampaign    = false;
 [Setting hidden] MapOrder       S_Order                  = MapOrder::Normal;
+[Setting hidden] Mode           S_Mode                   = Mode::Seasonal;
 [Setting hidden] bool           S_SaveSettingsOnClose    = true;
-[Setting hidden] CampaignSeries S_Series                 = CampaignSeries::All;
+[Setting hidden] int            S_Series                 = 31;  // white | ... | black
 [Setting hidden] bool           S_ShowSettingsInDetached = false;
 [Setting hidden] bool           S_ShowSettingsInMenu     = false;
 [Setting hidden] TargetMedal    S_Target                 = TargetMedal::Author;
@@ -345,7 +381,6 @@ void SectionGeneral() {
     UI::Indent(indentWidth);
 
     if (UI::Button("Reset to default##general")) {
-        pluginMeta.GetSetting("S_AutoSwitch").Reset();
         pluginMeta.GetSetting("S_NotifyStarter").Reset();
         pluginMeta.GetSetting("S_OnlyCurrentCampaign").Reset();
         pluginMeta.GetSetting("S_SaveSettingsOnClose").Reset();
@@ -357,13 +392,6 @@ void SectionGeneral() {
         "Notify when Starter Access is detected",
         S_NotifyStarter
     );
-
-    if (hasPlayPermission) {
-        S_AutoSwitch = UI::Checkbox(
-            "Automatically switch maps when target is reached",
-            S_AutoSwitch
-        );
-    }
 
     UI::BeginDisabled(!hasPlayPermission);
     S_OnlyCurrentCampaign = UI::Checkbox(
@@ -378,12 +406,12 @@ void SectionGeneral() {
 }
 
 void SectionSettings() {
-    if (!UI::CollapsingHeader(Icons::Cog + "\\$I\\$AAA Settings"))
+    if (!UI::CollapsingHeader(Icons::Cog + "\\$I\\$AAA Settings About Settings"))
         return;
 
     UI::Indent(indentWidth);
 
-    UI::Text("This section holds settings about the settings themselves.");
+    // UI::Text("\\$I\\$AAAThis section holds settings about the settings themselves.");
 
     S_SaveSettingsOnClose = UI::Checkbox(
         "Save settings when the top 'Settings' menu is closed",
@@ -410,7 +438,7 @@ void SectionWindow() {
     UI::Indent(indentWidth);
 
     if (UI::Button("Reset to default##window")) {
-        pluginMeta.GetSetting("S_WindowAutoResize").Reset();
+        // pluginMeta.GetSetting("S_WindowAutoResize").Reset();
         pluginMeta.GetSetting("S_WindowDetached").Reset();
         pluginMeta.GetSetting("S_WindowHideWithGame").Reset();
         pluginMeta.GetSetting("S_WindowHideWithOP").Reset();
@@ -436,10 +464,10 @@ void SectionWindow() {
             S_WindowHideWithOP
         );
 
-        S_WindowAutoResize = UI::Checkbox(
-            "Auto-resize",
-            S_WindowAutoResize
-        );
+        // S_WindowAutoResize = UI::Checkbox(
+        //     "Auto-resize",
+        //     S_WindowAutoResize
+        // );
 
         UI::Indent(-indentWidth);
     }
@@ -447,8 +475,8 @@ void SectionWindow() {
     UI::Indent(-indentWidth);
 }
 
-void HoverTooltip(const string &in msg) {
-    if (!UI::IsItemHovered())
+void HoverTooltip(const string &in msg, bool allowDisabled = true) {
+    if (!UI::IsItemHovered(allowDisabled ? UI::HoveredFlags::AllowWhenDisabled : UI::HoveredFlags::None))
         return;
 
     UI::BeginTooltip();
@@ -456,10 +484,11 @@ void HoverTooltip(const string &in msg) {
     UI::EndTooltip();
 }
 
-void HoverTooltipSetting(const string &in msg, const string &in color = "666") {
+void HoverTooltipSetting(const string &in msg, vec2 offset = vec2(), const string &in color = "666") {
     UI::SameLine();
+    UI::SetCursorPos(UI::GetCursorPos() + offset);
     UI::Text("\\$" + color + Icons::QuestionCircle);
-    if (!UI::IsItemHovered())
+    if (!UI::IsItemHovered(UI::HoveredFlags::AllowWhenDisabled))
         return;
 
     UI::SetNextWindowSize(int(Math::Min(Draw::MeasureString(msg).x, 400.0f)), 0.0f);
@@ -473,29 +502,6 @@ void HoverTooltipSetting(const string &in msg, const string &in color = "666") {
 //     TrackOfTheDay,
 //     Unknown = 3
 // }
-
-enum Season {  // update every season
-    All,
-    Summer_2020,
-    Fall_2020,
-    Winter_2021,
-    Spring_2021,
-    Summer_2021,
-    Fall_2021,
-    Winter_2022,
-    Spring_2022,
-    Summer_2022,
-    Fall_2022,
-    Winter_2023,
-    Spring_2023,
-    Summer_2023,
-    Fall_2023,
-    Winter_2024,
-    Spring_2024,
-    Summer_2024,
-    Fall_2024,
-    Unknown = 20
-}
 
 // [Setting hidden]
 // Mode S_Mode = Mode::NadeoCampaign;

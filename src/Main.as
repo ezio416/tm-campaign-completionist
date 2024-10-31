@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-10-24
+// m 2024-10-26
 
 const string  pluginColor = "\\$0F0";
 const string  pluginIcon  = Icons::Check;
@@ -20,26 +20,29 @@ UI::Font@    fontSubHeader;
 bool         hasPlayPermission = false;
 // string       iconSeason;
 bool         loadingMap        = false;
-Map@[]       maps;
-Map@[]       mapsCampaign;
-dictionary@  mapsCampaignById  = dictionary();
-dictionary@  mapsCampaignByUid = dictionary();
+dictionary@  maps              = dictionary();
+Map@[]       mapsArr;
+// Map@[]       mapsCampaign;
+// dictionary@  mapsCampaignById  = dictionary();
+// dictionary@  mapsCampaignByUid = dictionary();
 // Map@[]       mapsRemaining;
-Map@[]       mapsTotd;
-dictionary@  mapsTotdById      = dictionary();
-dictionary@  mapsTotdByUid     = dictionary();
+// Map@[]       mapsTotd;
+// dictionary@  mapsTotdById      = dictionary();
+// dictionary@  mapsTotdByUid     = dictionary();
 // uint         metTargetTotal    = 0;
 // Map@         nextMap;
 const float  scale             = UI::GetScale();
 const float  indentWidth       = scale * 20.0f;
-const uint   seasonCount       = 18;  // update every season
+// const uint   seasonCount       = 18;  // update every season
 
 void Main() {
     if (!(hasPlayPermission = Permissions::PlayLocalMap())) {
-        warn("Paid access required to play maps");
+        warn("This plugin requires paid access");
 
         if (S_NotifyStarter)
-            UI::ShowNotification(pluginTitle, "Paid access is required to play maps, but you can still track your progress on the current Nadeo Campaign", vec4(1.0f, 0.1f, 0.1f, 0.8f));
+            UI::ShowNotification(pluginTitle, "Paid access is required", vec4(1.0f, 0.1f, 0.1f, 0.8f));
+
+        return;
     }
 
     @fontSubHeader = UI::LoadFont("DroidSans.ttf", 20);
@@ -62,7 +65,7 @@ void Main() {
     // LoadSkips();
     // yield();
 
-    // GetMaps();
+    API::GetMapsAsync();
 
     // while (true) {
     //     Loop();
@@ -71,23 +74,14 @@ void Main() {
 }
 
 void Render() {
-    // if (false
-    //     || !S_Enabled
-    //     || (S_HideWithGame && !UI::IsGameUIVisible())
-    //     || (S_HideWithOP && !UI::IsOverlayShown())
-    // )
-    //     return;
-
-    // if (UI::Begin(pluginTitle, S_Enabled, UI::WindowFlags::NoFocusOnAppearing)) {
-    //     ;
-    // }
-    // UI::End();
+    if (!hasPlayPermission)
+        return;
 
     RenderWindowDetached();
 }
 
 void RenderMenu() {
-    if (!UI::BeginMenu(pluginTitle))
+    if (!hasPlayPermission || !UI::BeginMenu(pluginTitle))
         return;
 
     Window(WindowSource::Menu);
@@ -430,11 +424,38 @@ void RenderMenu() {
     // }
 // }
 
-// void Render() {
-    // RenderDebug();
-// }
-
 void OnSettingsChanged() {
+    colorDeltaUnder      = Text::FormatOpenplanetColor(S_ColorDeltaUnder);
+    colorDelta0001to0100 = Text::FormatOpenplanetColor(S_ColorDelta0001to0100);
+    colorDelta0101to0250 = Text::FormatOpenplanetColor(S_ColorDelta0101to0250);
+    colorDelta0251to0500 = Text::FormatOpenplanetColor(S_ColorDelta0251to0500);
+    colorDelta0501to1000 = Text::FormatOpenplanetColor(S_ColorDelta0501to1000);
+    colorDelta1001to2000 = Text::FormatOpenplanetColor(S_ColorDelta1001to2000);
+    colorDelta2001to3000 = Text::FormatOpenplanetColor(S_ColorDelta2001to3000);
+    colorDelta3001to5000 = Text::FormatOpenplanetColor(S_ColorDelta3001to5000);
+    colorDelta5001Above  = Text::FormatOpenplanetColor(S_ColorDelta5001Above);
+
+    colorMedalAuthor = Text::FormatOpenplanetColor(S_ColorMedalAuthor);
+    colorMedalBronze = Text::FormatOpenplanetColor(S_ColorMedalBronze);
+    colorMedalGold   = Text::FormatOpenplanetColor(S_ColorMedalGold);
+    colorMedalNone   = Text::FormatOpenplanetColor(S_ColorMedalNone);
+    colorMedalSilver = Text::FormatOpenplanetColor(S_ColorMedalSilver);
+
+    colorSeasonAll     = Text::FormatOpenplanetColor(S_ColorSeasonAll);
+    colorSeasonFall    = Text::FormatOpenplanetColor(S_ColorSeasonFall);
+    colorSeasonSpring  = Text::FormatOpenplanetColor(S_ColorSeasonSpring);
+    colorSeasonSummer  = Text::FormatOpenplanetColor(S_ColorSeasonSummer);
+    colorSeasonUnknown = Text::FormatOpenplanetColor(S_ColorSeasonUnknown);
+    colorSeasonWinter  = Text::FormatOpenplanetColor(S_ColorSeasonWinter);
+
+    colorSeriesAll     = Text::FormatOpenplanetColor(S_ColorSeriesAll);
+    colorSeriesBlack   = Text::FormatOpenplanetColor(S_ColorSeriesBlack);
+    colorSeriesBlue    = Text::FormatOpenplanetColor(S_ColorSeriesBlue);
+    colorSeriesGreen   = Text::FormatOpenplanetColor(S_ColorSeriesGreen);
+    colorSeriesRed     = Text::FormatOpenplanetColor(S_ColorSeriesRed);
+    colorSeriesUnknown = Text::FormatOpenplanetColor(S_ColorSeriesUnknown);
+    colorSeriesWhite   = Text::FormatOpenplanetColor(S_ColorSeriesWhite);
+
     // if (
     //     lastMode != S_Mode
     //     || lastOnlyCurrentCampaign != S_OnlyCurrentCampaign
@@ -449,13 +470,6 @@ void OnSettingsChanged() {
     //     lastMenuExcludeSkips = S_MenuExcludeSkips;
     //     startnew(SetNextMap);
     // }
-
-    colorSeasonAll     = Text::FormatOpenplanetColor(S_ColorSeasonAll);
-    colorSeasonFall    = Text::FormatOpenplanetColor(S_ColorSeasonFall);
-    colorSeasonSpring  = Text::FormatOpenplanetColor(S_ColorSeasonSpring);
-    colorSeasonSummer  = Text::FormatOpenplanetColor(S_ColorSeasonSummer);
-    colorSeasonUnknown = Text::FormatOpenplanetColor(S_ColorSeasonUnknown);
-    colorSeasonWinter  = Text::FormatOpenplanetColor(S_ColorSeasonWinter);
 
     // string season;
     // string seasonCategory;
@@ -488,14 +502,6 @@ void OnSettingsChanged() {
     //         }
     // }
 
-    colorSeriesAll     = Text::FormatOpenplanetColor(S_ColorSeriesAll);
-    colorSeriesBlack   = Text::FormatOpenplanetColor(S_ColorSeriesBlack);
-    colorSeriesBlue    = Text::FormatOpenplanetColor(S_ColorSeriesBlue);
-    colorSeriesGreen   = Text::FormatOpenplanetColor(S_ColorSeriesGreen);
-    colorSeriesRed     = Text::FormatOpenplanetColor(S_ColorSeriesRed);
-    colorSeriesUnknown = Text::FormatOpenplanetColor(S_ColorSeriesUnknown);
-    colorSeriesWhite   = Text::FormatOpenplanetColor(S_ColorSeriesWhite);
-
     // switch (S_Series) {
     //     case CampaignSeries::All:   colorSeries = colorSeriesAll;   break;
     //     case CampaignSeries::White: colorSeries = colorSeriesWhite; break;
@@ -506,12 +512,6 @@ void OnSettingsChanged() {
     //     default:;
     // }
 
-    colorMedalAuthor = Text::FormatOpenplanetColor(S_ColorMedalAuthor);
-    colorMedalBronze = Text::FormatOpenplanetColor(S_ColorMedalBronze);
-    colorMedalGold   = Text::FormatOpenplanetColor(S_ColorMedalGold);
-    colorMedalNone   = Text::FormatOpenplanetColor(S_ColorMedalNone);
-    colorMedalSilver = Text::FormatOpenplanetColor(S_ColorMedalSilver);
-
     // switch (S_Target) {
     //     case TargetMedal::Author: colorTarget = colorMedalAuthor; break;
     //     case TargetMedal::Gold:   colorTarget = colorMedalGold;   break;
@@ -519,16 +519,6 @@ void OnSettingsChanged() {
     //     case TargetMedal::Bronze: colorTarget = colorMedalBronze; break;
     //     default:                  colorTarget = colorMedalNone;
     // }
-
-    colorDeltaUnder      = Text::FormatOpenplanetColor(S_ColorDeltaUnder);
-    colorDelta0001to0100 = Text::FormatOpenplanetColor(S_ColorDelta0001to0100);
-    colorDelta0101to0250 = Text::FormatOpenplanetColor(S_ColorDelta0101to0250);
-    colorDelta0251to0500 = Text::FormatOpenplanetColor(S_ColorDelta0251to0500);
-    colorDelta0501to1000 = Text::FormatOpenplanetColor(S_ColorDelta0501to1000);
-    colorDelta1001to2000 = Text::FormatOpenplanetColor(S_ColorDelta1001to2000);
-    colorDelta2001to3000 = Text::FormatOpenplanetColor(S_ColorDelta2001to3000);
-    colorDelta3001to5000 = Text::FormatOpenplanetColor(S_ColorDelta3001to5000);
-    colorDelta5001Above  = Text::FormatOpenplanetColor(S_ColorDelta5001Above);
 
     // for (uint i = 0; i < maps.Length; i++)
     //     maps[i].SetTargetDelta();

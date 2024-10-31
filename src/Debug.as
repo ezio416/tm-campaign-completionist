@@ -1,17 +1,17 @@
 // c 2024-01-08
-// m 2024-10-24
+// m 2024-10-25
 
 [SettingsTab name="Debug" icon="Bug" order=1]
 void SettingsTab_Debug() {
-    UI::Text("maps: " + maps.Length);
-    UI::Text("mapsCampaign: " + mapsCampaign.Length);
-    UI::Text("mapsTotd: " + mapsTotd.Length);
+    UI::Text("maps: " + maps.GetSize());
+    // UI::Text("mapsCampaign: " + mapsCampaign.Length);
+    // UI::Text("mapsTotd: " + mapsTotd.Length);
 
     UI::BeginTabBar("##tabbar-debug");
 
     Tab_DebugMaps();
-    Tab_DebugMapsCampaign();
-    Tab_DebugMapsTotd();
+    // Tab_DebugMapsCampaign();
+    // Tab_DebugMapsTotd();
 
     UI::EndTabBar();
 }
@@ -20,34 +20,29 @@ void Tab_DebugMaps() {
     if (!UI::BeginTabItem("maps"))
         return;
 
-    ;
-
-    UI::EndTabItem();
-}
-
-void Tab_DebugMapsCampaign() {
-    if (!UI::BeginTabItem("mapsCampaign"))
-        return;
-
-    if (UI::BeginTable("##table-mapsCampaign", 4, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
+    if (UI::BeginTable("##table-maps", 5, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::SizingStretchProp)) {
         UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(0.0f), 0.5f));
 
         UI::TableSetupScrollFreeze(0, 1);
-        UI::TableSetupColumn("uid");
-        UI::TableSetupColumn("season");
-        UI::TableSetupColumn("name");
-        UI::TableSetupColumn("dl url");
+        UI::TableSetupColumn("uid",    UI::TableColumnFlags::WidthFixed, scale * 230.0f);
+        UI::TableSetupColumn("mode",   UI::TableColumnFlags::WidthFixed, scale * 100.0f);
+        UI::TableSetupColumn("season", UI::TableColumnFlags::WidthFixed, scale * 100.0f);
+        UI::TableSetupColumn("name",   UI::TableColumnFlags::WidthStretch);
+        UI::TableSetupColumn("dl url", UI::TableColumnFlags::WidthFixed, scale * 50.0f);
         UI::TableHeadersRow();
 
-        UI::ListClipper clipper(mapsCampaign.Length);
+        UI::ListClipper clipper(mapsArr.Length);
         while (clipper.Step()) {
             for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
-                Map@ map = mapsCampaign[i];
+                Map@ map = mapsArr[i];
 
                 UI::TableNextRow();
 
                 UI::TableNextColumn();
                 UI::Text(map.uid);
+
+                UI::TableNextColumn();
+                UI::Text(tostring(map.mode));
 
                 UI::TableNextColumn();
                 UI::Text(tostring(map.season));
@@ -67,49 +62,91 @@ void Tab_DebugMapsCampaign() {
     UI::EndTabItem();
 }
 
-void Tab_DebugMapsTotd() {
-    if (!UI::BeginTabItem("mapsTotd"))
-        return;
+// void Tab_DebugMapsCampaign() {
+//     if (!UI::BeginTabItem("mapsCampaign"))
+//         return;
 
-    if (UI::BeginTable("##table-mapsTotd", 2, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
-        UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(0.0f), 0.5f));
+    // if (UI::BeginTable("##table-mapsCampaign", 4, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
+    //     UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(0.0f), 0.5f));
 
-        UI::TableSetupScrollFreeze(0, 1);
-        UI::TableSetupColumn("uid");
-        UI::TableSetupColumn("date");
-        UI::TableHeadersRow();
+    //     UI::TableSetupScrollFreeze(0, 1);
+    //     UI::TableSetupColumn("uid");
+    //     UI::TableSetupColumn("season");
+    //     UI::TableSetupColumn("name");
+    //     UI::TableSetupColumn("dl url");
+    //     UI::TableHeadersRow();
 
-        UI::ListClipper clipper(mapsTotd.Length);
-        while (clipper.Step()) {
-            for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
-                Map@ map = mapsTotd[i];
+    //     UI::ListClipper clipper(mapsCampaign.Length);
+    //     while (clipper.Step()) {
+    //         for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
+    //             Map@ map = mapsCampaign[i];
 
-                UI::TableNextRow();
+    //             UI::TableNextRow();
 
-                UI::TableNextColumn();
-                UI::Text(map.uid);
+    //             UI::TableNextColumn();
+    //             UI::Text(map.uid);
 
-                UI::TableNextColumn();
-                UI::Text(map.date);
-            }
-        }
+    //             UI::TableNextColumn();
+    //             UI::Text(tostring(map.season));
 
-        UI::PopStyleColor();
-        UI::EndTable();
-    }
+    //             UI::TableNextColumn();
+    //             UI::Text((map.name !is null ? map.name.stripped : ""));
 
-    UI::EndTabItem();
-}
+    //             UI::TableNextColumn();
+    //             UI::Text(map.downloadUrl);
+    //         }
+    //     }
+
+    //     UI::PopStyleColor();
+    //     UI::EndTable();
+    // }
+
+//     UI::EndTabItem();
+// }
+
+// void Tab_DebugMapsTotd() {
+//     if (!UI::BeginTabItem("mapsTotd"))
+//         return;
+
+    // if (UI::BeginTable("##table-mapsTotd", 2, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
+        // UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(0.0f), 0.5f));
+
+        // UI::TableSetupScrollFreeze(0, 1);
+        // UI::TableSetupColumn("uid");
+        // UI::TableSetupColumn("date");
+        // UI::TableHeadersRow();
+
+        // UI::ListClipper clipper(mapsTotd.Length);
+        // while (clipper.Step()) {
+        //     for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
+        //         Map@ map = mapsTotd[i];
+
+        //         UI::TableNextRow();
+
+        //         UI::TableNextColumn();
+        //         UI::Text(map.uid);
+
+        //         UI::TableNextColumn();
+        //         UI::Text(map.date);
+        //     }
+        // }
+
+        // UI::PopStyleColor();
+        // UI::EndTable();
+    // }
+
+//     UI::EndTabItem();
+// }
 
 // void RenderDebug() {
     // if (!S_Debug)
     //     return;
 
     // UI::Begin(title + " Debug", S_Debug, UI::WindowFlags::None);
-    //     UI::BeginTabBar("##tabs");
-    //         Tab_MapsDebug(mapsCampaign, Mode::NadeoCampaign);
-    //         Tab_MapsDebug(mapsTotd,     Mode::TrackOfTheDay);
-    //     UI::EndTabBar();
+        // UI::BeginTabBar("##tabs");
+        //     Tab_MapsDebug(mapsCampaign, Mode::NadeoCampaign);
+        //     Tab_MapsDebug(mapsTotd,     Mode::TrackOfTheDay);
+        // UI::EndTabBar();
     // UI::End();
 // }
 

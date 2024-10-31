@@ -1,5 +1,5 @@
 // c 2024-10-24
-// m 2024-10-25
+// m 2024-10-30
 
 void RenderWindowDetached() {
     if (false
@@ -27,42 +27,207 @@ enum WindowSource {
 }
 
 void Window(WindowSource source = WindowSource::Unknown) {
+    if (source == WindowSource::Menu || source == WindowSource::Detached) {
+        if (UI::BeginChild("##child-window"))
+            WindowContent(source);
+        UI::EndChild();
+
+        return;
+    }
+
+    WindowContent(source);
+}
+
+void WindowContent(WindowSource source = WindowSource::Unknown) {
+    const float widthAvail = UI::GetContentRegionAvail().x;
+
     if (true
         && (source != WindowSource::Menu     || S_ShowSettingsInMenu)
         && (source != WindowSource::Detached || S_ShowSettingsInDetached)
     ) {
         WindowSettings(source);
+        UI::Separator();
+    }
+
+    SectionMode();
+    UI::Separator();
+
+    if (S_Mode == Mode::Campaign) {
+        // UI::AlignTextToFramePadding();
+        // UI::Text("ID Type:");
+
+        // UI::SameLine();
+        // if (UI::RadioButton("Club (0-5 digits)", S_CustomSource == CustomSource::Club))
+        //     S_CustomSource = CustomSource::Club;
+
+        // UI::SameLine();
+        // if (UI::RadioButton("TMX (0-6 digits)", S_CustomSource == CustomSource::TMX))
+        //     S_CustomSource = CustomSource::TMX;
+
+        int id = 0;
+        const string cid = "TMX Campaign ID";
+        // UI::SetNextItemWidth(widthAvail / scale - Draw::MeasureString(cid).x);
+        UI::AlignTextToFramePadding();
+        UI::Text(cid);
+        UI::SameLine();
+        UI::SetNextItemWidth(UI::GetContentRegionAvail().x / scale);
+        UI::InputInt("##inputint-campid", id);
 
         UI::Separator();
+    } else {
+        if (S_Mode == Mode::Seasonal) {
+            SectionSeries();
+            UI::Separator();
+        }
     }
 
     SectionTarget();
     UI::Separator();
-    SectionSeries();
-    UI::Separator();
-    SectionFilters();
-    UI::Separator();
+
+    // SectionFilters();
+    // UI::Separator();
+
     SectionOrder();
     UI::Separator();
-    SectionTimeLimit();
+
+    UI::BeginDisabled(API::requesting);
+    if (UI::Button(Icons::Refresh + " Generate", vec2(widthAvail, scale * 30.0f)))
+        queue.Generate();
+    if (API::requesting && UI::IsItemHovered(UI::HoveredFlags::AllowWhenDisabled))
+        UI::SetTooltip("plugin is getting stuff, hold on...");
+    UI::EndDisabled();
+
+    SectionOptions();
     UI::Separator();
+
+    if (UI::BeginTable("##table-nextmap-header", 3, UI::TableFlags::None)) {
+        UI::TableSetupColumn("next", UI::TableColumnFlags::WidthFixed);
+        UI::TableSetupColumn("name", UI::TableColumnFlags::WidthStretch);
+        UI::TableSetupColumn("author", UI::TableColumnFlags::WidthFixed);
+
+        UI::TableNextRow();
+
+        UI::TableNextColumn();
+        UI::Text("\\$888Next:");
+
+        UI::TableNextColumn();
+        UI::PushFont(fontHeader);
+
+        string nextName   = "???";
+        string nextAuthor = "???";
+
+        if (queue.next !is null) {
+            if (queue.next.name !is null)
+                nextName = S_ColoredMapNames ? queue.next.name.formatted : queue.next.name.stripped;
+
+            if (queue.next.authorName.Length > 0)
+                nextAuthor = queue.next.authorName;
+            else if (queue.next.authorId.Length > 0)
+                nextAuthor = "\\$I\\$666" + queue.next.authorId.SubStr(0, 8) + "...";
+        }
+
+        // const string mapName = "$S$082Map $I$S$80FName $Z$0DDWhichisalong $S$I$GName $I$FF0Indeed.";
+        // const string mapName = "$n[Mini-Trial] $g$C6CC$C8Al$B98o$BB6s$AC4e$AE2 $9F0Q$9F0u$8E3a$7D5r$6C8t$5BAe$4ADr$39Fs";
+        // nextName = S_ColoredMapNames ? Text::OpenplanetFormatCodes(mapName) : Text::StripFormatCodes(mapName);
+
+        const float textWidth = Draw::MeasureString(nextName, fontHeader).x;
+
+        UI::SetCursorPos(UI::GetCursorPos() + vec2((UI::GetContentRegionAvail().x - textWidth) * 0.5f, 0.0f));
+        UI::Text(nextName);
+        UI::PopFont();
+
+        UI::TableNextColumn();
+        // nextAuthor = "A.Very.Long.Player.Username";
+        // nextAuthor = "Ezio.TM";
+        UI::Text("\\$888by " + nextAuthor);
+
+        UI::EndTable();
+    }
+
+    UI::Text("Queue: " + queue.Length);
+
+    if (UI::BeginTable("##table-queue", 4, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
+        UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(), 0.5f));
+
+        UI::TableSetupScrollFreeze(0, 1);
+        UI::TableSetupColumn("#", UI::TableColumnFlags::WidthFixed, scale * 50.0f);
+        UI::TableSetupColumn("Map");
+        UI::TableSetupColumn("Target (Example)");
+        UI::TableSetupColumn("PB");
+        UI::TableHeadersRow();
+
+        UI::ListClipper clipper(queue.Length);
+        while (clipper.Step()) {
+            for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
+                Map@ map = queue[i];
+
+                UI::TableNextRow();
+
+                UI::TableNextColumn();
+                UI::Text(tostring(i + 1));
+
+                UI::TableNextColumn();
+                UI::Text(map.name !is null ? map.name.formatted : "");
+
+                UI::TableNextColumn();
+                UI::Text(Time::Format(map.authorTime));
+
+                UI::TableNextColumn();
+                UI::Text(Time::Format(123456));
+            }
+        }
+
+        UI::PopStyleColor();
+        UI::EndTable();
+    }
+
+    // if (UI::BeginChild("##child-queue")) {
+    //     for (uint i = 0; i < queue.Length; i++) {
+    //         Map@ map = queue[i];
+
+    //         UI::Text(map.name !is null ? map.name.stripped : map.uid);
+    //     }
+    // }
+    // UI::EndChild();
 }
 
-void SectionFilters() {
-    UI::AlignTextToFramePadding();
-    UI::Text("Filters:");
+// void SectionFilters() {
+//     UI::AlignTextToFramePadding();
+//     UI::Text("Filters:");
 
-    UI::SameLine();
-    if (UI::Checkbox("Played", S_Filter & MapFilter::Played == MapFilter::Played))
-        S_Filter |= MapFilter::Played;
-    else
-        S_Filter = S_Filter & (S_Filter ^ MapFilter::Played);
+//     UI::SameLine();
+//     MapFilter filter = MapFilter::Played;
+//     if (UI::Checkbox(tostring(filter), S_Filter & filter == filter))
+//         S_Filter |= filter;
+//     else
+//         S_Filter &= (S_Filter ^ filter);
 
-    UI::SameLine();
-    if (UI::Checkbox("Unplayed", S_Filter & MapFilter::Unplayed == MapFilter::Unplayed))
-        S_Filter |= MapFilter::Unplayed;
-    else
-        S_Filter = S_Filter & (S_Filter ^ MapFilter::Unplayed);
+//     UI::SameLine();
+//     filter = MapFilter::Unplayed;
+//     if (UI::Checkbox(tostring(filter), S_Filter & filter == filter))
+//         S_Filter |= filter;
+//     else
+//         S_Filter &= (S_Filter ^ filter);
+// }
+
+void SectionOptions() {
+    if (S_TimeLimit > 0)
+        S_AutoSwitch = true;
+
+    if (UI::CollapsingHeader(Icons::Sliders + " More Options")) {
+        UI::Indent(indentWidth);
+
+        SectionTimeLimit();
+
+        UI::Separator();
+
+        UI::BeginDisabled(S_TimeLimit > 0);
+        S_AutoSwitch = UI::Checkbox("Auto Switch Map", S_AutoSwitch);
+        UI::EndDisabled();
+        HoverTooltipSetting("When target is achieved.\n\\$IAlways on for a time limit.", vec2(scale * -5.0f, 0.0f));
+
+        UI::Indent(-indentWidth);
+    }
 }
 
 void SectionOrder() {
@@ -79,6 +244,8 @@ void SectionOrder() {
         S_Order = MapOrder::Reverse;
     HoverTooltip("Reverse");
 
+    UI::BeginDisabled();
+
     UI::SameLine();
     if (UI::RadioButton(Icons::Random, S_Order == MapOrder::Random))
         S_Order = MapOrder::Random;
@@ -93,6 +260,56 @@ void SectionOrder() {
     if (UI::RadioButton(Icons::Percent, S_Order == MapOrder::ClosestRel))
         S_Order = MapOrder::ClosestRel;
     HoverTooltip("Closest (relative)");
+
+    UI::EndDisabled();
+}
+
+void SectionMode() {
+    UI::AlignTextToFramePadding();
+    UI::Text("Mode:");
+
+    // UI::SameLine();
+    // ModeFilter filter = ModeFilter::Seasonal;
+    // if (UI::Checkbox(tostring(filter), S_Mode & filter == filter))
+    //     S_Mode |= filter;
+    // else
+    //     S_Mode &= (S_Mode ^ filter);
+
+    // UI::SameLine();
+    // filter = ModeFilter::Totd;
+    // if (UI::Checkbox(tostring(filter), S_Mode & filter == filter))
+    //     S_Mode |= filter;
+    // else
+    //     S_Mode &= (S_Mode ^ filter);
+
+    // for (int i = 0; i <= Mode::Unknown; i++) {
+    //     Mode mode = Mode(i);
+
+    //     UI::SameLine();
+    //     if (UI::RadioButton(tostring(mode).Replace("_", " "), S_Mode == mode))
+    //         S_Mode = mode;
+    // }
+
+    int styles = 0;
+
+    UI::SameLine();
+    styles += PushCheckboxStyles(vec3(0.0f, 0.6f, 0.0f));
+    if (UI::RadioButton("Seasonal", S_Mode == Mode::Seasonal))
+        S_Mode = Mode::Seasonal;
+
+    UI::SameLine();
+    styles += PushCheckboxStyles(vec3(0.0f, 0.6f, 1.0f));
+    if (UI::RadioButton("Track of the Day", S_Mode == Mode::TrackOfTheDay))
+        S_Mode = Mode::TrackOfTheDay;
+
+    UI::SameLine();
+    styles += PushCheckboxStyles(vec3(0.9f, 0.4f, 0.0f));
+    UI::BeginDisabled();
+    if (UI::RadioButton("Other Campaign", S_Mode == Mode::Campaign))
+        S_Mode = Mode::Campaign;
+    UI::EndDisabled();
+
+    UI::PopStyleColor(styles);
 }
 
 void SectionSeries() {
@@ -102,39 +319,52 @@ void SectionSeries() {
     int styleColors = 0;
 
     UI::SameLine();
-    styleColors += PushRadioButtonStyles(S_ColorSeriesWhite);
-    if (UI::RadioButton("White", S_Series == CampaignSeries::White))
-        S_Series = CampaignSeries::White;
+    styleColors += PushCheckboxStyles(S_ColorSeriesWhite);
+    Series filter = Series::White;
+    if (UI::Checkbox(tostring(filter), S_Series & filter == filter))
+        S_Series |= filter;
+    else
+        S_Series &= (S_Series ^ filter);
 
     UI::SameLine();
-    styleColors += PushRadioButtonStyles(S_ColorSeriesGreen);
-    if (UI::RadioButton("Green", S_Series == CampaignSeries::Green))
-        S_Series = CampaignSeries::Green;
+    styleColors += PushCheckboxStyles(S_ColorSeriesGreen);
+    filter = Series::Green;
+    if (UI::Checkbox(tostring(filter), S_Series & filter == filter))
+        S_Series |= filter;
+    else
+        S_Series &= (S_Series ^ filter);
 
     UI::SameLine();
-    styleColors += PushRadioButtonStyles(S_ColorSeriesBlue);
-    if (UI::RadioButton("Blue", S_Series == CampaignSeries::Blue))
-        S_Series = CampaignSeries::Blue;
+    styleColors += PushCheckboxStyles(S_ColorSeriesBlue);
+    filter = Series::Blue;
+    if (UI::Checkbox(tostring(filter), S_Series & filter == filter))
+        S_Series |= filter;
+    else
+        S_Series &= (S_Series ^ filter);
 
     UI::SameLine();
-    styleColors += PushRadioButtonStyles(S_ColorSeriesRed);
-    if (UI::RadioButton("Red", S_Series == CampaignSeries::Red))
-        S_Series = CampaignSeries::Red;
+    styleColors += PushCheckboxStyles(S_ColorSeriesRed);
+    filter = Series::Red;
+    if (UI::Checkbox(tostring(filter), S_Series & filter == filter))
+        S_Series |= filter;
+    else
+        S_Series &= (S_Series ^ filter);
 
     UI::SameLine();
-    styleColors += PushRadioButtonStyles(S_ColorSeriesBlack);
-    if (UI::RadioButton("Black", S_Series == CampaignSeries::Black))
-        S_Series = CampaignSeries::Black;
+    styleColors += PushCheckboxStyles(S_ColorSeriesBlack);
+    filter = Series::Black;
+    if (UI::Checkbox(tostring(filter), S_Series & filter == filter))
+        S_Series |= filter;
+    else
+        S_Series &= (S_Series ^ filter);
 
     UI::SameLine();
-    styleColors += PushRadioButtonStyles(S_ColorSeriesAll);
-    if (UI::RadioButton("All", S_Series == CampaignSeries::All))
-        S_Series = CampaignSeries::All;
-
-    UI::SameLine();
-    styleColors += PushRadioButtonStyles(S_ColorSeriesUnknown);
-    if (UI::RadioButton("Unknown", S_Series == CampaignSeries::Unknown))
-        S_Series = CampaignSeries::Unknown;
+    styleColors += PushCheckboxStyles(S_ColorSeriesUnknown);
+    filter = Series::Unknown;
+    if (UI::Checkbox(tostring(filter), S_Series & filter == filter))
+        S_Series |= filter;
+    else
+        S_Series &= (S_Series ^ filter);
 
     UI::PopStyleColor(styleColors);
 }
@@ -146,27 +376,27 @@ void SectionTarget() {
     int styleColors = 0;
 
     UI::SameLine();
-    styleColors += PushRadioButtonStyles(S_ColorMedalAuthor);
+    styleColors += PushCheckboxStyles(S_ColorMedalAuthor);
     if (UI::RadioButton("Author", S_Target == TargetMedal::Author))
         S_Target = TargetMedal::Author;
 
     UI::SameLine();
-    styleColors += PushRadioButtonStyles(S_ColorMedalGold);
+    styleColors += PushCheckboxStyles(S_ColorMedalGold);
     if (UI::RadioButton("Gold", S_Target == TargetMedal::Gold))
         S_Target = TargetMedal::Gold;
 
     UI::SameLine();
-    styleColors += PushRadioButtonStyles(S_ColorMedalSilver);
+    styleColors += PushCheckboxStyles(S_ColorMedalSilver);
     if (UI::RadioButton("Silver", S_Target == TargetMedal::Silver))
         S_Target = TargetMedal::Silver;
 
     UI::SameLine();
-    styleColors += PushRadioButtonStyles(S_ColorMedalBronze);
+    styleColors += PushCheckboxStyles(S_ColorMedalBronze);
     if (UI::RadioButton("Bronze", S_Target == TargetMedal::Bronze))
         S_Target = TargetMedal::Bronze;
 
     UI::SameLine();
-    styleColors += PushRadioButtonStyles(S_ColorMedalNone);
+    styleColors += PushCheckboxStyles(S_ColorMedalNone);
     if (UI::RadioButton("Just Finish", S_Target == TargetMedal::None))
         S_Target = TargetMedal::None;
 
@@ -192,7 +422,6 @@ void SectionTimeLimit() {
     DrawPresetButton("10m",  600);
     DrawPresetButton("15m",  900);
     DrawPresetButton("20m",  1200);
-    DrawPresetButton("25m",  1500);
     DrawPresetButton("30m",  1800);
     DrawPresetButton("45m",  2700);
     DrawPresetButton("1h",   3600);
@@ -219,7 +448,7 @@ void DrawPresetButton(const string &in name, int num, bool offset = true) {
         UI::PopStyleColor();
 }
 
-int PushRadioButtonStyles(vec3 color) {
+int PushCheckboxStyles(vec3 color) {
     UI::PushStyleColor(UI::Col::FrameBg,        vec4(color * 0.2f, 1.0f));
     UI::PushStyleColor(UI::Col::FrameBgHovered, vec4(color * 0.5f, 1.0f));
     UI::PushStyleColor(UI::Col::FrameBgActive,  vec4(color * 0.8f, 1.0f));
