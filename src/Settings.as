@@ -480,7 +480,7 @@ void HoverTooltip(const string &in msg, bool allowDisabled = true) {
         return;
 
     UI::BeginTooltip();
-        UI::Text(msg);
+    UI::Text(msg);
     UI::EndTooltip();
 }
 

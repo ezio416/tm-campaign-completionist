@@ -7,6 +7,12 @@ class Queue {
     private Map@[] _maps;
     private Map@   _next;
 
+    Mode        generatedMode   = Mode::Unknown;
+    MapOrder    generatedOrder  = MapOrder::Normal;
+    // Season   generatedSeason = Season::Unknown;
+    int         generatedSeries = -1;
+    TargetMedal generatedTarget = TargetMedal::None;
+
     uint get_Length() {
         return _maps.Length;
     }
@@ -36,12 +42,42 @@ class Queue {
 
             if (true
                 && map.mode == S_Mode
-                // && map.series == S_Series & map.series
+                && (false
+                    || S_Mode != Mode::Seasonal
+                    || map.series == map.series & S_Series
+                )
             )
                 _maps.InsertLast(@map);
         }
 
         Sort();
+
+        generatedMode = S_Mode;
+        generatedOrder = S_Order;
+        generatedSeries = S_Series;
+        generatedTarget = S_Target;
+    }
+
+    /*
+    Pops last element if i is negative
+    Pops element at i if i is nonnegative
+    Returns null if i out of range
+    */
+    Map@ Pop(int i = -1) {
+        if (i >= Length || Length == 0)
+            return null;
+
+        Map@ map;
+
+        if (i < 0) {
+            @map = _maps[Length - 1];
+            _maps.RemoveAt(Length - 1);
+        } else {
+            @map = _maps[i];
+            _maps.RemoveAt(i);
+        }
+
+        return map;
     }
 
     void Sort() {
@@ -50,5 +86,18 @@ class Queue {
 
         if (S_Order == MapOrder::Reverse)
             _maps.Reverse();
+
+        if (S_Order == MapOrder::Random) {
+            Map@[] remaining = _maps;
+
+            _maps = { };
+            int index = -1;
+
+            while (remaining.Length > 0) {
+                index = Math::Rand(0, remaining.Length);
+                _maps.InsertLast(remaining[index]);
+                remaining.RemoveAt(index);
+            }
+        }
     }
 }

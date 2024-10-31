@@ -93,8 +93,10 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
     UI::BeginDisabled(API::requesting);
     if (UI::Button(Icons::Refresh + " Generate", vec2(widthAvail, scale * 30.0f)))
         queue.Generate();
-    if (API::requesting && UI::IsItemHovered(UI::HoveredFlags::AllowWhenDisabled))
-        UI::SetTooltip("plugin is getting stuff, hold on...");
+    if (API::requesting)
+        HoverTooltip("plugin is getting stuff, hold on...");
+    // if (API::requesting && UI::IsItemHovered(UI::HoveredFlags::AllowWhenDisabled))
+    //     UI::SetTooltip("plugin is getting stuff, hold on...");
     UI::EndDisabled();
 
     SectionOptions();
@@ -146,31 +148,74 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
 
     UI::Text("Queue: " + queue.Length);
 
+    if (queue.Length > 0) {
+        string text = "Generated: mode " + colorMedalAuthor + tostring(queue.generatedMode);
+        string jsonText = '{"mode":' + queue.generatedMode + ",";
+
+        if (queue.generatedMode == Mode::Seasonal) {
+            text += "\\$G | series " + colorMedalAuthor + tostring(queue.generatedSeries);
+            jsonText += '"series":' + queue.generatedSeries + ",";
+        }
+
+        // "\\$G | season " + colorMedalAuthor + tostring(queue.generatedSeason)
+
+        text += "\\$G | target " + colorMedalAuthor + tostring(queue.generatedTarget)
+            + "\\$G | order " + colorMedalAuthor + tostring(queue.generatedOrder);
+
+        jsonText += '"target":' + queue.generatedTarget + ',"order":' + queue.generatedOrder + "}";
+
+        UI::Text(text);
+        HoverTooltip(jsonText);
+    }
+
     if (UI::BeginTable("##table-queue", 4, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
         UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(), 0.5f));
 
         UI::TableSetupScrollFreeze(0, 1);
         UI::TableSetupColumn("#", UI::TableColumnFlags::WidthFixed, scale * 50.0f);
         UI::TableSetupColumn("Map");
-        UI::TableSetupColumn("Target (Example)");
+        UI::TableSetupColumn("Target (" + tostring(queue.generatedTarget) + ")");
         UI::TableSetupColumn("PB");
         UI::TableHeadersRow();
 
         UI::ListClipper clipper(queue.Length);
         while (clipper.Step()) {
             for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
-                Map@ map = queue[i];
+                if (uint(i + 1) == queue.Length) {
+                    // UI::TableNextRow();
+                    break;
+                }
+
+                Map@ map = queue[i + 1];
 
                 UI::TableNextRow();
 
                 UI::TableNextColumn();
-                UI::Text(tostring(i + 1));
+                UI::Text(tostring(i + 2));
 
                 UI::TableNextColumn();
                 UI::Text(map.name !is null ? map.name.formatted : "");
 
                 UI::TableNextColumn();
-                UI::Text(Time::Format(map.authorTime));
+                uint target;
+                switch (queue.generatedTarget) {
+                    case TargetMedal::Author:
+                        target = map.authorTime;
+                        break;
+                    case TargetMedal::Gold:
+                        target = map.goldTime;
+                        break;
+                    case TargetMedal::Silver:
+                        target = map.silverTime;
+                        break;
+                    case TargetMedal::Bronze:
+                        target = map.bronzeTime;
+                        break;
+                    case TargetMedal::None:
+                        target = 0;
+                        break;
+                }
+                UI::Text(target > 0 ? Time::Format(target) : "");
 
                 UI::TableNextColumn();
                 UI::Text(Time::Format(123456));
@@ -244,12 +289,12 @@ void SectionOrder() {
         S_Order = MapOrder::Reverse;
     HoverTooltip("Reverse");
 
-    UI::BeginDisabled();
-
     UI::SameLine();
     if (UI::RadioButton(Icons::Random, S_Order == MapOrder::Random))
         S_Order = MapOrder::Random;
     HoverTooltip("Random");
+
+    UI::BeginDisabled();
 
     UI::SameLine();
     if (UI::RadioButton(Icons::Crosshairs, S_Order == MapOrder::ClosestAbs))

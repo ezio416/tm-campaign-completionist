@@ -367,7 +367,6 @@ namespace API {
                         for (uint j = 0; j < playlist.Length; j++) {
                             Map@ map = Map(playlist[j]);
 
-                            // map.SetSeason(Mode::Seasonal);
                             map.mode = Mode::Seasonal;
 
                             switch (j / 5) {
@@ -400,11 +399,17 @@ namespace API {
         } else if (mode == Mode::TrackOfTheDay) {
             Json::Value@ monthList = JsonExt::GetValue(json, "monthList", Json::Type::Array);
 
-            if (monthList !is null) {
+            if (monthList is null)
+                warn("monthList null");
+
+            else {
                 for (int i = monthList.Length - 1; i >= 0; i--) {
                     Json::Value@ days = JsonExt::GetValue(monthList[i], "days", Json::Type::Array);
 
-                    if (days !is null) {
+                    if (days is null)
+                        warn("days null");
+
+                    else {
                         for (uint j = 0; j < days.Length; j++) {
                             Map@ map = Map(
                                 JsonExt::GetInt(monthList[i], "year"),
@@ -412,7 +417,6 @@ namespace API {
                                 days[j]
                             );
 
-                            // map.SetSeason(Mode::TrackOfTheDay);
                             map.mode = Mode::TrackOfTheDay;
 
                             if (map.uid.Length > 0 && !maps.Exists(map.uid)) {
@@ -421,11 +425,9 @@ namespace API {
                                 count++;
                             }
                         }
-                    } else
-                        warn("days null");
+                    }
                 }
-            } else
-                warn("monthList null");
+            }
         }
 
         trace("got " + count + " " + modeName + " maps from Nadeo");
