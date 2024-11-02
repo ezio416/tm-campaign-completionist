@@ -1,5 +1,5 @@
 // c 2024-10-30
-// m 2024-10-30
+// m 2024-10-31
 
 Queue queue;
 
@@ -64,7 +64,7 @@ class Queue {
     Returns null if i out of range
     */
     Map@ Pop(int i = -1) {
-        if (i >= Length || Length == 0)
+        if (i >= int(Length) || Length == 0)
             return null;
 
         Map@ map;

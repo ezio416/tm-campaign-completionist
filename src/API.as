@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-10-30
+// m 2024-11-01
 
 // Json::Value@ mapsCampaignFromFile = Json::Object();
 // Json::Value@ mapsTotdFromFile     = Json::Object();
@@ -293,7 +293,9 @@ namespace API {
                         continue;
                     }
 
-                    map.authorId    = JsonExt::GetString(mapInfo[i], "author");
+                    map.authorId = JsonExt::GetString(mapInfo[i], "author");
+                    accounts.Add(map.authorId);
+
                     map.authorTime  = JsonExt::GetUint(mapInfo[i], "authorScore");
                     map.bronzeTime  = JsonExt::GetUint(mapInfo[i], "bronzeScore");
                     map.downloadUrl = JsonExt::GetString(mapInfo[i], "fileUrl");
@@ -320,6 +322,7 @@ namespace API {
         API::GetMapsAsync(Mode::Seasonal);
         API::GetMapsAsync(Mode::TrackOfTheDay);
         API::GetMapInfosAsync();
+        startnew(CoroutineFunc(accounts.RefreshAsync));
     }
 
     void GetMapsAsync(Mode mode) {

@@ -1,9 +1,8 @@
 // c 2024-01-02
-// m 2024-10-30
+// m 2024-11-01
 
 class Map {
     string           authorId;
-    string           authorName;
     uint             authorTime;
     uint             bronzeTime;
     string           date;
@@ -19,6 +18,19 @@ class Map {
     uint             silverTime;
     // string           targetDelta;
     string           uid;
+
+    string get_authorDisplayName() {
+        const string name = authorName;
+
+        if (name.Length > 0)
+            return name;
+
+        return "\\$I\\$666" + authorId.SubStr(0, 8) + "...";
+    }
+
+    string get_authorName() {
+        return accounts.Get(authorId);
+    }
 
     Map() { }
     Map(Json::Value@ map) {  // campaign

@@ -1,5 +1,5 @@
 // c 2024-10-24
-// m 2024-10-30
+// m 2024-11-01
 
 void RenderWindowDetached() {
     if (false
@@ -119,13 +119,15 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
         string nextAuthor = "???";
 
         if (queue.next !is null) {
+            nextAuthor = queue.next.authorDisplayName;
+
             if (queue.next.name !is null)
                 nextName = S_ColoredMapNames ? queue.next.name.formatted : queue.next.name.stripped;
 
-            if (queue.next.authorName.Length > 0)
-                nextAuthor = queue.next.authorName;
-            else if (queue.next.authorId.Length > 0)
-                nextAuthor = "\\$I\\$666" + queue.next.authorId.SubStr(0, 8) + "...";
+            // if (queue.next.authorName.Length > 0)
+            //     nextAuthor = queue.next.authorName;
+            // else if (queue.next.authorId.Length > 0)
+            //     nextAuthor = "\\$I\\$666" + queue.next.authorId.SubStr(0, 8) + "...";
         }
 
         // const string mapName = "$S$082Map $I$S$80FName $Z$0DDWhichisalong $S$I$GName $I$FF0Indeed.";
@@ -146,6 +148,13 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
         UI::EndTable();
     }
 
+    // target
+    // pb
+    // delta
+    // play
+    // skip
+    // bookmark
+
     UI::Text("Queue: " + queue.Length);
 
     if (queue.Length > 0) {
@@ -154,6 +163,7 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
 
         if (queue.generatedMode == Mode::Seasonal) {
             text += "\\$G | series " + colorMedalAuthor + tostring(queue.generatedSeries);
+            // text += "\\$G | series " + colorMedalAuthor + ();
             jsonText += '"series":' + queue.generatedSeries + ",";
         }
 
@@ -168,23 +178,22 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
         HoverTooltip(jsonText);
     }
 
-    if (UI::BeginTable("##table-queue", 4, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
+    if (UI::BeginTable("##table-queue", 5, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
         UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(), 0.5f));
 
         UI::TableSetupScrollFreeze(0, 1);
-        UI::TableSetupColumn("#", UI::TableColumnFlags::WidthFixed, scale * 50.0f);
+        UI::TableSetupColumn("#",      UI::TableColumnFlags::WidthFixed, scale * 40.0f);
         UI::TableSetupColumn("Map");
-        UI::TableSetupColumn("Target (" + tostring(queue.generatedTarget) + ")");
-        UI::TableSetupColumn("PB");
+        UI::TableSetupColumn(queue.generatedMode == Mode::Seasonal ? "Series" : "Author");
+        UI::TableSetupColumn("Target", UI::TableColumnFlags::WidthFixed, scale * 80.0f);
+        UI::TableSetupColumn("PB",     UI::TableColumnFlags::WidthFixed, scale * 80.0f);
         UI::TableHeadersRow();
 
         UI::ListClipper clipper(queue.Length);
         while (clipper.Step()) {
             for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
-                if (uint(i + 1) == queue.Length) {
-                    // UI::TableNextRow();
+                if (uint(i + 1) == queue.Length)
                     break;
-                }
 
                 Map@ map = queue[i + 1];
 
@@ -195,6 +204,13 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
 
                 UI::TableNextColumn();
                 UI::Text(map.name !is null ? map.name.formatted : "");
+                // UI::Text(map.name !is null ? map.name.formatted : "\\$I\\$666" + map.uid.SubStr(0, 8) + "...");
+
+                UI::TableNextColumn();
+                if (queue.generatedMode == Mode::Seasonal)
+                    UI::Text(tostring(map.series));
+                else
+                    UI::Text(map.authorDisplayName);
 
                 UI::TableNextColumn();
                 uint target;
@@ -218,7 +234,8 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
                 UI::Text(target > 0 ? Time::Format(target) : "");
 
                 UI::TableNextColumn();
-                UI::Text(Time::Format(123456));
+                // UI::Text(Time::Format(123456));
+                UI::Text("--:--.---");
             }
         }
 
