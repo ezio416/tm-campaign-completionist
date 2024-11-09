@@ -1,5 +1,5 @@
 // c 2024-10-24
-// m 2024-11-03
+// m 2024-11-09
 
 void RenderWindowDetached() {
     if (false
@@ -170,13 +170,26 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
 
         UI::EndTable();
     }
-
     // target
     // pb
     // delta
     // play
     // skip
     // bookmark
+
+    if (UI::Button(Icons::Play + " Play")) {
+        queue.next.Play();
+    }
+
+    UI::SameLine();
+    if (UI::Button((queue.next.bookmarked ? Icons::Bookmark : Icons::BookmarkO) + " Bookmark")) {
+        queue.next.bookmarked = !queue.next.bookmarked;
+    }
+
+    UI::SameLine();
+    if (UI::Button((queue.next.skipped ? Icons::Ban : Icons::CheckCircleO) + " Skip")) {
+        queue.next.skipped = !queue.next.skipped;
+    }
 
     if (UI::BeginTable("##table-queue", 5, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
         UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(), 0.5f));

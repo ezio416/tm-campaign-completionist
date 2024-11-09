@@ -1,15 +1,15 @@
 // c 2024-01-02
-// m 2024-10-30
+// m 2024-11-09
 
 // enum CustomSource {
 //     Club,
 //     TMX
 // }
 
-enum ExtraFilters {
-    Played   = 1,
-    Unplayed = 2
-}
+// enum ExtraFilters {
+//     Played   = 1,
+//     Unplayed = 2
+// }
 
 enum MapOrder {
     Normal,
@@ -151,7 +151,11 @@ bool[] settingsOpen            = { false, false, false };
 
 [SettingsTab name="Campaign Completionist" icon="Check" order=0]
 void SettingsTab_RenderWindow() {
-    Window(WindowSource::Settings);
+    if (hasPlayPermission)
+        Window(WindowSource::Settings);
+
+    else
+        UI::Text("sorry, you need club access :(");
 }
 
 void WindowSettings(WindowSource source = WindowSource::Unknown) {

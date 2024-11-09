@@ -1,21 +1,23 @@
 // c 2024-01-02
-// m 2024-11-01
+// m 2024-11-09
 
 class Map {
     string           authorId;
     uint             authorTime;
+    bool             bookmarked = false;
     uint             bronzeTime;
     string           date;
     string           downloadUrl;
     uint             goldTime;
     string           id;
-    Mode             mode     = Mode::Unknown;
-    uint             myMedals = 0;
-    uint             myTime   = 0;
+    Mode             mode       = Mode::Unknown;
+    uint             myMedals   = 0;
+    uint             myTime     = 0;
     FormattedString@ name;
-    Season           season   = Season::Unknown;
-    Series           series   = Series::Unknown;
+    Season           season     = Season::Unknown;
+    Series           series     = Series::Unknown;
     uint             silverTime;
+    bool             skipped    = false;
     // string           targetDelta;
     string           uid;
 
@@ -119,8 +121,12 @@ class Map {
         // SetTargetDelta();
     // }
 
-    // courtesy of "Play Map" plugin - https://github.com/XertroV/tm-play-map
     void Play() {
+        startnew(CoroutineFunc(PlayAsync));
+    }
+
+    // courtesy of "Play Map" plugin - https://github.com/XertroV/tm-play-map
+    void PlayAsync() {
         if (loadingMap || !hasPlayPermission)
             return;
 

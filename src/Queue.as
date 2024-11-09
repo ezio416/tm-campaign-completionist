@@ -1,11 +1,10 @@
 // c 2024-10-30
-// m 2024-10-31
+// m 2024-11-09
 
 Queue queue;
 
 class Queue {
     private Map@[] _maps;
-    private Map@   _next;
 
     Mode        generatedMode   = Mode::Unknown;
     MapOrder    generatedOrder  = MapOrder::Normal;
