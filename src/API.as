@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-11-01
+// m 2024-11-02
 
 // Json::Value@ mapsCampaignFromFile = Json::Object();
 // Json::Value@ mapsTotdFromFile     = Json::Object();
@@ -322,7 +322,7 @@ namespace API {
         API::GetMapsAsync(Mode::Seasonal);
         API::GetMapsAsync(Mode::TrackOfTheDay);
         API::GetMapInfosAsync();
-        startnew(CoroutineFunc(accounts.RefreshAsync));
+        accounts.Refresh();
     }
 
     void GetMapsAsync(Mode mode) {

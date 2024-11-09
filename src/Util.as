@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-10-24
+// m 2024-11-03
 
 // void GetAllPBsAsync() {
     // const uint64 start = Time::Now;
@@ -109,6 +109,17 @@ void ReturnToMenu() {
     while (!App.ManiaTitleControlScriptAPI.IsReady)
         yield();
 }
+
+// string SeriesColor(Series s) {
+//     switch (s) {
+//         case Series::White: return Text::FormatOpenplanetColor(S_ColorSeriesWhite);
+//         case Series::Green: return Text::FormatOpenplanetColor(S_ColorSeriesGreen);
+//         case Series::Blue:  return Text::FormatOpenplanetColor(S_ColorSeriesBlue);
+//         case Series::Red:   return Text::FormatOpenplanetColor(S_ColorSeriesRed);
+//         case Series::Black: return Text::FormatOpenplanetColor(S_ColorSeriesBlack);
+//         default: return "";
+//     }
+// }
 
 // string TimeFormatColored(uint u, bool format = true) {
     // if (u > 0)

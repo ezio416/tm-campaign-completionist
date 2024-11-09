@@ -1,5 +1,5 @@
 // c 2024-10-24
-// m 2024-11-01
+// m 2024-11-03
 
 void RenderWindowDetached() {
     if (false
@@ -102,6 +102,29 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
     SectionOptions();
     UI::Separator();
 
+    if (queue.Length == 0)
+        return;
+
+    string text = "Generated: mode " + colorMedalAuthor + tostring(queue.generatedMode);
+    string jsonText = '{"mode":' + queue.generatedMode + ",";
+
+    if (queue.generatedMode == Mode::Seasonal) {
+        text += "\\$G | series " + colorMedalAuthor + tostring(queue.generatedSeries);
+        jsonText += '"series":' + queue.generatedSeries + ",";
+    }
+
+    // "\\$G | season " + colorMedalAuthor + tostring(queue.generatedSeason)
+
+    text += "\\$G | target " + colorMedalAuthor + tostring(queue.generatedTarget)
+        + "\\$G | order " + colorMedalAuthor + tostring(queue.generatedOrder);
+
+    jsonText += '"target":' + queue.generatedTarget + ',"order":' + queue.generatedOrder + "}";
+
+    UI::Text(text);
+    HoverTooltip(jsonText);
+
+    UI::Separator();
+
     if (UI::BeginTable("##table-nextmap-header", 3, UI::TableFlags::None)) {
         UI::TableSetupColumn("next", UI::TableColumnFlags::WidthFixed);
         UI::TableSetupColumn("name", UI::TableColumnFlags::WidthStretch);
@@ -154,29 +177,6 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
     // play
     // skip
     // bookmark
-
-    UI::Text("Queue: " + queue.Length);
-
-    if (queue.Length > 0) {
-        string text = "Generated: mode " + colorMedalAuthor + tostring(queue.generatedMode);
-        string jsonText = '{"mode":' + queue.generatedMode + ",";
-
-        if (queue.generatedMode == Mode::Seasonal) {
-            text += "\\$G | series " + colorMedalAuthor + tostring(queue.generatedSeries);
-            // text += "\\$G | series " + colorMedalAuthor + ();
-            jsonText += '"series":' + queue.generatedSeries + ",";
-        }
-
-        // "\\$G | season " + colorMedalAuthor + tostring(queue.generatedSeason)
-
-        text += "\\$G | target " + colorMedalAuthor + tostring(queue.generatedTarget)
-            + "\\$G | order " + colorMedalAuthor + tostring(queue.generatedOrder);
-
-        jsonText += '"target":' + queue.generatedTarget + ',"order":' + queue.generatedOrder + "}";
-
-        UI::Text(text);
-        HoverTooltip(jsonText);
-    }
 
     if (UI::BeginTable("##table-queue", 5, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
         UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(), 0.5f));

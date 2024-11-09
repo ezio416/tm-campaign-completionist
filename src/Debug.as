@@ -1,5 +1,5 @@
 // c 2024-01-08
-// m 2024-10-25
+// m 2024-11-02
 
 [SettingsTab name="Debug" icon="Bug" order=1]
 void SettingsTab_Debug() {
@@ -20,7 +20,7 @@ void Tab_DebugMaps() {
     if (!UI::BeginTabItem("maps"))
         return;
 
-    if (UI::BeginTable("##table-maps", 5, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::SizingStretchProp)) {
+    if (UI::BeginTable("##table-maps", 6, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::SizingStretchProp)) {
         UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(0.0f), 0.5f));
 
         UI::TableSetupScrollFreeze(0, 1);
@@ -28,6 +28,7 @@ void Tab_DebugMaps() {
         UI::TableSetupColumn("mode",   UI::TableColumnFlags::WidthFixed, scale * 100.0f);
         UI::TableSetupColumn("season", UI::TableColumnFlags::WidthFixed, scale * 100.0f);
         UI::TableSetupColumn("name",   UI::TableColumnFlags::WidthStretch);
+        UI::TableSetupColumn("author disp name", UI::TableColumnFlags::WidthStretch);
         UI::TableSetupColumn("dl url", UI::TableColumnFlags::WidthFixed, scale * 50.0f);
         UI::TableHeadersRow();
 
@@ -48,7 +49,10 @@ void Tab_DebugMaps() {
                 UI::Text(tostring(map.season));
 
                 UI::TableNextColumn();
-                UI::Text((map.name !is null ? map.name.stripped : ""));
+                UI::Text(map.name !is null ? map.name.stripped : "");
+
+                UI::TableNextColumn();
+                UI::Text(map.authorDisplayName);
 
                 UI::TableNextColumn();
                 UI::Text(map.downloadUrl);
