@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-11-02
+// m 2024-11-11
 
 // Json::Value@ mapsCampaignFromFile = Json::Object();
 // Json::Value@ mapsTotdFromFile     = Json::Object();
@@ -197,6 +197,7 @@ namespace API {
     const string audienceLive = "NadeoLiveServices";
     uint64       lastRequest  = 0;
     const uint64 minimumWait  = 1000;  // 1000 ms between any requests
+    float        progress     = 0.0f;
     bool         requesting   = false;
 
     string get_urlCore() { return NadeoServices::BaseURLCore(); }
@@ -264,13 +265,17 @@ namespace API {
             }
 
             trace("getting map info from Nadeo (" + (index + 1) + "/" + mapsStillNeedInfo.Length + ")");
+            const float progressMin = 0.15f;
+            const float progressMax = 0.95f;
+            progress = progressMin + (float(index) / mapsStillNeedInfo.Length) * (progressMax - progressMin);
+            print("progress " + progress);
 
             Net::HttpRequest@ req = GetCoreAsync(endpoint.SubStr(0, endpoint.Length - 1));
-        //     // IO::SetClipboard(req.Url);
+            // IO::SetClipboard(req.Url);
 
             const int code = req.ResponseCode();
             if (code != 200) {
-                warn("error getting map info from Nadeo: " + code + "; " + req.Error() + "; " + req.String());
+                warn("error getting map info from Nadeo: code " + code + " | err " + req.Error() + " | str" + req.String());
                 continue;
             }
 
@@ -278,8 +283,8 @@ namespace API {
             if (!JsonExt::CheckType(mapInfo, Json::Type::Array))
                 continue;
 
-        //     // IO::SetClipboard(Json::Write(mapInfo));
-        //     // throw("hi");
+            // IO::SetClipboard(Json::Write(mapInfo));
+            // throw("hi");
 
             for (uint i = 0; i < mapInfo.Length; i++) {
                 const string uid = JsonExt::GetString(mapInfo[i], "mapUid");
@@ -320,9 +325,24 @@ namespace API {
         mapsArr = { };
 
         API::GetMapsAsync(Mode::Seasonal);
+        progress = 0.05f;
+
         API::GetMapsAsync(Mode::TrackOfTheDay);
+        progress = 0.1f;
+
+        Files::LoadMaps();
+        progress = 0.15f;
+
         API::GetMapInfosAsync();
+
         accounts.Refresh();
+        progress = 0.95f;
+
+        Files::SaveMaps();
+
+        progress = 1.0f;
+        sleep(3000);
+        progress = 0.0f;
     }
 
     void GetMapsAsync(Mode mode) {

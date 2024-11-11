@@ -1,5 +1,15 @@
 // c 2024-01-02
-// m 2024-11-03
+// m 2024-11-11
+
+float GayHue(uint cycleTimeMs = 5000, float offset = 0.0f, bool reverse = false) {
+    const float h = float(Time::Now % cycleTimeMs) / float(cycleTimeMs) + offset;
+    const float normal = h - Math::Floor(h);
+
+    if (reverse)
+        return 1.0f - normal;
+
+    return normal;
+}
 
 // void GetAllPBsAsync() {
     // const uint64 start = Time::Now;

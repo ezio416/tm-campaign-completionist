@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-11-09
+// m 2024-11-11
 
 class Map {
     string           authorId;
@@ -12,8 +12,8 @@ class Map {
     string           id;
     Mode             mode       = Mode::Unknown;
     uint             myMedals   = 0;
-    uint             myTime     = 0;
     FormattedString@ name;
+    uint             pb         = uint(-1);
     Season           season     = Season::Unknown;
     Series           series     = Series::Unknown;
     uint             silverTime;
@@ -41,6 +41,26 @@ class Map {
     Map(int year, int month, Json::Value@ day) {  // TOTD
         date = "\\$S" + year + "-" + ZPad2(month) + "-" + ZPad2(day["monthDay"]);
         uid = day["mapUid"];
+    }
+    Map(Json::Value@ map, bool fromFile) {
+        authorId    = JsonExt::GetString(map, "authorId");
+        authorTime  = JsonExt::GetUint(map, "authorTime");
+        bookmarked  = JsonExt::GetBool(map, "bookmarked");
+        bronzeTime  = JsonExt::GetUint(map, "bronzeTime");
+        date        = "\\$S" + JsonExt::GetString(map, "date");
+        downloadUrl = JsonExt::GetString(map, "downloadUrl");
+        goldTime    = JsonExt::GetUint(map, "goldTime");
+        id          = JsonExt::GetString(map, "id");
+        mode        = Mode(JsonExt::GetInt(map, "mode"));
+        @name       = FormattedString(JsonExt::GetString(map, "name"));
+        pb          = JsonExt::GetUint(map, "pb");
+        season      = Season(JsonExt::GetInt(map, "season"));
+        series      = Series(JsonExt::GetInt(map, "series"));
+        silverTime  = JsonExt::GetUint(map, "silverTime");
+        skipped     = JsonExt::GetBool(map, "skipped");
+        uid         = JsonExt::GetString(map, "uid");
+
+        SetMedals();
     }
 
     // courtesy of "BetterTOTD" plugin - https://github.com/XertroV/tm-better-totd
@@ -152,15 +172,15 @@ class Map {
     }
 
     void SetMedals() {
-        if (myTime == 0)
+        if (pb == 0)
             myMedals = 0;
-        else if (myTime <= authorTime)
+        else if (pb <= authorTime)
             myMedals = 4;
-        else if (myTime <= goldTime)
+        else if (pb <= goldTime)
             myMedals = 3;
-        else if (myTime <= silverTime)
+        else if (pb <= silverTime)
             myMedals = 2;
-        else if (myTime <= bronzeTime)
+        else if (pb <= bronzeTime)
             myMedals = 1;
         else
             myMedals = 0;
@@ -266,4 +286,52 @@ class Map {
 
         // targetDelta += "\\$S(" + (delta < 0 ? "" : "+") + Time::Format(delta) + ") \\$Z ";  // should never be negative
     // }
+
+    Json::Value@ ToJson() {
+        Json::Value@ ret = Json::Object();
+
+        ret["authorId"]    = authorId;
+        ret["authorTime"]  = authorTime;
+        ret["bookmarked"]  = bookmarked;
+        ret["bronzeTime"]  = bronzeTime;
+        ret["date"]        = Text::StripFormatCodes(date).Replace("\\", "");
+        ret["downloadUrl"] = downloadUrl;
+        ret["goldTime"]    = goldTime;
+        ret["id"]          = id;
+        ret["mode"]        = int(mode);
+        ret["name"]        = name.raw;
+        ret["pb"]          = pb;
+        ret["season"]      = int(season);
+        ret["series"]      = int(series);
+        ret["silvertime"]  = silverTime;
+        ret["skipped"]     = skipped;
+        ret["uid"]         = uid;
+
+        return ret;
+    }
+
+    string ToString() {
+        return Json::Write(ToJson());
+    }
+
+    void UpdateDetails(Map@ other) {
+        if (other is null || other.uid != uid)
+            return;
+
+        authorId    = other.authorId;
+        authorTime  = other.authorTime;
+        bookmarked  = other.bookmarked;
+        bronzeTime  = other.bronzeTime;
+        date        = other.date;
+        downloadUrl = other.downloadUrl;
+        goldTime    = other.goldTime;
+        id          = other.id;
+        mode        = other.mode;
+        @name       = other.name;
+        pb          = other.pb;
+        season      = other.season;
+        series      = other.series;
+        silverTime  = other.silverTime;
+        skipped     = other.skipped;
+    }
 }

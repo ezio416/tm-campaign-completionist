@@ -59,11 +59,14 @@ enum Series {
 }
 
 enum TargetMedal {
-    Author = 1,
-    Gold   = 2,
-    Silver = 3,
-    Bronze = 4,
-    None   = 5
+    None,
+    Bronze,
+    Silver,
+    Gold,
+    Author,
+#if DEPENDENCY_WARRIORMEDALS
+    Warrior,
+#endif
 }
 
 [Setting hidden] bool           S_AutoSwitch             = true;

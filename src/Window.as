@@ -1,5 +1,5 @@
 // c 2024-10-24
-// m 2024-11-09
+// m 2024-11-11
 
 void RenderWindowDetached() {
     if (false
@@ -90,6 +90,12 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
     SectionOrder();
     UI::Separator();
 
+    if (API::progress > 0.0f) {
+        UI::PushStyleColor(UI::Col::PlotHistogram, UI::HSV(GayHue(3000), 1.0f, 1.0f));
+        UI::ProgressBar(API::progress, vec2(0.0f));
+        UI::PopStyleColor();
+    }
+
     UI::BeginDisabled(API::requesting);
     if (UI::Button(Icons::Refresh + " Generate", vec2(widthAvail, scale * 30.0f)))
         queue.Generate();
@@ -146,16 +152,7 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
 
             if (queue.next.name !is null)
                 nextName = S_ColoredMapNames ? queue.next.name.formatted : queue.next.name.stripped;
-
-            // if (queue.next.authorName.Length > 0)
-            //     nextAuthor = queue.next.authorName;
-            // else if (queue.next.authorId.Length > 0)
-            //     nextAuthor = "\\$I\\$666" + queue.next.authorId.SubStr(0, 8) + "...";
         }
-
-        // const string mapName = "$S$082Map $I$S$80FName $Z$0DDWhichisalong $S$I$GName $I$FF0Indeed.";
-        // const string mapName = "$n[Mini-Trial] $g$C6CC$C8Al$B98o$BB6s$AC4e$AE2 $9F0Q$9F0u$8E3a$7D5r$6C8t$5BAe$4ADr$39Fs";
-        // nextName = S_ColoredMapNames ? Text::OpenplanetFormatCodes(mapName) : Text::StripFormatCodes(mapName);
 
         const float textWidth = Draw::MeasureString(nextName, fontHeader).x;
 
@@ -164,8 +161,6 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
         UI::PopFont();
 
         UI::TableNextColumn();
-        // nextAuthor = "A.Very.Long.Player.Username";
-        // nextAuthor = "Ezio.TM";
         UI::Text("\\$888by " + nextAuthor);
 
         UI::EndTable();
@@ -173,13 +168,11 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
     // target
     // pb
     // delta
-    // play
-    // skip
-    // bookmark
 
-    if (UI::Button(Icons::Play + " Play")) {
+    UI::BeginDisabled(loadingMap);
+    if (UI::Button(Icons::Play + " Play"))
         queue.next.Play();
-    }
+    UI::EndDisabled();
 
     UI::SameLine();
     queue.next.bookmarked = UI::Checkbox("Bookmark", queue.next.bookmarked);
@@ -293,7 +286,7 @@ void SectionOptions() {
         UI::Separator();
 
         UI::BeginDisabled(S_TimeLimit > 0);
-        S_AutoSwitch = UI::Checkbox("Auto Switch Map", S_AutoSwitch);
+        S_AutoSwitch = UI::Checkbox("Switch map automatically", S_AutoSwitch);
         UI::EndDisabled();
         HoverTooltipSetting("When target is achieved.\n\\$IAlways on for a time limit.", vec2(scale * -5.0f, 0.0f));
 

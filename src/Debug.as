@@ -10,15 +10,62 @@ void SettingsTab_Debug() {
     UI::BeginTabBar("##tabbar-debug");
 
     Tab_DebugMaps();
+    Tab_DebugAccounts();
     // Tab_DebugMapsCampaign();
     // Tab_DebugMapsTotd();
 
     UI::EndTabBar();
 }
 
+void Tab_DebugAccounts() {
+    if (!UI::BeginTabItem("accounts"))
+        return;
+
+    if (UI::Button(Icons::Refresh + " Refresh"))
+        accounts.Refresh();
+
+    if (UI::BeginTable("##table-accounts", 6, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::SizingStretchProp)) {
+        UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(), 0.5f));
+
+        UI::TableSetupScrollFreeze(0, 1);
+        UI::TableSetupColumn("id");
+        UI::TableSetupColumn("name");
+        UI::TableHeadersRow();
+
+        UI::ListClipper clipper(accounts.ids.Length);
+        while (clipper.Step()) {
+            for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
+                string id = accounts.ids[i];
+
+                UI::TableNextRow();
+
+                UI::TableNextColumn();
+                UI::Text(id);
+
+                UI::TableNextColumn();
+                UI::Text(accounts.Get(id));
+            }
+        }
+
+        UI::PopStyleColor();
+        UI::EndTable();
+    }
+
+    UI::EndTabItem();
+}
+
 void Tab_DebugMaps() {
     if (!UI::BeginTabItem("maps"))
         return;
+
+    if (UI::Button(Icons::TrashO + " Delete Maps")) {
+        maps.DeleteAll();
+        mapsArr = { };
+    }
+
+    UI::SameLine();
+    if (UI::Button(Icons::Upload + " Load Maps"))
+        Files::LoadMaps();
 
     if (UI::BeginTable("##table-maps", 6, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::SizingStretchProp)) {
         UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(0.0f), 0.5f));

@@ -1,10 +1,18 @@
 // c 2024-10-08
-// m 2024-11-02
+// m 2024-11-11
 
 Accounts accounts;
 
 class Accounts {
     private dictionary@ data = dictionary();
+
+    string[]@ get_ids() {
+        return data.GetKeys();
+    }
+
+    uint get_Length() {
+        return data.GetSize();
+    }
 
     void Add(const string &in id) {
         if (id.Length > 0 && !data.Exists(id))
