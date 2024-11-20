@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-11-11
+// m 2024-11-12
 
 // Json::Value@ mapsCampaignFromFile = Json::Object();
 // Json::Value@ mapsTotdFromFile     = Json::Object();
@@ -327,10 +327,10 @@ namespace API {
         API::GetMapsAsync(Mode::Seasonal);
         progress = 0.05f;
 
-        API::GetMapsAsync(Mode::TrackOfTheDay);
+        API::GetMapsAsync(Mode::TOTD);
         progress = 0.1f;
 
-        Files::LoadMaps();
+        // Files::LoadMaps();
         progress = 0.15f;
 
         API::GetMapInfosAsync();
@@ -341,7 +341,7 @@ namespace API {
         Files::SaveMaps();
 
         progress = 1.0f;
-        sleep(3000);
+        sleep(500);
         progress = 0.0f;
     }
 
@@ -349,7 +349,7 @@ namespace API {
         uint count = 0;
         const string modeName = tostring(mode);
 
-        if (mode != Mode::Seasonal && mode != Mode::TrackOfTheDay) {
+        if (mode != Mode::Seasonal && mode != Mode::TOTD) {
             warn("GetMapsAsync unsupported mode: " + tostring(mode));
             return;
         }
@@ -419,7 +419,7 @@ namespace API {
                 }
             }
 
-        } else if (mode == Mode::TrackOfTheDay) {
+        } else if (mode == Mode::TOTD) {
             Json::Value@ monthList = JsonExt::GetValue(json, "monthList", Json::Type::Array);
 
             if (monthList is null)
@@ -440,7 +440,7 @@ namespace API {
                                 days[j]
                             );
 
-                            map.mode = Mode::TrackOfTheDay;
+                            map.mode = Mode::TOTD;
 
                             if (map.uid.Length > 0 && !maps.Exists(map.uid)) {
                                 maps.Set(map.uid, @map);

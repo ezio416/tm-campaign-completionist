@@ -2,7 +2,7 @@
 name = "Campaign Completionist"
 author = "Ezio"
 category = "Race"
-version = "1.9.3"
+version = "2.0.0a"
 siteid = 481
 
 [script]

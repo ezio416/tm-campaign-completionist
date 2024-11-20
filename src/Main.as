@@ -49,7 +49,7 @@ void Main() {
     @fontHeader    = UI::LoadFont("DroidSans.ttf", 26);
 
     // lastMode = S_Mode;
-    lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
+    // lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
     // lastSeason = S_Season;
     // lastSeries = S_Series;
     // lastMenuExcludeSkips = S_MenuExcludeSkips;
@@ -440,6 +440,12 @@ void OnSettingsChanged() {
     colorMedalGold   = Text::FormatOpenplanetColor(S_ColorMedalGold);
     colorMedalNone   = Text::FormatOpenplanetColor(S_ColorMedalNone);
     colorMedalSilver = Text::FormatOpenplanetColor(S_ColorMedalSilver);
+
+    colorModeClub     = Text::FormatOpenplanetColor(S_ColorModeClub);
+    colorModeCustom   = Text::FormatOpenplanetColor(S_ColorModeCustom);
+    colorModeSeasonal = Text::FormatOpenplanetColor(S_ColorModeSeasonal);
+    colorModeTmx      = Text::FormatOpenplanetColor(S_ColorModeTmx);
+    colorModeTotd     = Text::FormatOpenplanetColor(S_ColorModeTotd);
 
     colorSeasonAll     = Text::FormatOpenplanetColor(S_ColorSeasonAll);
     colorSeasonFall    = Text::FormatOpenplanetColor(S_ColorSeasonFall);

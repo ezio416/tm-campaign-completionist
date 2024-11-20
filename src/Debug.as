@@ -24,7 +24,7 @@ void Tab_DebugAccounts() {
     if (UI::Button(Icons::Refresh + " Refresh"))
         accounts.Refresh();
 
-    if (UI::BeginTable("##table-accounts", 6, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::SizingStretchProp)) {
+    if (UI::BeginTable("##table-accounts", 6, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
         UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(), 0.5f));
 
         UI::TableSetupScrollFreeze(0, 1);

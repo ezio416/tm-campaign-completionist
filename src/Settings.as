@@ -1,15 +1,5 @@
 // c 2024-01-02
-// m 2024-11-09
-
-// enum CustomSource {
-//     Club,
-//     TMX
-// }
-
-// enum ExtraFilters {
-//     Played   = 1,
-//     Unplayed = 2
-// }
+// m 2024-11-12
 
 enum MapOrder {
     Normal,
@@ -21,8 +11,10 @@ enum MapOrder {
 
 enum Mode {
     Seasonal,
-    TrackOfTheDay,
-    Campaign,
+    TOTD,
+    Club,
+    TMX,
+    Custom,
     Unknown
 }
 
@@ -45,8 +37,8 @@ enum Season {  // update every season
     Spring_2024,
     Summer_2024,
     Fall_2024,
+    Unknown,
     All,
-    Unknown = 18
 }
 
 enum Series {
@@ -85,6 +77,11 @@ enum TargetMedal {
 [Setting hidden] vec3           S_ColorMedalGold         = vec3(1.0f,  0.97f, 0.0f);
 [Setting hidden] vec3           S_ColorMedalNone         = vec3(1.0f,  0.5f,  1.0f);
 [Setting hidden] vec3           S_ColorMedalSilver       = vec3(0.75f, 0.75f, 0.75f);
+[Setting hidden] vec3           S_ColorModeClub          = vec3(1.0f, 0.7f, 0.0f);
+[Setting hidden] vec3           S_ColorModeCustom        = vec3(0.7f, 0.0f, 0.0f);
+[Setting hidden] vec3           S_ColorModeSeasonal      = vec3(0.0f, 0.6f, 0.0f);
+[Setting hidden] vec3           S_ColorModeTmx           = vec3(0.43f, 1.0f, 0.63f);
+[Setting hidden] vec3           S_ColorModeTotd          = vec3(0.0f, 0.6f, 1.0f);
 [Setting hidden] vec3           S_ColorSeasonAll         = vec3(0.5f,  0.0f,  0.8f);
 [Setting hidden] vec3           S_ColorSeasonFall        = vec3(1.0f,  0.5f,  0.0f);
 [Setting hidden] vec3           S_ColorSeasonSpring      = vec3(0.3f,  0.9f,  0.3f);
@@ -129,6 +126,11 @@ string       colorMedalBronze;
 string       colorMedalGold;
 string       colorMedalNone;
 string       colorMedalSilver;
+string       colorModeClub;
+string       colorModeCustom;
+string       colorModeSeasonal;
+string       colorModeTmx;
+string       colorModeTotd;
 string       colorSeasonAll;
 string       colorSeasonFall;
 string       colorSeasonSpring;
@@ -142,14 +144,14 @@ string       colorSeriesGreen;
 string       colorSeriesRed;
 string       colorSeriesUnknown;
 string       colorSeriesWhite;
-const string iconSeasonAll     = Icons::ListAlt;
-const string iconSeasonFall    = Icons::Leaf;
-const string iconSeasonSpring  = Icons::Tree;
-const string iconSeasonSummer  = Icons::Sun;
-const string iconSeasonUnknown = Icons::QuestionCircle;
-const string iconSeasonWinter  = Icons::SnowflakeO;
+// const string iconSeasonAll     = Icons::ListAlt;
+// const string iconSeasonFall    = Icons::Leaf;
+// const string iconSeasonSpring  = Icons::Tree;
+// const string iconSeasonSummer  = Icons::Sun;
+// const string iconSeasonUnknown = Icons::QuestionCircle;
+// const string iconSeasonWinter  = Icons::SnowflakeO;
 
-bool   lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
+// bool   lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
 bool[] settingsOpen            = { false, false, false };
 
 [SettingsTab name="Campaign Completionist" icon="Check" order=0]
@@ -158,7 +160,7 @@ void SettingsTab_RenderWindow() {
         Window(WindowSource::Settings);
 
     else
-        UI::Text("sorry, you need club access :(");
+        UI::Text(Icons::FrownO + " Sorry, you need Club Access " + Icons::FrownO);
 }
 
 void WindowSettings(WindowSource source = WindowSource::Unknown) {
@@ -297,6 +299,40 @@ void SectionColorsMedals() {
 
     if (S_ColorMedalNone != (S_ColorMedalNone = UI::InputColor3("None", S_ColorMedalNone)))
         colorMedalNone = Text::FormatOpenplanetColor(S_ColorMedalNone);
+
+    UI::Indent(-indentWidth);
+}
+
+void SectionColorsModes() {
+    if (!UI::CollapsingHeader(Icons::SnowflakeO + " Modes"))
+        return;
+
+    UI::Indent(indentWidth);
+
+    if (UI::Button("Reset to default##modes")) {
+        pluginMeta.GetSetting("S_ColorModeClub").Reset();
+        pluginMeta.GetSetting("S_ColorModeCustom").Reset();
+        pluginMeta.GetSetting("S_ColorModeSeasonal").Reset();
+        pluginMeta.GetSetting("S_ColorModeTmx").Reset();
+        pluginMeta.GetSetting("S_ColorModeTotd").Reset();
+
+        Meta::SaveSettings();
+    }
+
+    if (S_ColorModeSeasonal != (S_ColorModeSeasonal = UI::InputColor3("Seasonal campaign", S_ColorModeSeasonal)))
+        colorModeSeasonal = Text::FormatOpenplanetColor(S_ColorModeSeasonal);
+
+    if (S_ColorModeTotd != (S_ColorModeTotd = UI::InputColor3("Track of the Day", S_ColorModeTotd)))
+        colorModeTotd = Text::FormatOpenplanetColor(S_ColorModeTotd);
+
+    if (S_ColorModeTmx != (S_ColorModeTmx = UI::InputColor3("Trackmania.exchange", S_ColorModeTmx)))
+        colorModeTmx = Text::FormatOpenplanetColor(S_ColorModeTmx);
+
+    if (S_ColorModeClub != (S_ColorModeClub = UI::InputColor3("Club campaign", S_ColorModeClub)))
+        colorModeClub = Text::FormatOpenplanetColor(S_ColorModeClub);
+
+    if (S_ColorModeCustom != (S_ColorModeCustom = UI::InputColor3("Custom list", S_ColorModeCustom)))
+        colorModeCustom = Text::FormatOpenplanetColor(S_ColorModeCustom);
 
     UI::Indent(-indentWidth);
 }

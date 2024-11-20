@@ -200,7 +200,7 @@ class Map {
                 }
             }
 
-        } else if (mode == Mode::TrackOfTheDay) {
+        } else if (mode == Mode::TOTD) {
             const string dateRaw = date.SubStr(3, date.Length - 3);
             const int year = Text::ParseInt(dateRaw.SubStr(0, 4));
             const int month = Text::ParseInt(dateRaw.SubStr(5, 2));

@@ -1,5 +1,5 @@
 // c 2024-10-24
-// m 2024-11-11
+// m 2024-11-13
 
 void RenderWindowDetached() {
     if (false
@@ -52,47 +52,20 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
     SectionMode();
     UI::Separator();
 
-    if (S_Mode == Mode::Campaign) {
-        // UI::AlignTextToFramePadding();
-        // UI::Text("ID Type:");
-
-        // UI::SameLine();
-        // if (UI::RadioButton("Club (0-5 digits)", S_CustomSource == CustomSource::Club))
-        //     S_CustomSource = CustomSource::Club;
-
-        // UI::SameLine();
-        // if (UI::RadioButton("TMX (0-6 digits)", S_CustomSource == CustomSource::TMX))
-        //     S_CustomSource = CustomSource::TMX;
-
-        int id = 0;
-        const string cid = "TMX Campaign ID";
-        // UI::SetNextItemWidth(widthAvail / scale - Draw::MeasureString(cid).x);
-        UI::AlignTextToFramePadding();
-        UI::Text(cid);
-        UI::SameLine();
-        UI::SetNextItemWidth(UI::GetContentRegionAvail().x / scale);
-        UI::InputInt("##inputint-campid", id);
-
+    if (S_Mode == Mode::Seasonal || S_Mode == Mode::Club) {
+        SectionSeries();
         UI::Separator();
-    } else {
-        if (S_Mode == Mode::Seasonal) {
-            SectionSeries();
-            UI::Separator();
-        }
     }
 
     SectionTarget();
     UI::Separator();
-
-    // SectionFilters();
-    // UI::Separator();
 
     SectionOrder();
     UI::Separator();
 
     if (API::progress > 0.0f) {
         UI::PushStyleColor(UI::Col::PlotHistogram, UI::HSV(GayHue(3000), 1.0f, 1.0f));
-        UI::ProgressBar(API::progress, vec2(0.0f));
+        UI::ProgressBar(API::progress, vec2(widthAvail, scale * 5.0f));
         UI::PopStyleColor();
     }
 
@@ -180,6 +153,8 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
     UI::SameLine();
     queue.next.skipped = UI::Checkbox("Skip", queue.next.skipped);
 
+    UI::Text("Queue length: " + queue.Length);
+
     if (UI::BeginTable("##table-queue", 5, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
         UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(), 0.5f));
 
@@ -244,35 +219,7 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
         UI::PopStyleColor();
         UI::EndTable();
     }
-
-    // if (UI::BeginChild("##child-queue")) {
-    //     for (uint i = 0; i < queue.Length; i++) {
-    //         Map@ map = queue[i];
-
-    //         UI::Text(map.name !is null ? map.name.stripped : map.uid);
-    //     }
-    // }
-    // UI::EndChild();
 }
-
-// void SectionFilters() {
-//     UI::AlignTextToFramePadding();
-//     UI::Text("Filters:");
-
-//     UI::SameLine();
-//     MapFilter filter = MapFilter::Played;
-//     if (UI::Checkbox(tostring(filter), S_Filter & filter == filter))
-//         S_Filter |= filter;
-//     else
-//         S_Filter &= (S_Filter ^ filter);
-
-//     UI::SameLine();
-//     filter = MapFilter::Unplayed;
-//     if (UI::Checkbox(tostring(filter), S_Filter & filter == filter))
-//         S_Filter |= filter;
-//     else
-//         S_Filter &= (S_Filter ^ filter);
-// }
 
 void SectionOptions() {
     if (S_TimeLimit > 0)
@@ -332,48 +279,39 @@ void SectionMode() {
     UI::AlignTextToFramePadding();
     UI::Text("Mode:");
 
-    // UI::SameLine();
-    // ModeFilter filter = ModeFilter::Seasonal;
-    // if (UI::Checkbox(tostring(filter), S_Mode & filter == filter))
-    //     S_Mode |= filter;
-    // else
-    //     S_Mode &= (S_Mode ^ filter);
-
-    // UI::SameLine();
-    // filter = ModeFilter::Totd;
-    // if (UI::Checkbox(tostring(filter), S_Mode & filter == filter))
-    //     S_Mode |= filter;
-    // else
-    //     S_Mode &= (S_Mode ^ filter);
-
-    // for (int i = 0; i <= Mode::Unknown; i++) {
-    //     Mode mode = Mode(i);
-
-    //     UI::SameLine();
-    //     if (UI::RadioButton(tostring(mode).Replace("_", " "), S_Mode == mode))
-    //         S_Mode = mode;
-    // }
-
     int styles = 0;
 
     UI::SameLine();
-    styles += PushCheckboxStyles(vec3(0.0f, 0.6f, 0.0f));
+    styles += PushCheckboxStyles(S_ColorModeSeasonal);
     if (UI::RadioButton("Seasonal", S_Mode == Mode::Seasonal))
         S_Mode = Mode::Seasonal;
 
     UI::SameLine();
-    styles += PushCheckboxStyles(vec3(0.0f, 0.6f, 1.0f));
-    if (UI::RadioButton("Track of the Day", S_Mode == Mode::TrackOfTheDay))
-        S_Mode = Mode::TrackOfTheDay;
-
-    UI::SameLine();
-    styles += PushCheckboxStyles(vec3(0.9f, 0.4f, 0.0f));
-    UI::BeginDisabled();
-    if (UI::RadioButton("Other Campaign", S_Mode == Mode::Campaign))
-        S_Mode = Mode::Campaign;
-    UI::EndDisabled();
+    styles += PushCheckboxStyles(S_ColorModeTotd);
+    if (UI::RadioButton("Track of the Day", S_Mode == Mode::TOTD))
+        S_Mode = Mode::TOTD;
 
     UI::PopStyleColor(styles);
+    styles = 0;
+    UI::BeginDisabled();
+
+    UI::SameLine();
+    styles += PushCheckboxStyles(S_ColorModeTmx);
+    if (UI::RadioButton("TMX", S_Mode == Mode::TMX))
+        S_Mode = Mode::TMX;
+
+    UI::SameLine();
+    styles += PushCheckboxStyles(S_ColorModeClub);
+    if (UI::RadioButton("Club", S_Mode == Mode::Club))
+        S_Mode = Mode::Club;
+
+    UI::SameLine();
+    styles += PushCheckboxStyles(S_ColorModeCustom);
+    if (UI::RadioButton("Custom", S_Mode == Mode::Custom))
+        S_Mode = Mode::Custom;
+
+    UI::PopStyleColor(styles);
+    UI::EndDisabled();
 }
 
 void SectionSeries() {
@@ -435,7 +373,7 @@ void SectionSeries() {
 
 void SectionTarget() {
     UI::AlignTextToFramePadding();
-    UI::Text("Target:");
+    UI::Text("Medal:");
 
     int styleColors = 0;
 
