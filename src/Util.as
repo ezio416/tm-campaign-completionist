@@ -2,11 +2,11 @@
 // m 2024-09-12
 
 void GetAllPBsAsyncCached() {
-    GetAllPBsAsync(true)
+    GetAllPBsAsync(true);
 }
 
 void GetAllPBsAsyncForceRefresh() {
-    GetAllPBsAsync(false)
+    GetAllPBsAsync(false);
 }
 
 void GetAllPBsAsync(bool useCache) {
@@ -33,7 +33,6 @@ void GetAllPBsForMapSet(Map@[]@ maps, bool useCache) {
             continue;
 
         map.GetPB(useCache);
-        SetNextMap();
 
         const uint64 now = Time::Now;
         if (now - lastYield > maxFrameTime) {
