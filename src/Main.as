@@ -51,6 +51,10 @@ void Main() {
     yield();
     LoadSkips();
     yield();
+    LoadCachedRecords();
+    yield();
+
+    startnew(ClearTaskCoro);
 
     GetMaps();
 
@@ -552,7 +556,7 @@ void Loop() {
     )
         return;
 
-    nextMap.GetPB();
+    nextMap.GetPB(false); // get it fresh from the API
 
     SetNextMap();
 

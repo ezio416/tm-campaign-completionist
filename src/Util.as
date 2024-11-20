@@ -1,22 +1,28 @@
 // c 2024-01-02
 // m 2024-09-12
 
-void GetAllPBsAsync() {
+void GetAllPBsAsyncCached() {
+    GetAllPBsAsync(true)
+}
+
+void GetAllPBsAsyncForceRefresh() {
+    GetAllPBsAsync(false)
+}
+
+void GetAllPBsAsync(bool useCache) {
     const uint64 start = Time::Now;
     trace("getting all PBs");
 
     trace("getting PBs for campaign maps (" + mapsCampaign.Length + ")");
-    GetAllPBsForMapSet(@mapsCampaign);
+    GetAllPBsForMapSet(@mapsCampaign, useCache);
 
     trace("getting PBs for TOTD maps (" + mapsTotd.Length + ")");
-    GetAllPBsForMapSet(@mapsTotd);
+    GetAllPBsForMapSet(@mapsTotd, useCache);
 
     trace("getting all PBs done after " + (Time::Now - start) + "ms");
-
-    gettingNow = false;
 }
 
-void GetAllPBsForMapSet(Map@[]@ maps) {
+void GetAllPBsForMapSet(Map@[]@ maps, bool useCache) {
     uint64 lastYield = Time::Now;
     const uint64 maxFrameTime = 50;
 
@@ -26,7 +32,8 @@ void GetAllPBsForMapSet(Map@[]@ maps) {
         if (map is null)
             continue;
 
-        map.GetPB();
+        map.GetPB(useCache);
+        SetNextMap();
 
         const uint64 now = Time::Now;
         if (now - lastYield > maxFrameTime) {
