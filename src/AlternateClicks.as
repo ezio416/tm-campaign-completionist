@@ -9,7 +9,7 @@ const string skippedFile    = IO::FromStorageFolder("skips.json").Replace("\\", 
 Json::Value@ skippedUids    = Json::Object();
 
 void ClickAction(bool skipped, bool bookmarked, const string &in uid) {
-    if (UI::IsItemHovered()) {
+    if (UI::IsItemHovered(UI::HoveredFlags::AllowWhenDisabled)) {
         if (S_MenuClickHover) {
             UI::BeginTooltip();
             UI::Text(Icons::Kenney::MouseLeftButton + " play, " + Icons::Kenney::MouseAlt + (skipped ? " un-" : " ") + "skip, " + Icons::Kenney::MouseRightButton + (bookmarked ? " un-" : " ") + "bookmark");
