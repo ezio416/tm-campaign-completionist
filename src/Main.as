@@ -51,7 +51,7 @@ void Main() {
     yield();
     LoadSkips();
     yield();
-    LoadCachedRecords();
+    LoadPBs();
     yield();
 
     startnew(ClearTaskCoro);
@@ -241,8 +241,8 @@ void RenderMenu() {
             UI::EndMenu();
         }
 
-        if (S_MenuRefresh && UI::MenuItem("\\$S" + Icons::Refresh + " Refresh Records", "", false, !gettingNow))
-            startnew(RefreshRecords);
+        // if (S_MenuRefresh && UI::MenuItem("\\$S" + Icons::Refresh + " Refresh Records", "", false, !gettingNow))
+        //     startnew(RefreshRecords);
 
         if (UI::BeginMenu(colorTarget + "\\$S" + Icons::Circle + " Target Medal: " + tostring(S_Target))) {
             if (UI::MenuItem(colorMedalAuthor + "\\$S" + Icons::Circle + " Author", "", S_Target == TargetMedal::Author, S_Target != TargetMedal::Author)) {
@@ -285,7 +285,7 @@ void RenderMenu() {
         string nextText = "\\$0F0\\$S" + Icons::Play + "\\$FFF Next: ";
 
         if (gettingNow)
-            nextText += "\\$AAA\\$Sstill getting data...";
+            nextText += "\\$AAA\\$Sstill getting data, check the log...";
         else if (nextMap !is null) {
             nextMapBookmarked = bookmarkedUids.HasKey(nextMap.uid);
 
@@ -695,6 +695,6 @@ void SetNextMapAsync() {
         allTarget = false;
 
         if (nextMap !is null)
-            trace("next map: " + nextMap.date + ": " + nextMap.nameClean);
+            trace("next map: " + (nextMap.date.Length > 0 ? nextMap.date  + ": " : "") + nextMap.nameClean);
     }
 }

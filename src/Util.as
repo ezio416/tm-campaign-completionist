@@ -1,6 +1,9 @@
 // c 2024-01-02
 // m 2024-11-25
 
+const string pbFile = IO::FromStorageFolder("pbs.json").Replace("\\", "/");
+Json::Value@ pbs    = Json::Object();
+
 void GetAllPBsAsyncCached() {
     GetAllPBsAsync(true);
 }
@@ -35,6 +38,8 @@ void GetAllPBsForMapSet(Map@[]@ maps, bool useCache) {
         if (map is null)
             continue;
 
+        print("\\$444" + i + " / " + maps.Length);
+
         map.GetPB(useCache);
 
         const uint64 now = Time::Now;
@@ -52,6 +57,22 @@ void HoverTooltip(const string &in msg) {
     UI::BeginTooltip();
     UI::Text(msg);
     UI::EndTooltip();
+}
+
+void LoadPBs() {
+    if (!IO::FileExists(pbFile)) {
+        warn("not found: " + pbFile);
+        return;
+    }
+
+    trace("loading " + pbFile);
+
+    try {
+        @pbs = Json::FromFile(pbFile);
+    } catch {
+        warn("failed loading PBs: " + getExceptionInfo());
+        @pbs = Json::Object();
+    }
 }
 
 void Notify() {
@@ -117,6 +138,17 @@ void ReturnToMenu() {
 
     while (!App.ManiaTitleControlScriptAPI.IsReady)
         yield();
+}
+
+void SavePBs(bool log = true) {
+    if (log)
+        trace("saving " + pbFile);
+
+    try {
+        Json::ToFile(pbFile, pbs);
+    } catch {
+        warn("error saving PBs: " + getExceptionInfo());
+    }
 }
 
 string TimeFormatColored(uint u, bool format = true) {

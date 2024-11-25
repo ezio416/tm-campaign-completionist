@@ -109,13 +109,13 @@ class Map {
 
         auto mccma = App.MenuManager.MenuCustom_CurrentManiaApp;
 
-        trace("GetPB: Loading PB from API. Track - " + nameRaw);
+        trace("getting api pb for " + nameQuoted);
         MwFastBuffer<wstring> wsids = MwFastBuffer<wstring>();
         wsids.Add(mccma.LocalUser.WebServicesUserId);
-        auto task = mccma.ScoreMgr.Map_GetPlayerListRecordList(App.UserManagerScript.Users[0].Id, wsids, uid, "PersonalBest", "", "TimeAttack", "");
+        CWebServicesTaskResult_MapRecordListScript@ task = mccma.ScoreMgr.Map_GetPlayerListRecordList(App.UserManagerScript.Users[0].Id, wsids, uid, "PersonalBest", "", "TimeAttack", "");
         WaitAndClearTaskLater(task, mccma.ScoreMgr);
         if (task.HasFailed || !task.HasSucceeded) {
-            warn("Failed to get player record on map: " + uid + " wsid " + mccma.LocalUser.WebServicesUserId + ' // Error: ' + task.ErrorCode + ", " + task.ErrorType + ", " + task.ErrorDescription);
+            warn("error getting pb on " + nameQuoted + " | wsid " + mccma.LocalUser.WebServicesUserId + " | error " + task.ErrorCode + " | type " + task.ErrorType + " | desc " + task.ErrorDescription);
             return;
         }
         if (task.MapRecordList.Length == 0) {
@@ -131,7 +131,7 @@ class Map {
         SetMedals();
         SetTargetDelta();
 
-		trace("GetPB done: Track - " + nameRaw + ", medals - " + myMedals + ", myTime - " + myTime) ;
+        trace("got api pb for " + nameQuoted + " | medals " + myMedals + " | pb " + Time::Format(myTime));
     }
 
     // courtesy of "Play Map" plugin - https://github.com/XertroV/tm-play-map
@@ -279,29 +279,5 @@ class Map {
             targetDelta += colorDeltaAbove3;
 
         targetDelta += "\\$S(" + (delta < 0 ? "" : "+") + Time::Format(delta) + ") \\$Z ";  // should never be negative
-    }
-}
-
-
-void LoadCachedRecords() {
-    if (!IO::FileExists(cachedRecordsFile))
-        return;
-
-    trace("loading " + cachedRecordsFile);
-
-    try {
-        cachedRecords = Json::FromFile(cachedRecordsFile);
-    } catch {
-        warn("failed loading cached records: " + getExceptionInfo());
-    }
-}
-
-void SaveCachedRecords() {
-    trace("saving " + cachedRecordsFile);
-
-    try {
-        Json::ToFile(cachedRecordsFile, cachedRecords);
-    } catch {
-        warn("error saving cached records: " + getExceptionInfo());
     }
 }
