@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-09-12
+// m 2024-11-25
 
 uint64       latestNandoRequest   = 0;
 Json::Value@ mapsCampaignFromFile = Json::Object();
@@ -37,8 +37,8 @@ void GetMaps() {
     GetMapInfoFromApi(Mode::NadeoCampaign);
     GetMapInfoFromApi(Mode::TrackOfTheDay);
     startnew(GetAllPBsAsyncCached);
-    gettingNow = false;
-    SetNextMap();
+    // gettingNow = false;
+    // SetNextMapAsync();
 }
 
 void GetMapsFromApi(Mode mode) {
