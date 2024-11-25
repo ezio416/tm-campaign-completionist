@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-09-12
+// m 2024-11-25
 
 string       accountId;
 bool         allTarget         = false;
@@ -82,7 +82,7 @@ void RenderMenu() {
 
             if (S_MenuOnlyCurrentCampaign && S_Mode == Mode::NadeoCampaign && UI::MenuItem("\\$S" + Icons::ClockO + " Only Current Season", "", S_OnlyCurrentCampaign)) {
                 S_OnlyCurrentCampaign = !S_OnlyCurrentCampaign;
-                startnew(SetNextMap);
+                startnew(SetNextMapAsync);
             }
         } else {
             UI::MenuItem("\\$1D4\\$S" + Icons::ArrowsH + " Mode: Nadeo Campaign", "", false, false);
@@ -248,27 +248,27 @@ void RenderMenu() {
             if (UI::MenuItem(colorMedalAuthor + "\\$S" + Icons::Circle + " Author", "", S_Target == TargetMedal::Author, S_Target != TargetMedal::Author)) {
                 S_Target = TargetMedal::Author;
                 OnSettingsChanged();
-                startnew(SetNextMap);
+                startnew(SetNextMapAsync);
             }
             if (UI::MenuItem(colorMedalGold + "\\$S" + Icons::Circle + " Gold", "", S_Target == TargetMedal::Gold, S_Target != TargetMedal::Gold)) {
                 S_Target = TargetMedal::Gold;
                 OnSettingsChanged();
-                startnew(SetNextMap);
+                startnew(SetNextMapAsync);
             }
             if (UI::MenuItem(colorMedalSilver + "\\$S" + Icons::Circle + " Silver", "", S_Target == TargetMedal::Silver, S_Target != TargetMedal::Silver)) {
                 S_Target = TargetMedal::Silver;
                 OnSettingsChanged();
-                startnew(SetNextMap);
+                startnew(SetNextMapAsync);
             }
             if (UI::MenuItem(colorMedalBronze + "\\$S" + Icons::Circle + " Bronze", "", S_Target == TargetMedal::Bronze, S_Target != TargetMedal::Bronze)) {
                 S_Target = TargetMedal::Bronze;
                 OnSettingsChanged();
-                startnew(SetNextMap);
+                startnew(SetNextMapAsync);
             }
             if (UI::MenuItem(colorMedalNone + "\\$S" + Icons::Circle + " None", "", S_Target == TargetMedal::None, S_Target != TargetMedal::None)) {
                 S_Target = TargetMedal::None;
                 OnSettingsChanged();
-                startnew(SetNextMap);
+                startnew(SetNextMapAsync);
             }
             UI::EndMenu();
         }
@@ -306,6 +306,13 @@ void RenderMenu() {
 
         if (nextMap !is null)
             ClickAction(false, nextMapBookmarked, nextMap.uid);
+
+        UI::BeginDisabled(gettingNow);
+        if (UI::MenuItem(Icons::Refresh + " Check Next Map Again")) {
+            startnew(CoroutineFunc(nextMap.GetPBForceAsync));
+            SetNextMapAsync();
+        }
+        UI::EndDisabled();
 
         if (S_MenuAllMaps && mapsRemaining.Length > 0 && UI::BeginMenu("\\$S" + Icons::List + " Remaining (" + mapsRemaining.Length + ")", !gettingNow)) {
             for (uint i = 0; i < mapsRemaining.Length; i++) {
@@ -416,7 +423,7 @@ void OnSettingsChanged() {
         lastSeason = S_Season;
         lastSeries = S_Series;
         lastMenuExcludeSkips = S_MenuExcludeSkips;
-        startnew(SetNextMap);
+        startnew(SetNextMapAsync);
     }
 
     colorSeasonAll     = Text::FormatOpenplanetColor(S_ColorSeasonAll);
@@ -558,7 +565,7 @@ void Loop() {
 
     nextMap.GetPB(false); // get it fresh from the API
 
-    SetNextMap();
+    SetNextMapAsync();
 
     if (nextMap is null)
         return;  // finished all maps
@@ -582,7 +589,7 @@ void Loop() {
     } catch { }
 }
 
-void SetNextMap() {
+void SetNextMapAsync() {
     while (gettingNow)
         yield();
 

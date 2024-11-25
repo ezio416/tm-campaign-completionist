@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-09-12
+// m 2024-11-25
 
 void GetAllPBsAsyncCached() {
     GetAllPBsAsync(true);
@@ -20,6 +20,9 @@ void GetAllPBsAsync(bool useCache) {
     GetAllPBsForMapSet(@mapsTotd, useCache);
 
     trace("getting all PBs done after " + (Time::Now - start) + "ms");
+
+    gettingNow = false;
+    SetNextMapAsync();
 }
 
 void GetAllPBsForMapSet(Map@[]@ maps, bool useCache) {
@@ -47,7 +50,7 @@ void HoverTooltip(const string &in msg) {
         return;
 
     UI::BeginTooltip();
-        UI::Text(msg);
+    UI::Text(msg);
     UI::EndTooltip();
 }
 
