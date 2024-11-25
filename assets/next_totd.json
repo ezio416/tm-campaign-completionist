@@ -15368,5 +15368,725 @@
         "nameRaw": "$s$90FConstella $fffft Iesauka",
         "silverTime": 54000,
         "uid": "uoPb6e55cGHnwVuv53ScbzywhX5"
+    },
+    "1537": {
+        "authorTime": 49356,
+        "bronzeTime": 75000,
+        "date": "2024-09-15",
+        "goldTime": 53000,
+        "id": "2a4a5c83-913f-4b03-bdca-00f19f547df5",
+        "nameRaw": "Jeskai",
+        "silverTime": 60000,
+        "uid": "qkGy95sqcLj6AwqexYvGkojcaya"
+    },
+    "1538": {
+        "authorTime": 39193,
+        "bronzeTime": 59000,
+        "date": "2024-09-16",
+        "goldTime": 42000,
+        "id": "ca1867c8-c829-45ae-b7f2-5683a4c7fadb",
+        "nameRaw": "$AE0$o$sLUMIX",
+        "silverTime": 48000,
+        "uid": "8FbTc7VokmgfV26Jy5XLel9QpN0"
+    },
+    "1539": {
+        "authorTime": 45733,
+        "bronzeTime": 69000,
+        "date": "2024-09-17",
+        "goldTime": 49000,
+        "id": "5c409a60-cf9e-430e-b096-d8dda34b3fd1",
+        "nameRaw": "$FFF7DS - $C30Gluttony",
+        "silverTime": 55000,
+        "uid": "bXC6H3hjmtDV1fzlrD6ipe6tUX4"
+    },
+    "1540": {
+        "authorTime": 39739,
+        "bronzeTime": 60000,
+        "date": "2024-09-18",
+        "goldTime": 43000,
+        "id": "3f1fbfb6-7ba4-4f1b-95a9-c6012dd5b057",
+        "nameRaw": "Fekl of the day",
+        "silverTime": 48000,
+        "uid": "1uS3LKl2HKjbmcSvbyyyoSxfrWg"
+    },
+    "1541": {
+        "authorTime": 44500,
+        "bronzeTime": 67000,
+        "date": "2024-09-19",
+        "goldTime": 48000,
+        "id": "e8ab181c-8c4c-4dc9-b63b-ba3959cdd8f9",
+        "nameRaw": "$s$iMenagerie",
+        "silverTime": 54000,
+        "uid": "d5KEyclUu0TjpiXrIjq80BcWFb3"
+    },
+    "1542": {
+        "authorTime": 43944,
+        "bronzeTime": 66000,
+        "date": "2024-09-20",
+        "goldTime": 47000,
+        "id": "e5d777ff-44ce-4e0d-877b-68baa230308b",
+        "nameRaw": "$o$FF0Vanilla Constructions $FF0$F00ft Tag6661$F00$o",
+        "silverTime": 53000,
+        "uid": "LaSYb1MB8p_95eLuse6VUNI_4_l"
+    },
+    "1543": {
+        "authorTime": 60000,
+        "bronzeTime": 70000,
+        "date": "2024-09-21",
+        "goldTime": 63000,
+        "id": "170a0add-f69c-479d-bbba-1d3a26648864",
+        "nameRaw": "$o$FFFEscape from $FC3SECTOR 21",
+        "silverTime": 66000,
+        "uid": "PNmZfPPjPlDoFOVgRxhiC75QcPm"
+    },
+    "1544": {
+        "authorTime": 46521,
+        "bronzeTime": 70000,
+        "date": "2024-09-22",
+        "goldTime": 50000,
+        "id": "14ce4fc8-4cbd-4b7c-9cf9-eb80e4491479",
+        "nameRaw": "$s$o$609I$61And$62Bus$63Ctr$63Cy$72C L$81Cin$90Ce",
+        "silverTime": 56000,
+        "uid": "uNGyujEFnOrm9FGj3j3nPG3BMOk"
+    },
+    "1545": {
+        "authorTime": 37131,
+        "bronzeTime": 56000,
+        "date": "2024-09-23",
+        "goldTime": 40000,
+        "id": "f8354fa7-64bc-40d3-9b36-cffc7348042f",
+        "nameRaw": "$o$fe0SLIDELANDS 2",
+        "silverTime": 45000,
+        "uid": "rxRibvtNpGL8xc06CuW9QaRj9Rj"
+    },
+    "1546": {
+        "authorTime": 54992,
+        "bronzeTime": 83000,
+        "date": "2024-09-24",
+        "goldTime": 59000,
+        "id": "2ac0e343-e7ff-428e-a810-e05f696ab2cf",
+        "nameRaw": "$888$s Melting Point $00F | ft Drifter",
+        "silverTime": 66000,
+        "uid": "bNvoo1dSHxjk5JWj9PX66y2mXIh"
+    },
+    "1547": {
+        "authorTime": 40852,
+        "bronzeTime": 62000,
+        "date": "2024-09-25",
+        "goldTime": 44000,
+        "id": "4f0ccff2-087a-4fe6-8b90-62d8acb50f1b",
+        "nameRaw": "$o$s$i$f2bc$f7be$f8cr$fade$fbez$fcfa",
+        "silverTime": 50000,
+        "uid": "oBNcrfwhHCzU1WtpltvvAWnMpU8"
+    },
+    "1548": {
+        "authorTime": 43422,
+        "bronzeTime": 66000,
+        "date": "2024-09-26",
+        "goldTime": 47000,
+        "id": "dc85235b-b424-45b9-92d4-178bf7c01202",
+        "nameRaw": "$A5FTerra Purpura$FFF ft' NielsDewitte",
+        "silverTime": 53000,
+        "uid": "XnjQ6c3Nu8JeEblC37NgPPpJtzm"
+    },
+    "1549": {
+        "authorTime": 45840,
+        "bronzeTime": 68000,
+        "date": "2024-09-27",
+        "goldTime": 48000,
+        "id": "31d0d672-280c-4a50-8fbe-6c280a5b87a0",
+        "nameRaw": "$o$s$fffSomnium $c63Noctis",
+        "silverTime": 55000,
+        "uid": "_4QbmJBV_ExQE0AkEIEyX83ZAkk"
+    },
+    "1550": {
+        "authorTime": 42588,
+        "bronzeTime": 64000,
+        "date": "2024-09-28",
+        "goldTime": 46000,
+        "id": "c3bd2114-927c-4692-93ac-eb20a51293ac",
+        "nameRaw": "$s$o$efdIr$dfci$decd$ceba$bebc$bdbe$adaae",
+        "silverTime": 52000,
+        "uid": "8s1E40xfhgyIg2F8qMBNT11ZP6m"
+    },
+    "1551": {
+        "authorTime": 43424,
+        "bronzeTime": 66000,
+        "date": "2024-09-29",
+        "goldTime": 47000,
+        "id": "733d6a89-1075-43c0-aa17-9a36a50c1e35",
+        "nameRaw": "$s$o[$69CREVIVAL$FFF] - $b$s$6CFPA$666SSI$F36ON",
+        "silverTime": 53000,
+        "uid": "1ecs2gVgBz5xanlGa4GywRvcThd"
+    },
+    "1552": {
+        "authorTime": 45248,
+        "bronzeTime": 68000,
+        "date": "2024-09-30",
+        "goldTime": 48000,
+        "id": "29342433-624a-4612-9753-3bfe3953af45",
+        "nameRaw": "$s$026P$fffannekoekenmix $s$000ft' $s$fffRotcat",
+        "silverTime": 55000,
+        "uid": "R_pISJy7UYPHNrmvfhlOVvzoU8c"
+    },
+    "1553": {
+        "authorTime": 39923,
+        "bronzeTime": 60000,
+        "date": "2024-10-01",
+        "goldTime": 44440,
+        "id": "72b0c02e-8b95-4a8a-921b-13210dd3c520",
+        "nameRaw": "$000$eee$o$sSn$bbeice",
+        "silverTime": 50000,
+        "uid": "Gx8uexUCpuu33A8sz19d7yyi9bg"
+    },
+    "1554": {
+        "authorTime": 43382,
+        "bronzeTime": 66000,
+        "date": "2024-10-02",
+        "goldTime": 46000,
+        "id": "d2295443-8757-4f30-bb5b-f8c31c1c958e",
+        "nameRaw": "Shimmer",
+        "silverTime": 53000,
+        "uid": "lwHiQLE8kMH1uJdd4ejmiwigJum"
+    },
+    "1555": {
+        "authorTime": 40294,
+        "bronzeTime": 60000,
+        "date": "2024-10-03",
+        "goldTime": 42711,
+        "id": "2e8c39e5-60ba-4c6e-a51d-aa00e49a6989",
+        "nameRaw": "$o$78fP $f56a $78ft c $07fh $78fw o $f99r $78fk $oft Soul",
+        "silverTime": 50000,
+        "uid": "uur4cy7UmDdmlKYPrsfkEPnQsu6"
+    },
+    "1556": {
+        "authorTime": 42352,
+        "bronzeTime": 62000,
+        "date": "2024-10-04",
+        "goldTime": 44500,
+        "id": "bbf563a6-ce33-46f7-8750-ddd96c88d128",
+        "nameRaw": "$f00$o$sImmolate",
+        "silverTime": 51000,
+        "uid": "EQinaDkV9QdTozqVOf7RK_37yl5"
+    },
+    "1557": {
+        "authorTime": 42784,
+        "bronzeTime": 65000,
+        "date": "2024-10-05",
+        "goldTime": 46000,
+        "id": "fbc52af0-6427-481f-8766-98180d28058a",
+        "nameRaw": "$o$ff0Goldorak $fffft Nastibe",
+        "silverTime": 52000,
+        "uid": "H_6za46ZPL0l4ypI11xu5_QaXEj"
+    },
+    "1558": {
+        "authorTime": 45845,
+        "bronzeTime": 69000,
+        "date": "2024-10-06",
+        "goldTime": 49000,
+        "id": "46f714b7-e2d3-4585-b131-eb622686d385",
+        "nameRaw": "XPEvo24 - Tutel",
+        "silverTime": 56000,
+        "uid": "rcvMvcFG8Kq0Jkevwy1pJEeqAsd"
+    },
+    "1559": {
+        "authorTime": 39532,
+        "bronzeTime": 60000,
+        "date": "2024-10-07",
+        "goldTime": 42000,
+        "id": "23feb97d-26e7-4b1c-b1d5-9392b92b9392",
+        "nameRaw": "$i$s$F0CTruskawka $FC3Cheesecake $fffft' Misha",
+        "silverTime": 48000,
+        "uid": "f1aQzjOIqWa94nW1BR6lVsLMR8a"
+    },
+    "1560": {
+        "authorTime": 48878,
+        "bronzeTime": 74000,
+        "date": "2024-10-08",
+        "goldTime": 52000,
+        "id": "4a723c53-bd35-4320-8cef-576a7db9ea66",
+        "nameRaw": "$i$0CFA$8EFl$FFFp$FFFi$8CFn$09Fa",
+        "silverTime": 59000,
+        "uid": "GvVEJG6XUZGs5x5il58jSvhfo88"
+    },
+    "1561": {
+        "authorTime": 42970,
+        "bronzeTime": 65000,
+        "date": "2024-10-09",
+        "goldTime": 46000,
+        "id": "38f5a75b-24a5-49a2-a050-143ba8deb215",
+        "nameRaw": "Tachyon",
+        "silverTime": 52000,
+        "uid": "eTPCDGFyyPIC5c2NDcOXrnAS30j"
+    },
+    "1562": {
+        "authorTime": 49746,
+        "bronzeTime": 75000,
+        "date": "2024-10-10",
+        "goldTime": 53000,
+        "id": "10b3a61d-c02f-477b-b1fa-c6c241422199",
+        "nameRaw": "$s$222ZA$fffFS $222- $0fcTurbulent",
+        "silverTime": 60000,
+        "uid": "GhtgmUam4Pbqr0jlSplEPsRNjQk"
+    },
+    "1563": {
+        "authorTime": 49500,
+        "bronzeTime": 75000,
+        "date": "2024-10-11",
+        "goldTime": 53000,
+        "id": "27498b38-13ab-40f9-a181-8d5ec863f587",
+        "nameRaw": "$s$i$6FFPa$5FFle$4EF b$3EFl$3DFue $1DFs$1CFky $i$FFFft' link",
+        "silverTime": 60000,
+        "uid": "MyjCgBkVqoMfg1VcKlUC0GX4ic0"
+    },
+    "1564": {
+        "authorTime": 40926,
+        "bronzeTime": 83000,
+        "date": "2024-10-12",
+        "goldTime": 44000,
+        "id": "68572f65-14ae-4a17-8ca2-d6effdd7ed58",
+        "nameRaw": "$s$cccCROCIERA $s$z$n$s$o$09fblu",
+        "silverTime": 50000,
+        "uid": "XsHczkgw23kqHH7Q1s_wnyhGfkd"
+    },
+    "1565": {
+        "authorTime": 45573,
+        "bronzeTime": 69000,
+        "date": "2024-10-13",
+        "goldTime": 49000,
+        "id": "cd780b75-3b9f-4d4b-a431-5520933649d7",
+        "nameRaw": "$FC0$oHyperion $i$FFFft' Gommettes",
+        "silverTime": 55000,
+        "uid": "tXYlVF5ZBb75Hb0c16w5AGdhzAi"
+    },
+    "1566": {
+        "authorTime": 45912,
+        "bronzeTime": 69000,
+        "date": "2024-10-14",
+        "goldTime": 49000,
+        "id": "d1cb948b-7ff9-4807-b135-febda9f3bc56",
+        "nameRaw": "$s$F90DAWN'S $00CAWAKENING",
+        "silverTime": 56000,
+        "uid": "ytKTrmjtk352Ou_7IE3xHWhyj2a"
+    },
+    "1567": {
+        "authorTime": 47867,
+        "bronzeTime": 72000,
+        "date": "2024-10-15",
+        "goldTime": 51000,
+        "id": "0ef6784a-3981-45ff-ae27-8e5627f816a0",
+        "nameRaw": "$i$o$f00BRICK $0ffMOSAIC",
+        "silverTime": 58000,
+        "uid": "HCSuedcVY4V5oSVjrHIOhc3qYfl"
+    },
+    "1568": {
+        "authorTime": 45866,
+        "bronzeTime": 69000,
+        "date": "2024-10-16",
+        "goldTime": 49000,
+        "id": "75fcb5c1-863a-48c6-b0b8-794c4a169353",
+        "nameRaw": "$sS$c0cen$fffdIt",
+        "silverTime": 56000,
+        "uid": "B7EipfDfhrV8W5p3qmZSwtYZeB7"
+    },
+    "1569": {
+        "authorTime": 42225,
+        "bronzeTime": 64000,
+        "date": "2024-10-17",
+        "goldTime": 45000,
+        "id": "bf6fed5d-020c-4c31-94c5-cedaf218f884",
+        "nameRaw": "$i$O$F90Spook $zft' Robbalobb",
+        "silverTime": 51000,
+        "uid": "jkgxi1MWCoiiPUOUHtQQX_gPVo1"
+    },
+    "1570": {
+        "authorTime": 68261,
+        "bronzeTime": 103000,
+        "date": "2024-10-18",
+        "goldTime": 73000,
+        "id": "c4bcbeb8-369e-4048-a407-18338de4fa31",
+        "nameRaw": "$s$F00T$803F$006H $000- $FFFBelow the Stratospires",
+        "silverTime": 82000,
+        "uid": "xjy2oKQrWZrMy65jLoSWKbisqGl"
+    },
+    "1571": {
+        "authorTime": 38008,
+        "bronzeTime": 58000,
+        "date": "2024-10-19",
+        "goldTime": 41000,
+        "id": "73ca7a16-a2a3-4db3-91af-ce61be817e1e",
+        "nameRaw": "$696An$795od$894iz$993ed ft Grogger",
+        "silverTime": 46000,
+        "uid": "1Gqv3s02F2BcY7rWdoQgIw7mdM7"
+    },
+    "1572": {
+        "authorTime": 44975,
+        "bronzeTime": 68000,
+        "date": "2024-10-20",
+        "goldTime": 48000,
+        "id": "b006f43d-e682-498f-a6c0-9063a0c26f0a",
+        "nameRaw": "$3F3F$FFFresh $3F3C$FFFut",
+        "silverTime": 54000,
+        "uid": "tYwhGRmWaU8U63Ue28Kz1ZpFpd1"
+    },
+    "1573": {
+        "authorTime": 41762,
+        "bronzeTime": 63000,
+        "date": "2024-10-21",
+        "goldTime": 45000,
+        "id": "6e63873b-5db6-4f11-877d-cf683f2f1049",
+        "nameRaw": "$090K$490i$690i$890t$A90o$C90s$F90p$F70\u00e4$F50i$F30v$F10\u00e4",
+        "silverTime": 51000,
+        "uid": "n2JTYtzuCKsTUg6Ge8LLQo93ll8"
+    },
+    "1574": {
+        "authorTime": 43002,
+        "bronzeTime": 65000,
+        "date": "2024-10-22",
+        "goldTime": 46000,
+        "id": "87fcdb8b-4e6a-4c92-944c-51e2cbc59282",
+        "nameRaw": "$n$o$600Crimson's Call $900ft Casual_Pequod",
+        "silverTime": 52000,
+        "uid": "E0Nl18fiaNR9CQ1aFRIkQpV9Wmg"
+    },
+    "1575": {
+        "authorTime": 46441,
+        "bronzeTime": 70000,
+        "date": "2024-10-23",
+        "goldTime": 50000,
+        "id": "c7b9c30c-579b-4e6f-a87f-4b73897c8e69",
+        "nameRaw": "$s$CCCG$F93H$CCCRYZ",
+        "silverTime": 56000,
+        "uid": "5jXV4LLykfoHhSwMH24q0JgtXF"
+    },
+    "1576": {
+        "authorTime": 38898,
+        "bronzeTime": 59000,
+        "date": "2024-10-24",
+        "goldTime": 42000,
+        "id": "22195de1-bda7-4dfc-9fa1-91c76b56f2b6",
+        "nameRaw": "$9f9$i$sEssence",
+        "silverTime": 47000,
+        "uid": "iidEmUO8t4Ud4SMSeb8dirQt8jh"
+    },
+    "1577": {
+        "authorTime": 44495,
+        "bronzeTime": 67000,
+        "date": "2024-10-25",
+        "goldTime": 48000,
+        "id": "752a46fe-ec90-49c7-94d1-95aa501d81d3",
+        "nameRaw": "Training Grounds",
+        "silverTime": 54000,
+        "uid": "VuGaOBIpV8vHRzlysM3wvcAiMzl"
+    },
+    "1578": {
+        "authorTime": 42806,
+        "bronzeTime": 65000,
+        "date": "2024-10-26",
+        "goldTime": 45000,
+        "id": "0bb9fe3b-e006-482f-a308-886135bf701d",
+        "nameRaw": "Synthetic Drift",
+        "silverTime": 52000,
+        "uid": "A5A8xVbh818Q0DA5EuaCErIQl0i"
+    },
+    "1579": {
+        "authorTime": 44995,
+        "bronzeTime": 68000,
+        "date": "2024-10-27",
+        "goldTime": 48000,
+        "id": "119b53d2-bb73-479d-915c-51f8200c3972",
+        "nameRaw": "$i$s$cccMTC | $d50Track or Treat",
+        "silverTime": 54000,
+        "uid": "votPhdUNViXo5iiLwsyWOd3OZ65"
+    },
+    "1580": {
+        "authorTime": 45388,
+        "bronzeTime": 69000,
+        "date": "2024-10-28",
+        "goldTime": 49000,
+        "id": "c757f7cc-38d6-401c-ad24-2b93cac462f5",
+        "nameRaw": "$s$o$F90Harvest $C3FShroom",
+        "silverTime": 55000,
+        "uid": "EHKw4yooqA7PDwdsADF4qBCOK51"
+    },
+    "1581": {
+        "authorTime": 46874,
+        "bronzeTime": 71000,
+        "date": "2024-10-29",
+        "goldTime": 50000,
+        "id": "6855f0ba-7412-4d72-b786-66929d88e30c",
+        "nameRaw": "$sCarcassonne ft' Bren",
+        "silverTime": 57000,
+        "uid": "kXkCHBgmO42B5UhFmAGchh3Js8m"
+    },
+    "1582": {
+        "authorTime": 58029,
+        "bronzeTime": 88000,
+        "date": "2024-10-30",
+        "goldTime": 62000,
+        "id": "75e62993-584b-414d-8527-fef8d8a41045",
+        "nameRaw": "$sLast Whisper $f70ft$fff' aZix | Arien | Entrylag",
+        "silverTime": 70000,
+        "uid": "aMdIqMjVg0dXKgLWir9d_d8BzIm"
+    },
+    "1583": {
+        "authorTime": 43482,
+        "bronzeTime": 66000,
+        "date": "2024-10-31",
+        "goldTime": 47000,
+        "id": "d0029a44-961b-43d8-b688-5b2417ccea1a",
+        "nameRaw": "$i$o$EEEGothic$EEE$o$i",
+        "silverTime": 53000,
+        "uid": "tJukgzvMK1AT_kmaGTT_X32WUni"
+    },
+    "1584": {
+        "authorTime": 54321,
+        "bronzeTime": 82000,
+        "date": "2024-11-01",
+        "goldTime": 58000,
+        "id": "0a5a4eb6-3f8e-47a4-a036-8118982f40c8",
+        "nameRaw": "$o$i$aa0Kack$05ay of$09a the$6a0 Da$aa0y $4f0#3",
+        "silverTime": 66000,
+        "uid": "cs4Cb9l6PWyubF3kUpOZMTqAdTl"
+    },
+    "1585": {
+        "authorTime": 42799,
+        "bronzeTime": 65000,
+        "date": "2024-11-02",
+        "goldTime": 46000,
+        "id": "ff29b109-ba5a-4bd0-baf8-475a7bf2954b",
+        "nameRaw": "$oBack'$f80N$fff'Forth",
+        "silverTime": 52000,
+        "uid": "Tg2QRA_hn5QqgIhZ1M2TNWmXYOk"
+    },
+    "1586": {
+        "authorTime": 75060,
+        "bronzeTime": 113000,
+        "date": "2024-11-03",
+        "goldTime": 80000,
+        "id": "12d9379d-36c8-47ec-9121-36f5c230f513",
+        "nameRaw": "Valley Highway",
+        "silverTime": 91000,
+        "uid": "zqlj78q_wNkLKijVlloHoQNS030"
+    },
+    "1587": {
+        "authorTime": 47725,
+        "bronzeTime": 72000,
+        "date": "2024-11-04",
+        "goldTime": 51000,
+        "id": "219b097c-a788-4cc9-8a61-2add37635891",
+        "nameRaw": "$f3cE$zNGAG$f3cE",
+        "silverTime": 58000,
+        "uid": "XegIVIzBnfZ2n6xkyROw3LSblUb"
+    },
+    "1588": {
+        "authorTime": 40438,
+        "bronzeTime": 61000,
+        "date": "2024-11-05",
+        "goldTime": 43000,
+        "id": "22e7185e-c60d-4dc1-a1aa-9ed49833afc0",
+        "nameRaw": "$s$o$4CCInto the Breach",
+        "silverTime": 49000,
+        "uid": "r2l1dtuJYdRdcYkA5pBqwTbS9Z5"
+    },
+    "1589": {
+        "authorTime": 43625,
+        "bronzeTime": 66000,
+        "date": "2024-11-06",
+        "goldTime": 47000,
+        "id": "028fa57a-2eaf-4477-85f9-db810cf724bb",
+        "nameRaw": "$8f1C$ghiaroscuro",
+        "silverTime": 53000,
+        "uid": "kd9fut2q97V86iEbsd2g7Lsiyq6"
+    },
+    "1590": {
+        "authorTime": 45528,
+        "bronzeTime": 69000,
+        "date": "2024-11-07",
+        "goldTime": 49000,
+        "id": "9662e091-217c-4f21-95d6-b49348187fca",
+        "nameRaw": "Violet Distortions",
+        "silverTime": 55000,
+        "uid": "Kq7Lre9dvO84B6Zfq5rQdsnUvn8"
+    },
+    "1591": {
+        "authorTime": 44582,
+        "bronzeTime": 67000,
+        "date": "2024-11-08",
+        "goldTime": 48000,
+        "id": "268cee68-febc-431e-942d-5a25aaf1d6ee",
+        "nameRaw": "$i$F66F$E67r$C68o$B68z$A69e$86An$76B $56Cb$46Dla$16Ez$06Fe",
+        "silverTime": 54000,
+        "uid": "rl_lu3cV92cq3uMwvRsDYuogKL5"
+    },
+    "1592": {
+        "authorTime": 48282,
+        "bronzeTime": 73000,
+        "date": "2024-11-09",
+        "goldTime": 52000,
+        "id": "f26479bf-18de-4e59-8a91-58c3fc15128c",
+        "nameRaw": "$wK$i$c22O$fffLM$c22A$fff$w$iS",
+        "silverTime": 58000,
+        "uid": "HGoyWc8GR5Pvzeo3w2uf05Yea3b"
+    },
+    "1593": {
+        "authorTime": 44158,
+        "bronzeTime": 67000,
+        "date": "2024-11-10",
+        "goldTime": 47000,
+        "id": "0a7d87a4-0150-4c5e-95b2-fc8b854c58b6",
+        "nameRaw": "$o$n$FFFa$FFEm$FEDus$FDCe$FDB-$FDBb$FDAo$ECAu$EC9c$DB9h$DB8e",
+        "silverTime": 53000,
+        "uid": "iFNrGHITuViUykAL20mCZzXEbKm"
+    },
+    "1594": {
+        "authorTime": 49212,
+        "bronzeTime": 74000,
+        "date": "2024-11-11",
+        "goldTime": 53000,
+        "id": "8bc8a737-8cb7-4506-b22a-a73d67b6fbce",
+        "nameRaw": "$oWhi$bbbteSp$ca3ire $n$i$000'ft PhilTM",
+        "silverTime": 60000,
+        "uid": "6MG8PKa9wv7C5OfZG9bkqaZmSM4"
+    },
+    "1595": {
+        "authorTime": 43714,
+        "bronzeTime": 66000,
+        "date": "2024-11-12",
+        "goldTime": 47000,
+        "id": "021be965-cc73-4db3-b56d-2b5ce4859ffd",
+        "nameRaw": "Celsius 41",
+        "silverTime": 53000,
+        "uid": "13jWvz3Zs_97fldpccLXk7s58O8"
+    },
+    "1596": {
+        "authorTime": 45128,
+        "bronzeTime": 68000,
+        "date": "2024-11-13",
+        "goldTime": 48000,
+        "id": "cff59851-9b06-40d1-b065-174b573b6fc3",
+        "nameRaw": "$o$D0FWI$C0FCK$80FED$71D!",
+        "silverTime": 55000,
+        "uid": "DVGIdOIcZFj5qEacUq5lYiNaa7j"
+    },
+    "1597": {
+        "authorTime": 47644,
+        "bronzeTime": 72000,
+        "date": "2024-11-14",
+        "goldTime": 51000,
+        "id": "dbb3f517-beab-495c-818c-fa529f3500a7",
+        "nameRaw": "$o$090C$fffontrollah",
+        "silverTime": 58000,
+        "uid": "I7tdcGW8yie46ELRq6ofpHKu7Oa"
+    },
+    "1598": {
+        "authorTime": 46249,
+        "bronzeTime": 70000,
+        "date": "2024-11-15",
+        "goldTime": 50000,
+        "id": "57a10fd3-aeea-49cf-be05-f5d97a01ce13",
+        "nameRaw": "$d2eDream$0ce$oWave $m$fffDrive",
+        "silverTime": 56000,
+        "uid": "M9cFDqI5QezjwNExtbleQNHPtDf"
+    },
+    "1599": {
+        "authorTime": 41847,
+        "bronzeTime": 63000,
+        "date": "2024-11-16",
+        "goldTime": 45000,
+        "id": "dc2b4eff-2510-4ed0-8531-50f8be98931f",
+        "nameRaw": "$oBara",
+        "silverTime": 51000,
+        "uid": "_YLVdSGfSM3s63r5vDsfUkzKCtk"
+    },
+    "1600": {
+        "authorTime": 58996,
+        "bronzeTime": 89000,
+        "date": "2024-11-17",
+        "goldTime": 63000,
+        "id": "66007bd5-4784-49aa-8809-a8bc85b35e8a",
+        "nameRaw": "$s$222ZA$fffFS $222- $edcR$ba9e$876c$765l$764u$863s$962e",
+        "silverTime": 71000,
+        "uid": "TrKcLoNOK9tCn4qW7hgJrAYyLYi"
+    },
+    "1601": {
+        "authorTime": 40158,
+        "bronzeTime": 61000,
+        "date": "2024-11-18",
+        "goldTime": 43000,
+        "id": "58e1ccca-52c9-45e5-95e6-626388d1a43e",
+        "nameRaw": "$o$s$D13V$934e$664r$285t$285i$375c$576a$666l",
+        "silverTime": 49000,
+        "uid": "48CNr8ymGck7CZu8SBZzJWTd6f6"
+    },
+    "1602": {
+        "authorTime": 40497,
+        "bronzeTime": 61000,
+        "date": "2024-11-19",
+        "goldTime": 43000,
+        "id": "ab25204b-3728-460b-9afd-457c08a12b1d",
+        "nameRaw": "Emerald Pass",
+        "silverTime": 49000,
+        "uid": "chIUY6PNilrVbp5R0BgkQ7IJtD8"
+    },
+    "1603": {
+        "authorTime": 52802,
+        "bronzeTime": 80000,
+        "date": "2024-11-20",
+        "goldTime": 56000,
+        "id": "498c96b6-8814-4b75-93ec-2503c9bd078d",
+        "nameRaw": "$dde$ithe glory of innocence",
+        "silverTime": 64000,
+        "uid": "Gf9p8ysROOxIh8x_G6s2MiFqx2f"
+    },
+    "1604": {
+        "authorTime": 42878,
+        "bronzeTime": 65000,
+        "date": "2024-11-21",
+        "goldTime": 46000,
+        "id": "4946ac7e-1f1e-4a0e-a573-6071531a674b",
+        "nameRaw": "$ff0$ssteel $fffmonopoly",
+        "silverTime": 52000,
+        "uid": "j8OrGERmcVc60ORwYkgjYxN_p9i"
+    },
+    "1605": {
+        "authorTime": 42394,
+        "bronzeTime": 64000,
+        "date": "2024-11-22",
+        "goldTime": 45000,
+        "id": "2323f658-542e-4162-a17a-9aaaa14a4857",
+        "nameRaw": "$438B$449l$55Aue$56Bb$57Ce$68Drr$69Ey",
+        "silverTime": 51000,
+        "uid": "s007dBxSNyvaUdpGcAznAqVaiBe"
+    },
+    "1606": {
+        "authorTime": 45676,
+        "bronzeTime": 69000,
+        "date": "2024-11-23",
+        "goldTime": 49000,
+        "id": "9cbd2205-bcd5-4758-bd71-7e314a0e3d37",
+        "nameRaw": "$t$o$s$fffD$ffer$ffdo$ffcp$ffbSh$ffca$ffdd$ffeo$fffw",
+        "silverTime": 55000,
+        "uid": "_FBvg_Jrqew34OI5Nk8btvCfAA1"
+    },
+    "1607": {
+        "authorTime": 51401,
+        "bronzeTime": 78000,
+        "date": "2024-11-24",
+        "goldTime": 55000,
+        "id": "12c046a7-b49e-455b-96ba-af1c5973d0f1",
+        "nameRaw": "$sTachysensia ft' Narbex",
+        "silverTime": 62000,
+        "uid": "FdshMMqY5y8X62QBQb2jivdsxNk"
+    },
+    "1608": {
+        "authorTime": 47095,
+        "bronzeTime": 70000,
+        "date": "2024-11-25",
+        "goldTime": 49000,
+        "id": "4f892418-a682-44e1-ab55-1ebbcb727425",
+        "nameRaw": "$oKING $333of $s$f00DIAMONDS",
+        "silverTime": 57000,
+        "uid": "5TkX91oLOGPadDqV5w6PEI3W87j"
     }
 }
