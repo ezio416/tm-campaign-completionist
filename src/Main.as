@@ -563,7 +563,7 @@ void Loop() {
     )
         return;
 
-    nextMap.GetPB(false); // get it fresh from the API
+    nextMap.GetPB(false);
 
     SetNextMapAsync();
 
@@ -660,6 +660,7 @@ void SetNextMapAsync() {
     for (uint i = 0; i < maps.Length; i++) {
         Map@ map = maps[i];
 
+        map.SetMedals();
         map.SetTargetDelta();
 
         if (S_Target == TargetMedal::None) {

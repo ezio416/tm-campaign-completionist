@@ -11,7 +11,7 @@ class Map {
     uint   goldTime;
     string id;
     uint   myMedals = 0;
-    uint   myTime   = 0;
+    uint   myTime   = uint(-1);
     string nameClean;
     string nameColored;
     string nameQuoted;
@@ -83,9 +83,10 @@ class Map {
     }
 
     void GetPB(bool useCache) {
-        if (useCache) {
-            int cachedRecord = cachedRecords.Get(uid, -1);
-            if (cachedRecord != -1) {
+        if (useCache && pbs.HasKey(uid)) {
+            const uint cachedRecord = uint(pbs[uid]);
+
+            if (cachedRecord != uint(-1)) {
                 myTime = cachedRecord;
                 SetMedals();
                 SetTargetDelta();
@@ -103,11 +104,22 @@ class Map {
             || App.UserManagerScript.Users.Length == 0
             || App.UserManagerScript.Users[0] is null
         ) {
-            myTime = 0;
+            myTime = uint(-1);
             return;
         }
 
-        auto mccma = App.MenuManager.MenuCustom_CurrentManiaApp;
+        CGameManiaAppTitle@ mccma = App.MenuManager.MenuCustom_CurrentManiaApp;
+
+        const uint pb = mccma.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, uid, "PersonalBest", "", "TimeAttack", "");
+        if (pb != uint(-1)) {
+            myTime = pb;
+            pbs[uid] = myTime;
+            SavePBs(false);
+            return;
+        }
+
+        if (myTime == 0)
+            return;  // will only be 0 if we already checked via API, so don't check again
 
         trace("getting api pb for " + nameQuoted);
         MwFastBuffer<wstring> wsids = MwFastBuffer<wstring>();
@@ -118,20 +130,20 @@ class Map {
             warn("error getting pb on " + nameQuoted + " | wsid " + mccma.LocalUser.WebServicesUserId + " | error " + task.ErrorCode + " | type " + task.ErrorType + " | desc " + task.ErrorDescription);
             return;
         }
-        if (task.MapRecordList.Length == 0) {
-            // log_warn("No record for map: " + mapUid + ' // Error: ' + task.ErrorCode + ", " + task.ErrorType + ", " + task.ErrorDescription);
-            myTime = 0;
-        } else {
-            myTime = task.MapRecordList[0].Time;
-            cachedRecords[uid] = myTime;
-            SaveCachedRecords();
-        }
+        myTime = task.MapRecordList.Length > 0 ? task.MapRecordList[0].Time : 0;
+
+        pbs[uid] = myTime;
+        SavePBs(false);
         yield();
 
         SetMedals();
         SetTargetDelta();
 
         trace("got api pb for " + nameQuoted + " | medals " + myMedals + " | pb " + Time::Format(myTime));
+    }
+
+    void GetPBForceAsync() {
+        GetPB(false);
     }
 
     // courtesy of "Play Map" plugin - https://github.com/XertroV/tm-play-map
