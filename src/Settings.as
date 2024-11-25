@@ -90,8 +90,8 @@ const string[] seriesBlue  = { "11", "12", "13", "14", "15" };
 const string[] seriesRed   = { "16", "17", "18", "19", "20" };
 const string[] seriesBlack = { "21", "22", "23", "24", "25" };
 
-[Setting category="General" name="Show 'Refresh Records' button"]
-bool S_MenuRefresh = true;
+// [Setting category="General" name="Show 'Refresh Records' button"]
+// bool S_MenuRefresh = true;
 
 [Setting category="General" name="Show a list of remaining maps"]
 bool S_MenuAllMaps = true;
