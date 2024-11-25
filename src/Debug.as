@@ -5,11 +5,22 @@ void RenderDebug() {
     if (!S_Debug)
         return;
 
-    UI::Begin(title + " Debug", S_Debug, UI::WindowFlags::None);
+    if (UI::Begin(title + " Debug", S_Debug, UI::WindowFlags::None)) {
+        if (!gettingNow) {
+            if (UI::Button(Icons::Download + " Get All PBs (not quick)")) {
+                gettingNow = true;
+                startnew(GetAllPBsAsyncForceRefresh);
+            }
+        } else if (UI::Button(Icons::Times + " Cancel"))
+            cancel = true;
+
         UI::BeginTabBar("##tabs");
-            Tab_MapsDebug(mapsCampaign, Mode::NadeoCampaign);
-            Tab_MapsDebug(mapsTotd,     Mode::TrackOfTheDay);
+
+        Tab_MapsDebug(mapsCampaign, Mode::NadeoCampaign);
+        Tab_MapsDebug(mapsTotd,     Mode::TrackOfTheDay);
+
         UI::EndTabBar();
+    }
     UI::End();
 }
 
