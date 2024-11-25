@@ -22,7 +22,7 @@ dictionary@  mapsTotdById      = dictionary();
 dictionary@  mapsTotdByUid     = dictionary();
 uint         metTargetTotal    = 0;
 Map@         nextMap;
-const uint   seasonCount       = 17;  // update every season
+const uint   seasonCount       = 18;  // update every season
 const string title             = "\\$0F0" + Icons::Check + "\\$G Campaign Completionist";
 
 void Main() {

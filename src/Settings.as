@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-07-01
+// m 2024-11-25
 
 enum Mode {
     NadeoCampaign,
@@ -57,7 +57,8 @@ enum Season {  // update every season
     Fall_2023,
     Winter_2024,
     Spring_2024,
-    Summer_2024
+    Summer_2024,
+    Fall_2024
 }
 
 [Setting category="General" name="Season to show" description="Tracks of the Day are categorized into 3-month periods which may differ slightly from the time periods of Nadeo Campaigns. Does nothing for Starter Access"]
