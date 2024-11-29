@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-11-28
+// m 2024-11-29
 
 // Json::Value@ mapsCampaignFromFile = Json::Object();
 // Json::Value@ mapsTotdFromFile     = Json::Object();
@@ -344,12 +344,13 @@ namespace API {
         Files::SaveMaps();
         progress = 0.32f;
 
-        string[] uids;
-        for (uint i = 0; i < mapsArr.Length; i++) {
-            if (mapsArr[i].pb == uint(-1))
-                uids.InsertLast(mapsArr[i].uid);
-        }
-        GetPBsAsync(uids);
+        // string[] uids;
+        // for (uint i = 0; i < mapsArr.Length; i++) {
+        //     if (mapsArr[i].pb == uint(-1))
+        //         uids.InsertLast(mapsArr[i].uid);
+        // }
+        // GetPBsAsync(uids);
+        GetPBsAsync();
 
         progress = 1.0f;
         sleep(500);
@@ -469,6 +470,26 @@ namespace API {
 
     Net::HttpRequest@ GetMeetAsync(const string &in endpoint, bool start = true) {
         return GetAsync(audienceLive, urlMeet + endpoint, start);
+    }
+
+    void GetPBsAsync() {
+        GetPBsAsync(mapsArr);
+    }
+
+    void GetPBsAsync(Map@[]@ maps) {
+        if (maps is null || maps.Length == 0)
+            return;
+
+        string[] uids;
+
+        for (uint i = 0; i < maps.Length; i++) {
+            Map@ map = maps[i];
+
+            if (map !is null && map.pb == uint(-1))
+                uids.InsertLast(map.uid);
+        }
+
+        GetPBsAsync(uids);
     }
 
     void GetPBsAsync(string[]@ uids) {

@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-10-26
+// m 2024-11-29
 
 const string  pluginColor = "\\$0F0";
 const string  pluginIcon  = Icons::Check;
@@ -15,6 +15,8 @@ const string  pluginTitle = pluginColor + pluginIcon + "\\$G " + pluginMeta.Name
 // string       colorTarget;
 // string       currentUid;
 UI::Font@    fontHeader;
+UI::Font@    fontSmall;
+UI::Font@    fontSmol;
 UI::Font@    fontSubHeader;
 // bool         gettingNow        = false;
 bool         hasPlayPermission = false;
@@ -45,8 +47,10 @@ void Main() {
         return;
     }
 
-    @fontSubHeader = UI::LoadFont("DroidSans.ttf", 20);
     @fontHeader    = UI::LoadFont("DroidSans.ttf", 26);
+    // @fontSmall     = UI::LoadFont("DroidSans.ttf", 12);
+    // @fontSmol      = UI::LoadFont("DroidSans.ttf", 8);
+    @fontSubHeader = UI::LoadFont("DroidSans.ttf", 20);
 
     // lastMode = S_Mode;
     // lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
@@ -425,109 +429,11 @@ void RenderMenu() {
 // }
 
 void OnSettingsChanged() {
-    colorDeltaUnder      = Text::FormatOpenplanetColor(S_ColorDeltaUnder);
-    colorDelta0001to0100 = Text::FormatOpenplanetColor(S_ColorDelta0001to0100);
-    colorDelta0101to0250 = Text::FormatOpenplanetColor(S_ColorDelta0101to0250);
-    colorDelta0251to0500 = Text::FormatOpenplanetColor(S_ColorDelta0251to0500);
-    colorDelta0501to1000 = Text::FormatOpenplanetColor(S_ColorDelta0501to1000);
-    colorDelta1001to2000 = Text::FormatOpenplanetColor(S_ColorDelta1001to2000);
-    colorDelta2001to3000 = Text::FormatOpenplanetColor(S_ColorDelta2001to3000);
-    colorDelta3001to5000 = Text::FormatOpenplanetColor(S_ColorDelta3001to5000);
-    colorDelta5001Above  = Text::FormatOpenplanetColor(S_ColorDelta5001Above);
-
-    colorMedalAuthor = Text::FormatOpenplanetColor(S_ColorMedalAuthor);
-    colorMedalBronze = Text::FormatOpenplanetColor(S_ColorMedalBronze);
-    colorMedalGold   = Text::FormatOpenplanetColor(S_ColorMedalGold);
-    colorMedalNone   = Text::FormatOpenplanetColor(S_ColorMedalNone);
-    colorMedalSilver = Text::FormatOpenplanetColor(S_ColorMedalSilver);
-
-    colorModeClub     = Text::FormatOpenplanetColor(S_ColorModeClub);
-    colorModeCustom   = Text::FormatOpenplanetColor(S_ColorModeCustom);
-    colorModeSeasonal = Text::FormatOpenplanetColor(S_ColorModeSeasonal);
-    colorModeTmx      = Text::FormatOpenplanetColor(S_ColorModeTmx);
-    colorModeTotd     = Text::FormatOpenplanetColor(S_ColorModeTotd);
-
-    colorSeasonAll     = Text::FormatOpenplanetColor(S_ColorSeasonAll);
-    colorSeasonFall    = Text::FormatOpenplanetColor(S_ColorSeasonFall);
-    colorSeasonSpring  = Text::FormatOpenplanetColor(S_ColorSeasonSpring);
-    colorSeasonSummer  = Text::FormatOpenplanetColor(S_ColorSeasonSummer);
-    colorSeasonUnknown = Text::FormatOpenplanetColor(S_ColorSeasonUnknown);
-    colorSeasonWinter  = Text::FormatOpenplanetColor(S_ColorSeasonWinter);
-
-    colorSeriesAll     = Text::FormatOpenplanetColor(S_ColorSeriesAll);
-    colorSeriesBlack   = Text::FormatOpenplanetColor(S_ColorSeriesBlack);
-    colorSeriesBlue    = Text::FormatOpenplanetColor(S_ColorSeriesBlue);
-    colorSeriesGreen   = Text::FormatOpenplanetColor(S_ColorSeriesGreen);
-    colorSeriesRed     = Text::FormatOpenplanetColor(S_ColorSeriesRed);
-    colorSeriesUnknown = Text::FormatOpenplanetColor(S_ColorSeriesUnknown);
-    colorSeriesWhite   = Text::FormatOpenplanetColor(S_ColorSeriesWhite);
-
-    // if (
-    //     lastMode != S_Mode
-    //     || lastOnlyCurrentCampaign != S_OnlyCurrentCampaign
-    //     || lastSeason != S_Season
-    //     || lastSeries != S_Series
-    //     || lastMenuExcludeSkips != S_MenuExcludeSkips
-    // ) {
-    //     lastMode = S_Mode;
-    //     lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
-    //     lastSeason = S_Season;
-    //     lastSeries = S_Series;
-    //     lastMenuExcludeSkips = S_MenuExcludeSkips;
-    //     startnew(SetNextMap);
-    // }
-
-    // string season;
-    // string seasonCategory;
-
-    // switch (S_Season) {
-    //     case Season::All:
-    //         colorSeason = colorSeasonAll;
-    //         iconSeason = iconSeasonAll;
-    //         break;
-    //     case Season::Unknown:
-    //         colorSeason = colorSeasonUnknown;
-    //         iconSeason = iconSeasonUnknown;
-    //         break;
-    //     default:
-    //         season = tostring(S_Season);
-    //         seasonCategory = season.SubStr(0, season.Length - 5);
-
-    //         if (seasonCategory == "Winter") {
-    //             colorSeason = colorSeasonWinter;
-    //             iconSeason = iconSeasonWinter;
-    //         } else if (seasonCategory == "Spring") {
-    //             colorSeason = colorSeasonSpring;
-    //             iconSeason = iconSeasonSpring;
-    //         } else if (seasonCategory == "Summer") {
-    //             colorSeason = colorSeasonSummer;
-    //             iconSeason = iconSeasonSummer;
-    //         } else {
-    //             colorSeason = colorSeasonFall;
-    //             iconSeason = iconSeasonFall;
-    //         }
-    // }
-
-    // switch (S_Series) {
-    //     case CampaignSeries::All:   colorSeries = colorSeriesAll;   break;
-    //     case CampaignSeries::White: colorSeries = colorSeriesWhite; break;
-    //     case CampaignSeries::Green: colorSeries = colorSeriesGreen; break;
-    //     case CampaignSeries::Blue:  colorSeries = colorSeriesBlue;  break;
-    //     case CampaignSeries::Red:   colorSeries = colorSeriesRed;   break;
-    //     case CampaignSeries::Black: colorSeries = colorSeriesBlack; break;
-    //     default:;
-    // }
-
-    // switch (S_Target) {
-    //     case TargetMedal::Author: colorTarget = colorMedalAuthor; break;
-    //     case TargetMedal::Gold:   colorTarget = colorMedalGold;   break;
-    //     case TargetMedal::Silver: colorTarget = colorMedalSilver; break;
-    //     case TargetMedal::Bronze: colorTarget = colorMedalBronze; break;
-    //     default:                  colorTarget = colorMedalNone;
-    // }
-
-    // for (uint i = 0; i < maps.Length; i++)
-    //     maps[i].SetTargetDelta();
+    SetDeltaColors();
+    SetMedalColors();
+    SetModeColors();
+    SetSeasonColors();
+    SetSeriesColors();
 }
 
 // void Loop() {

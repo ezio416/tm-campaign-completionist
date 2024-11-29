@@ -1,21 +1,21 @@
 // c 2024-01-02
-// m 2024-11-28
+// m 2024-11-29
 
 class Map {
     string           authorId;
-    uint             authorTime;
+    RaceTime         authorTime;
     bool             bookmarked = false;
-    uint             bronzeTime;
+    RaceTime         bronzeTime;
     string           date;
     string           downloadUrl;
-    uint             goldTime;
+    RaceTime         goldTime;
     string           id;
     Mode             mode       = Mode::Unknown;
     FormattedString@ name;
-    uint             pb         = uint(-1);
+    RaceTime         pb;
     Season           season     = Season::Unknown;
     Series           series     = Series::Unknown;
-    uint             silverTime;
+    RaceTime         silverTime;
     bool             skipped    = false;
     // string           targetDelta;
     string           uid;
@@ -61,10 +61,6 @@ class Map {
         return 0;
     }
 
-    // bool get_undriven() {
-    //     return Undriven(pb);
-    // }
-
     // Map() { }
     Map(int year, int month, Json::Value@ day) {  // TOTD
         date = "\\$S" + year + "-" + ZPad2(month) + "-" + ZPad2(day["monthDay"]);
@@ -92,64 +88,7 @@ class Map {
         silverTime  = JsonExt::GetUint(map, "silverTime");
         skipped     = JsonExt::GetBool(map, "skipped");
         uid         = JsonExt::GetString(map, "uid");
-
-        // SetMedals();
     }
-
-    // courtesy of "BetterTOTD" plugin - https://github.com/XertroV/tm-better-totd
-    // void GetMapInfoFromManager() {
-        // const uint64 start = Time::Now;
-
-        // CTrackMania@ App = cast<CTrackMania@>(GetApp());
-
-        // CTrackManiaMenus@ MenuManager = cast<CTrackManiaMenus@>(App.MenuManager);
-        // if (MenuManager is null) {
-        //     warn("GetMapInfoFromManager error: null MenuManager");
-        //     return;
-        // }
-
-        // CGameManiaAppTitle@ Title = MenuManager.MenuCustom_CurrentManiaApp;
-        // if (Title is null) {
-        //     warn("GetMapInfoFromManager error: null Title");
-        //     return;
-        // }
-
-        // CGameUserManagerScript@ UserMgr = Title.UserMgr;
-        // if (UserMgr is null || UserMgr.Users.Length == 0) {
-        //     warn("GetMapInfoFromManager error: null UserMgr or no users");
-        //     return;
-        // }
-
-        // CGameUserScript@ User = UserMgr.Users[0];
-        // if (User is null) {
-        //     warn("GetMapInfoFromManager error: null User");
-        //     return;
-        // }
-
-        // CGameDataFileManagerScript@ FileMgr = Title.DataFileMgr;
-        // if (FileMgr is null) {
-        //     warn("GetMapInfoFromManager error: null FileMgr");
-        //     return;
-        // }
-
-        // CWebServicesTaskResult_NadeoServicesMapScript@ task = FileMgr.Map_NadeoServices_GetFromUid(User.Id, uid);
-
-        // while (task !is null && task.IsProcessing)
-        //     yield();
-
-        // if (task !is null && task.HasSucceeded) {
-        //     CNadeoServicesMap@ taskMap = task.Map;
-        //     downloadUrl = taskMap.FileUrl;
-
-        // } else
-        //     warn("GetMapInfoFromManager error: task failed");
-
-        // try {
-        //     FileMgr.TaskResult_Release(task.Id);
-        // } catch {}
-
-        // trace("GetMapInfoFromManager done: " + (Time::Now - start) + "ms");
-    // }
 
     void GetPBFromManager() {
         CTrackMania@ App = cast<CTrackMania@>(GetApp());
@@ -162,16 +101,13 @@ class Map {
             || App.UserManagerScript.Users.Length == 0
             || App.UserManagerScript.Users[0] is null
         ) {
-            pb = uint(-1);
+            pb.Invalidate();
             return;
         }
 
         const uint record = App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, uid, "PersonalBest", "", "TimeAttack", "");
         if (record != uint(-1))
             pb = record;
-
-        // SetMedals();
-        // SetTargetDelta();
     }
 
     void GetPBFromManagerAsync() {
@@ -193,13 +129,12 @@ class Map {
             || App.UserManagerScript.Users.Length == 0
             || App.UserManagerScript.Users[0] is null
         ) {
-            pb = uint(-1);
+            pb.Invalidate();
             return;
         }
 
         CGameManiaAppTitle@ Title = App.MenuManager.MenuCustom_CurrentManiaApp;
 
-        // MwFastBuffer<wstring> wsids = MwFastBuffer<wstring>();
         MwFastBuffer<wstring> wsids;
         const string wsid = Title.LocalUser.WebServicesUserId;
         wsids.Add(wsid);
@@ -227,10 +162,10 @@ class Map {
         if (task.MapRecordList.Length > 0) {
             trace("got api pb for " + name.stripped + " | " + Time::Format(pb));
 
-            if (pb == 0 || pb == uint(-1) || task.MapRecordList[0].Time < pb)
+            if (!pb.driven || task.MapRecordList[0].Time < pb)
                 pb = task.MapRecordList[0].Time;
         } else
-            pb = 0;
+            pb.NotDriven();
 
         if (Title !is null && Title.ScoreMgr !is null)
             Title.ScoreMgr.TaskResult_Release(task.Id);
@@ -243,8 +178,8 @@ class Map {
         switch (medal) {
 #if DEPENDENCY_WARRIORMEDALS
             case TargetMedal::Warrior: {
-                const uint wm = WarriorMedals::GetWMTime(uid);
-                return Driven(wm) && pb <= wm;
+                RaceTime wm = WarriorMedals::GetWMTime(uid);
+                return wm.driven && pb <= wm;
             }
 #endif
             case TargetMedal::Author:
@@ -280,8 +215,6 @@ class Map {
 
         trace("loading map " + (name !is null ? name.stripped : uid) + " for playing");
 
-        // GetMapInfoFromManager();
-
         ReturnToMenu();
 
         CTrackMania@ App = cast<CTrackMania@>(GetApp());
@@ -296,21 +229,6 @@ class Map {
 
         loadingMap = false;
     }
-
-    // void SetMedals() {
-        // if (pb == 0 || pb == uint(-1))
-        //     myMedals = 0;
-        // else if (pb <= authorTime)
-        //     myMedals = 4;
-        // else if (pb <= goldTime)
-        //     myMedals = 3;
-        // else if (pb <= silverTime)
-        //     myMedals = 2;
-        // else if (pb <= bronzeTime)
-        //     myMedals = 1;
-        // else
-        //     myMedals = 0;
-    // }
 
     void SetSeason() {
         if (mode == Mode::Seasonal) {
@@ -331,7 +249,7 @@ class Map {
             const int year = Text::ParseInt(dateRaw.SubStr(0, 4));
             const int month = Text::ParseInt(dateRaw.SubStr(5, 2));
 
-            switch (year) {  // update every season
+            switch (year) {  // update every season, GET RID OF THIS BY WINTER 25 /////////////////////////////////////
                 case 2020:
                     switch (month) {
                         case 7:  case 8:  case 9:  season = Season::Summer_2020; break;
@@ -339,6 +257,7 @@ class Map {
                         default:;
                     }
                     break;
+
                 case 2021:
                     switch (month) {
                         case 1:  case 2:  case 3:  season = Season::Winter_2021; break;
@@ -348,6 +267,7 @@ class Map {
                         default:;
                     }
                     break;
+
                 case 2022:
                     switch (month) {
                         case 1:  case 2:  case 3:  season = Season::Winter_2022; break;
@@ -357,6 +277,7 @@ class Map {
                         default:;
                     }
                     break;
+
                 case 2023:
                     switch (month) {
                         case 1:  case 2:  case 3:  season = Season::Winter_2023; break;
@@ -366,6 +287,7 @@ class Map {
                         default:;
                     }
                     break;
+
                 case 2024:
                     switch (month) {
                         case 1:  case 2:  case 3:  season = Season::Winter_2024; break;
@@ -375,43 +297,11 @@ class Map {
                         default:;
                     }
                     break;
+
                 default:;
             }
         }
     }
-
-    // void SetTargetDelta() {
-        // int delta;
-        // targetDelta = "";
-
-        // switch (S_Target) {
-        //     case TargetMedal::Author: delta = myTime > 0 ? int(myTime) - int(authorTime) : int(authorTime); break;
-        //     case TargetMedal::Gold:   delta = myTime > 0 ? int(myTime) - int(goldTime)   : int(goldTime);   break;
-        //     case TargetMedal::Silver: delta = myTime > 0 ? int(myTime) - int(silverTime) : int(silverTime); break;
-        //     case TargetMedal::Bronze: delta = myTime > 0 ? int(myTime) - int(bronzeTime) : int(bronzeTime); break;
-        //     default:                  delta = 0;
-        // }
-
-        // if (delta == 0) {
-        //     targetDelta = "";
-        //     return;
-        // }
-
-        // if (delta < 100)
-        //     targetDelta += colorDeltaSub01;
-        // else if (delta < 500)
-        //     targetDelta += colorDelta01to05;
-        // else if (delta < 1000)
-        //     targetDelta += colorDelta05to1;
-        // else if (delta < 2000)
-        //     targetDelta += colorDelta1to2;
-        // else if (delta < 3000)
-        //     targetDelta += colorDelta2to3;
-        // else
-        //     targetDelta += colorDeltaAbove3;
-
-        // targetDelta += "\\$S(" + (delta < 0 ? "" : "+") + Time::Format(delta) + ") \\$Z ";  // should never be negative
-    // }
 
     string TargetDelta(TargetMedal medal) {
         if (!driven)
@@ -423,25 +313,26 @@ class Map {
         switch (medal) {
 #if DEPENDENCY_WARRIORMEDALS
             case TargetMedal::Warrior: {
-                const int wm = int(WarriorMedals::GetWMTime(uid));
-                delta = int(pb) - (Driven(wm) ? wm : int(authorTime));
+                RaceTime wm = WarriorMedals::GetWMTime(uid);
+                delta = pb - (wm.driven ? wm : authorTime);
                 break;
             }
 #endif
+
             case TargetMedal::Author:
-                delta = int(pb) - int(authorTime);
+                delta = pb - authorTime;
                 break;
 
             case TargetMedal::Gold:
-                delta = int(pb) - int(goldTime);
+                delta = pb - goldTime;
                 break;
 
             case TargetMedal::Silver:
-                delta = int(pb) - int(silverTime);
+                delta = pb - silverTime;
                 break;
 
             case TargetMedal::Bronze:
-                delta = int(pb) - int(bronzeTime);
+                delta = pb - bronzeTime;
                 break;
 
             default:
@@ -474,19 +365,19 @@ class Map {
         Json::Value@ ret = Json::Object();
 
         ret["authorId"]    = authorId;
-        ret["authorTime"]  = authorTime;
+        ret["authorTime"]  = uint(authorTime);
         ret["bookmarked"]  = bookmarked;
-        ret["bronzeTime"]  = bronzeTime;
+        ret["bronzeTime"]  = uint(bronzeTime);
         ret["date"]        = Text::StripFormatCodes(date).Replace("\\", "");
         ret["downloadUrl"] = downloadUrl;
-        ret["goldTime"]    = goldTime;
+        ret["goldTime"]    = uint(goldTime);
         ret["id"]          = id;
         ret["mode"]        = int(mode);
         ret["name"]        = name.raw;
-        ret["pb"]          = pb;
+        ret["pb"]          = uint(pb);
         ret["season"]      = int(season);
         ret["series"]      = int(series);
-        ret["silverTime"]  = silverTime;
+        ret["silverTime"]  = uint(silverTime);
         ret["skipped"]     = skipped;
         ret["uid"]         = uid;
 

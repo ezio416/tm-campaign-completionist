@@ -1,177 +1,46 @@
 // c 2024-01-02
-// m 2024-11-12
+// m 2024-11-29
 
-enum MapOrder {
-    Normal,
-    Reverse,
-    ClosestAbs,
-    ClosestRel,
-    Random
-}
+[Setting hidden] bool        S_AutoSwitch             = true;
+[Setting hidden] bool        S_ColoredMapNames        = false;
+[Setting hidden] bool        S_NotifyStarter          = true;
+[Setting hidden] bool        S_OnlyCurrentCampaign    = false;
+[Setting hidden] MapOrder    S_Order                  = MapOrder::Normal;
+[Setting hidden] Mode        S_Mode                   = Mode::Seasonal;
+[Setting hidden] bool        S_SaveSettingsOnClose    = true;
+[Setting hidden] int         S_Series                 = 31;  // white | ... | black
+[Setting hidden] bool        S_ShowSettingsInDetached = false;
+[Setting hidden] bool        S_ShowSettingsInMenu     = false;
+[Setting hidden] TargetMedal S_Target                 = TargetMedal::Author;
+[Setting hidden] int         S_TimeLimit              = 0;
+[Setting hidden] bool        S_WindowAutoResize       = false;
+[Setting hidden] bool        S_WindowDetached         = false;
+[Setting hidden] bool        S_WindowHideWithGame     = true;
+[Setting hidden] bool        S_WindowHideWithOP       = true;
 
-enum Mode {
-    Seasonal,
-    TOTD,
-    Club,
-    TMX,
-    Custom,
-    Unknown
-}
-
-enum Season {  // update every season
-    Summer_2020,
-    Fall_2020,
-    Winter_2021,
-    Spring_2021,
-    Summer_2021,
-    Fall_2021,
-    Winter_2022,
-    Spring_2022,
-    Summer_2022,
-    Fall_2022,
-    Winter_2023,
-    Spring_2023,
-    Summer_2023,
-    Fall_2023,
-    Winter_2024,
-    Spring_2024,
-    Summer_2024,
-    Fall_2024,
-    Unknown,
-    All,
-}
-
-enum Series {
-    White   = 1,
-    Green   = 2,
-    Blue    = 4,
-    Red     = 8,
-    Black   = 16,
-    Unknown = 32
-}
-
-enum TargetMedal {
-    None,
-    Bronze,
-    Silver,
-    Gold,
-    Author,
-#if DEPENDENCY_WARRIORMEDALS
-    Warrior,
-#endif
-}
-
-[Setting hidden] bool           S_AutoSwitch             = true;
-[Setting hidden] bool           S_ColoredMapNames        = false;
-[Setting hidden] vec3           S_ColorDelta0001to0100   = vec3(0.0f,  1.0f,  1.0f);
-[Setting hidden] vec3           S_ColorDelta0101to0250   = vec3(0.0f,  0.6f,  1.0f);
-[Setting hidden] vec3           S_ColorDelta0251to0500   = vec3(0.3f,  0.0f,  1.0f);
-[Setting hidden] vec3           S_ColorDelta0501to1000   = vec3(0.7f,  0.0f,  1.0f);
-[Setting hidden] vec3           S_ColorDelta1001to2000   = vec3(1.0f,  0.0f,  0.8f);
-[Setting hidden] vec3           S_ColorDelta2001to3000   = vec3(1.0f,  0.0f,  0.3f);
-[Setting hidden] vec3           S_ColorDelta3001to5000   = vec3(1.0f,  0.3f,  0.0f);
-[Setting hidden] vec3           S_ColorDelta5001Above    = vec3(1.0f,  0.6f,  0.0f);
-[Setting hidden] vec3           S_ColorDeltaUnder        = vec3(0.0f,  1.0f,  0.0f);
-[Setting hidden] vec3           S_ColorMedalAuthor       = vec3(0.17f, 0.75f, 0.0f);
-[Setting hidden] vec3           S_ColorMedalBronze       = vec3(0.69f, 0.5f,  0.0f);
-[Setting hidden] vec3           S_ColorMedalGold         = vec3(1.0f,  0.97f, 0.0f);
-[Setting hidden] vec3           S_ColorMedalNone         = vec3(1.0f,  0.5f,  1.0f);
-[Setting hidden] vec3           S_ColorMedalSilver       = vec3(0.75f, 0.75f, 0.75f);
-[Setting hidden] vec3           S_ColorModeClub          = vec3(1.0f, 0.7f, 0.0f);
-[Setting hidden] vec3           S_ColorModeCustom        = vec3(0.7f, 0.0f, 0.0f);
-[Setting hidden] vec3           S_ColorModeSeasonal      = vec3(0.0f, 0.6f, 0.0f);
-[Setting hidden] vec3           S_ColorModeTmx           = vec3(0.43f, 1.0f, 0.63f);
-[Setting hidden] vec3           S_ColorModeTotd          = vec3(0.0f, 0.6f, 1.0f);
-[Setting hidden] vec3           S_ColorSeasonAll         = vec3(0.5f,  0.0f,  0.8f);
-[Setting hidden] vec3           S_ColorSeasonFall        = vec3(1.0f,  0.5f,  0.0f);
-[Setting hidden] vec3           S_ColorSeasonSpring      = vec3(0.3f,  0.9f,  0.3f);
-[Setting hidden] vec3           S_ColorSeasonSummer      = vec3(1.0f,  0.8f,  0.0f);
-[Setting hidden] vec3           S_ColorSeasonUnknown     = vec3(1.0f,  0.5f,  1.0f);
-[Setting hidden] vec3           S_ColorSeasonWinter      = vec3(0.0f,  1.0f,  1.0f);
-[Setting hidden] vec3           S_ColorSeriesAll         = vec3(0.5f,  0.0f,  0.8f);
-[Setting hidden] vec3           S_ColorSeriesBlack       = vec3(0.4f,  0.4f,  0.4f);
-[Setting hidden] vec3           S_ColorSeriesBlue        = vec3(0.24f, 0.39f, 1.0f);
-[Setting hidden] vec3           S_ColorSeriesGreen       = vec3(0.43f, 0.98f, 0.63f);
-[Setting hidden] vec3           S_ColorSeriesRed         = vec3(1.0f,  0.0f,  0.0f);
-[Setting hidden] vec3           S_ColorSeriesUnknown     = vec3(1.0f,  0.5f,  1.0f);
-[Setting hidden] vec3           S_ColorSeriesWhite       = vec3(1.0f,  1.0f,  1.0f);
-// [Setting hidden] CustomSource   S_CustomSource           = CustomSource::Club;
-// [Setting hidden] int            S_Filter                 = ExtraFilters::Played | ExtraFilters::Unplayed;
-[Setting hidden] bool           S_NotifyStarter          = true;
-[Setting hidden] bool           S_OnlyCurrentCampaign    = false;
-[Setting hidden] MapOrder       S_Order                  = MapOrder::Normal;
-[Setting hidden] Mode           S_Mode                   = Mode::Seasonal;
-[Setting hidden] bool           S_SaveSettingsOnClose    = true;
-[Setting hidden] int            S_Series                 = 31;  // white | ... | black
-[Setting hidden] bool           S_ShowSettingsInDetached = false;
-[Setting hidden] bool           S_ShowSettingsInMenu     = false;
-[Setting hidden] TargetMedal    S_Target                 = TargetMedal::Author;
-[Setting hidden] int            S_TimeLimit              = 0;
-[Setting hidden] bool           S_WindowAutoResize       = false;
-[Setting hidden] bool           S_WindowDetached         = false;
-[Setting hidden] bool           S_WindowHideWithGame     = true;
-[Setting hidden] bool           S_WindowHideWithOP       = true;
-
-string       colorDelta0001to0100;
-string       colorDelta0101to0250;
-string       colorDelta0251to0500;
-string       colorDelta0501to1000;
-string       colorDelta1001to2000;
-string       colorDelta2001to3000;
-string       colorDelta3001to5000;
-string       colorDelta5001Above;
-string       colorDeltaUnder;
-string       colorMedalAuthor;
-string       colorMedalBronze;
-string       colorMedalGold;
-string       colorMedalNone;
-string       colorMedalSilver;
-string       colorModeClub;
-string       colorModeCustom;
-string       colorModeSeasonal;
-string       colorModeTmx;
-string       colorModeTotd;
-string       colorSeasonAll;
-string       colorSeasonFall;
-string       colorSeasonSpring;
-string       colorSeasonSummer;
-string       colorSeasonUnknown;
-string       colorSeasonWinter;
-string       colorSeriesAll;
-string       colorSeriesBlack;
-string       colorSeriesBlue;
-string       colorSeriesGreen;
-string       colorSeriesRed;
-string       colorSeriesUnknown;
-string       colorSeriesWhite;
-// const string iconSeasonAll     = Icons::ListAlt;
-// const string iconSeasonFall    = Icons::Leaf;
-// const string iconSeasonSpring  = Icons::Tree;
-// const string iconSeasonSummer  = Icons::Sun;
-// const string iconSeasonUnknown = Icons::QuestionCircle;
-// const string iconSeasonWinter  = Icons::SnowflakeO;
-
-// bool   lastOnlyCurrentCampaign = S_OnlyCurrentCampaign;
-bool[] settingsOpen            = { false, false, false };
+bool[] settingsOpen = { false, false, false };
 
 [SettingsTab name="Campaign Completionist" icon="Check" order=0]
 void SettingsTab_RenderWindow() {
-    if (hasPlayPermission)
-        Window(WindowSource::Settings);
-
-    else
+    if (!hasPlayPermission) {
         UI::Text(Icons::FrownO + " Sorry, you need Club Access " + Icons::FrownO);
+        return;
+    }
+
+    Window(WindowSource::Settings);
 }
 
 void WindowSettings(WindowSource source = WindowSource::Unknown) {
+    const int  s    = int(source);
     const bool save = S_SaveSettingsOnClose && source != WindowSource::Unknown;
 
-    if (save && uint(source) >= settingsOpen.Length)
+    if (save && s >= int(settingsOpen.Length))
         return;
 
     if (!UI::CollapsingHeader(Icons::Cogs + " Settings")) {
-        if (save && settingsOpen[int(source)]) {
-            settingsOpen[int(source)] = false;
+
+        if (save && settingsOpen[s]) {
+            settingsOpen[s] = false;
             Meta::SaveSettings();
         }
 
@@ -180,7 +49,7 @@ void WindowSettings(WindowSource source = WindowSource::Unknown) {
 
     if (save) {
         HoverTooltip(Icons::Times + " Close to Save " + Icons::FloppyO);
-        settingsOpen[int(source)] = true;
+        settingsOpen[s] = true;
     }
 
     UI::Indent(indentWidth);
@@ -539,16 +408,6 @@ void HoverTooltipSetting(const string &in msg, vec2 offset = vec2(), const strin
     UI::TextWrapped(msg);
     UI::EndTooltip();
 }
-
-// enum Mode {
-//     NadeoCampaign,
-//     TrackOfTheDay,
-//     Unknown = 3
-// }
-
-// [Setting hidden]
-// Mode S_Mode = Mode::NadeoCampaign;
-// Mode lastMode = S_Mode;
 
 // [Setting category="General" name="Season to show" description="Tracks of the Day are categorized into 3-month periods which may differ slightly from the time periods of Nadeo Campaigns. Does nothing for Starter Access"]
 // Season S_Season = Season::All;

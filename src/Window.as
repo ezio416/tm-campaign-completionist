@@ -1,5 +1,5 @@
 // c 2024-10-24
-// m 2024-11-28
+// m 2024-11-29
 
 const string shadow = "\\$S";
 
@@ -48,22 +48,26 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
         && (source != WindowSource::Detached || S_ShowSettingsInDetached)
     ) {
         WindowSettings(source);
-        UI::Separator();
+        // UI::Separator();
     }
 
+    UI::SeparatorText("Mode");
     SectionMode();
-    UI::Separator();
+    // UI::Separator();
 
     if (S_Mode == Mode::Seasonal || S_Mode == Mode::Club) {
+        UI::SeparatorText("Series");
         SectionSeries();
-        UI::Separator();
+        // UI::Separator();
     }
 
+    UI::SeparatorText("Medal");
     SectionTarget();
-    UI::Separator();
+    // UI::Separator();
 
+    UI::SeparatorText("Order");
     SectionOrder();
-    UI::Separator();
+    // UI::Separator();
 
     if (API::progress > 0.0f) {
         UI::PushStyleColor(UI::Col::PlotHistogram, UI::HSV(GayHue(3000), 1.0f, 1.0f));
@@ -74,8 +78,8 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
     }
 
     UI::BeginDisabled(API::requesting);
-    if (UI::Button(Icons::Refresh + " Generate", vec2(widthAvail, scale * 30.0f)))
-        queue.Generate();
+    if (UI::Button(shadow + Icons::Refresh + " Generate", vec2(widthAvail, scale * 30.0f)))
+        q.Generate();
     if (API::requesting)
         HoverTooltip("plugin is getting stuff, hold on...");
     // if (API::requesting && UI::IsItemHovered(UI::HoveredFlags::AllowWhenDisabled))
@@ -83,410 +87,39 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
     UI::EndDisabled();
 
     SectionOptions();
-    UI::Separator();
+    // UI::Separator();
 
-    SectionGenerated();
+    // SectionGenerated();
 
-    Map@ next = queue.next;
-
-    if (queue.Length == 0 || next is null)
-        return;
-
-    UI::Separator();
-
-    // if (UI::BeginTable("##table-nextmap-header", 3, UI::TableFlags::None)) {
-    //     UI::TableSetupColumn("next", UI::TableColumnFlags::WidthFixed);
-    //     UI::TableSetupColumn("name", UI::TableColumnFlags::WidthStretch);
-    //     UI::TableSetupColumn("author", UI::TableColumnFlags::WidthFixed);
-
-    //     UI::TableNextRow();
-
-    //     UI::TableNextColumn();
-    //     UI::Text("\\$888Next:");
-
-    //     UI::TableNextColumn();
-    //     UI::PushFont(fontHeader);
-
-    //     string nextName   = "???";
-    //     string nextAuthor = "???";
-
-    //     if (next !is null) {
-    //         nextAuthor = next.authorDisplayName;
-
-    //         if (next.name !is null)
-    //             nextName = S_ColoredMapNames ? next.name.formatted : next.name.stripped;
-    //     }
-
-    //     const float textWidth = Draw::MeasureString(nextName, fontHeader).x;
-
-    //     UI::SetCursorPos(UI::GetCursorPos() + vec2((UI::GetContentRegionAvail().x - textWidth) * 0.5f, 0.0f));
-    //     UI::Text(nextName);
-    //     UI::PopFont();
-
-    //     UI::TableNextColumn();
-    //     UI::Text("\\$888by " + nextAuthor);
-
-    //     UI::EndTable();
-    // }
-
-    // const vec2 pre = UI::GetCursorPos();
-
-    // const vec2 buttonSize = vec2(scale * 100.0f, scale * 50.0f);
-    const vec2 buttonSize = vec2(scale * 40.0f);
-
-    UI::BeginGroup();
-
-    UI::BeginDisabled(loadingMap);
-    // UI::SetCursorPos(UI::GetCursorPos() + vec2(scale * 50.0f, scale * 13.0f));
-    if (UI::ButtonColored(shadow + Icons::Play + "##button-play-next", 0.33f, 0.6f, 0.6f, buttonSize))
-        next.Play();
-    HoverTooltip(shadow + "Play \"" + (next.name !is null ? next.name.stripped : "Map") + "\"");
-    UI::EndDisabled();
-
-    // UI::SetCursorPos(UI::GetCursorPos() + vec2(0.0f, scale * 13.0f));
-    if (UI::ButtonColored(shadow + Icons::FastForward + "##button-skip-next", 0.0f, 0.6f, 0.6f, buttonSize)) {
-        next.skipped = true;
-        queue.Next();
-        Files::SaveMaps();
-    }
-    HoverTooltip(shadow + "Skip \"" + (next.name !is null ? next.name.stripped : "Map") + "\"");
-
-    UI::EndGroup();
-    UI::SameLine();
-    UI::BeginGroup();
-
-    UI::Text("\\$AAA" + shadow + "Next:");
-
-    UI::PushFont(fontHeader);
-    if (next.name is null)
-        UI::Text(shadow + "???");
-    else
-        UI::Text(S_ColoredMapNames ? next.name.formatted : shadow + next.name.stripped);
-    UI::PopFont();
-
-    UI::PushFont(fontSubHeader);
-    UI::Text(shadow + "\\$AAAby \\$G" + next.authorDisplayName);
-    UI::PopFont();
-
-    UI::EndGroup();
-    // UI::SameLine();
-
-    // UI::BeginGroup();
-
-    // UI::BeginDisabled(loadingMap);
-    // UI::SetCursorPos(UI::GetCursorPos() + vec2(scale * 50.0f, scale * 13.0f));
-    // if (UI::ButtonColored(shadow + Icons::Play + " Play##button-play-next", 0.33f, 0.6f, 0.6f, buttonSize))
-    //     next.Play();
-    // UI::EndDisabled();
-
-    // UI::SameLine();
-    // UI::SetCursorPos(UI::GetCursorPos() + vec2(0.0f, scale * 13.0f));
-    // if (UI::ButtonColored(shadow + Icons::FastForward + " Skip##button-skip-next", 0.0f, 0.6f, 0.6f, buttonSize)) {
-    //     next.skipped = true;
-    //     queue.Next();
-    //     Files::SaveMaps();
-    // }
-
-    // UI::EndGroup();
-
-    UI::SameLine();
-    UI::SetCursorPos(UI::GetCursorPos() + vec2(scale * 20.0f, scale * 10.0f));
-    UI::BeginGroup();
-
-    uint count = 0;
-
-#if DEPENDENCY_WARRIORMEDALS
-    const uint wm = WarriorMedals::GetWMTime(next.uid);
-    const bool wmGood = Driven(wm);
-
-    if (next.driven && wmGood && next.pb < wm) {
-        UI::Text("PB:  " + Time::Format(next.pb));
-        count++;
-    }
-
-    UI::Text(WarriorMedals::GetColorStr() + "Warrior:  \\$G" + Time::Format(wm) + "  " + next.TargetDelta(TargetMedal::Warrior));
-    count++;
-#endif
-
-    if (true
-        && next.driven
-#if DEPENDENCY_WARRIORMEDALS
-        && wmGood
-        && next.pb >= wm
-#endif
-        && next.pb < next.authorTime
-    ) {
-        UI::Text("PB:  " + Time::Format(next.pb));
-        count++;
-    }
-
-    UI::Text(colorMedalAuthor + "Author:  \\$G" + Time::Format(next.authorTime) + "  " + next.TargetDelta(TargetMedal::Author));
-    count++;
-
-    if (true
-        && next.driven
-        && next.pb >= next.authorTime
-        && next.pb < next.goldTime
-    ) {
-        UI::Text("PB:  " + Time::Format(next.pb));
-        count++;
-    }
-
-    if (count == 3) {
-        UI::EndGroup();
-        UI::SameLine();
-        UI::SetCursorPos(UI::GetCursorPos() + vec2(scale * 10.0f));
-        UI::BeginGroup();
-    }
-
-    UI::Text(colorMedalGold + "Gold:  \\$G" + Time::Format(next.goldTime) + "  " + next.TargetDelta(TargetMedal::Gold));
-    count++;
-
-    if (count == 3) {
-        UI::EndGroup();
-        UI::SameLine();
-        UI::SetCursorPos(UI::GetCursorPos() + vec2(scale * 10.0f));
-        UI::BeginGroup();
-    }
-
-    if (true
-        && next.driven
-        && next.pb >= next.goldTime
-        && next.pb < next.silverTime
-    )
-        UI::Text("PB:  " + Time::Format(next.pb));
-
-    UI::Text(colorMedalSilver + "Silver:  \\$G" + Time::Format(next.silverTime) + "  " + next.TargetDelta(TargetMedal::Silver));
-
-    if (next.driven && next.pb >= next.silverTime && next.pb < next.bronzeTime)
-        UI::Text("PB:  " + Time::Format(next.pb));
-
-    UI::Text(colorMedalBronze + "Bronze:  \\$G" + Time::Format(next.bronzeTime) + "  " + next.TargetDelta(TargetMedal::Bronze));
-
-    if (true
-        && next.driven
-        && next.pb >= next.bronzeTime
-    )
-        UI::Text("PB:  " + Time::Format(next.pb));
-
-    UI::EndGroup();
-
-//     if (queue.generatedTarget != TargetMedal::None) {
-//         string targetNextText;
-
-//         switch (queue.generatedTarget) {
-//             case TargetMedal::Bronze:
-//                 targetNextText = colorMedalBronze + "Bronze\\$G:  " + Time::Format(next.bronzeTime);
-//                 break;
-//             case TargetMedal::Silver:
-//                 targetNextText = colorMedalSilver + "Silver\\$G:  " + Time::Format(next.silverTime);
-//                 break;
-//             case TargetMedal::Gold:
-//                 targetNextText = colorMedalGold + "Gold\\$G:  " + Time::Format(next.goldTime);
-//                 break;
-//             case TargetMedal::Author:
-//                 targetNextText = colorMedalAuthor + "Author\\$G:  " + Time::Format(next.authorTime);
-//                 break;
-// #if DEPENDENCY_WARRIORMEDALS
-//             case TargetMedal::Warrior:
-//                 targetNextText = WarriorMedals::GetColorStr() + "Warrior\\$G:  " + Time::Format(WarriorMedals::GetWMTime(next.uid));
-//                 break;
-// #endif
-//             default:;
-//         }
-
-        // if (next.driven)
-            // targetNextText += "  " + next.TargetDelta(queue.generatedTarget);
-
-        // UI::SameLine();
-        // UI::SetCursorPos(pre + vec2((widthAvail - Draw::MeasureString(targetNextText).x) * 0.5f, 0.0f));
-        // UI::SetCursorPos(pre + vec2(widthAvail - Draw::MeasureString(targetNextText).x, 0.0f));
-        // UI::Text(targetNextText);
-    // }
-
-    // UI::SetCursorPos(UI::GetCursorPos() + vec2(scale * 20.0f, 0.0f));
-    // UI::SetCursorPos(UI::GetCursorPos() + vec2((UI::GetContentRegionAvail().x - Draw::MeasureString()) * 0.5f, 0.0f));
-    // UI::BeginGroup();
-
-    // if (next.pb == uint(-1))
-    //     UI::Text("PB: \\$444-:--.---");
-    // else if (next.pb == 0)
-    //     UI::Text("PB: \\$888-:--.---");
-    // else
-    //     UI::Text("PB: " + Time::Format(next.pb));
-
-    // UI::Text("PB: " + Time::Format(next.pb));
-    // UI::Text("PB: " + Time::Format(next.pb));
-
-    // UI::EndGroup();
-    // UI::SameLine();
-
-    // UI::SameLine();
-    // UI::SetCursorPos(UI::GetCursorPos() + vec2(UI::GetContentRegionAvail().x - scale * 100.0f, 0.0f));
-    // UI::BeginGroup();
-
-    // UI::BeginDisabled(loadingMap);
-    // if (UI::Button(Icons::Play + " Play"))
-    //     next.Play();
-    // UI::EndDisabled();
-
-    // next.bookmarked = UI::Checkbox("Bookmark", next.bookmarked);
-
-    // next.skipped = UI::Checkbox("Skip", next.skipped);
-
-    // UI::EndGroup();
-
-    if (UI::BeginTable("##table-queue", 5, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
-        UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(), 0.5f));
-
-        UI::TableSetupScrollFreeze(0, 1);
-        UI::TableSetupColumn("#",      UI::TableColumnFlags::WidthFixed, scale * 40.0f);
-        UI::TableSetupColumn("Map");
-        UI::TableSetupColumn(queue.generatedMode == Mode::Seasonal ? "Series" : "Author");
-        UI::TableSetupColumn("Target", UI::TableColumnFlags::WidthFixed, scale * 80.0f);
-        UI::TableSetupColumn("PB",     UI::TableColumnFlags::WidthFixed, scale * 140.0f);
-        UI::TableHeadersRow();
-
-        UI::ListClipper clipper(queue.Length - 1);
-        while (clipper.Step()) {
-            for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
-                Map@ map = queue[i + 1];
-
-                UI::TableNextRow();
-
-                UI::TableNextColumn();
-                UI::Text(tostring(i + 2));
-
-                UI::TableNextColumn();
-                UI::Text(map.name !is null ? (S_ColoredMapNames ? map.name.formatted : map.name.stripped) : "");
-                // UI::Text(map.name !is null ? map.name.formatted : "\\$I\\$666" + map.uid.SubStr(0, 8) + "...");
-
-                UI::TableNextColumn();
-                if (queue.generatedMode == Mode::Seasonal)
-                    UI::Text(tostring(map.series));
-                else
-                    UI::Text(map.authorDisplayName);
-
-                UI::TableNextColumn();
-                uint target;
-                switch (queue.generatedTarget) {
-                    case TargetMedal::Author:
-                        target = map.authorTime;
-                        break;
-                    case TargetMedal::Gold:
-                        target = map.goldTime;
-                        break;
-                    case TargetMedal::Silver:
-                        target = map.silverTime;
-                        break;
-                    case TargetMedal::Bronze:
-                        target = map.bronzeTime;
-                        break;
-                    case TargetMedal::None:
-                        target = 0;
-                        break;
-                }
-                UI::Text(target > 0 ? Time::Format(target) : "");
-
-                UI::TableNextColumn();
-                if (map.pb == uint(-1))
-                    UI::Text("\\$444-:--.---");
-                else if (map.pb == 0)
-                    UI::Text("\\$888-:--.---");
-                else
-                    UI::Text(Time::Format(map.pb) + "  " + map.TargetDelta(queue.generatedTarget));
-            }
-        }
-
-        UI::PopStyleColor();
-        UI::EndTable();
-    }
+    q.Render();
 }
 
 void SectionGenerated() {
-    string text = "Generated: mode " + colorMedalAuthor + tostring(queue.generatedMode);
-    string jsonText = '{"mode":' + queue.generatedMode + ",";
+    string text = "Generated:";
+    // text += " mode " + colorMedalAuthor + tostring(queue.generatedMode);
+    // string jsonText = '{"mode":' + queue.generatedMode + ",";
 
-    if (queue.generatedMode == Mode::Seasonal) {
-        text += "\\$G | series " + colorMedalAuthor + tostring(queue.generatedSeries);
-        jsonText += '"series":' + queue.generatedSeries + ",";
+    if (q.generatedMode == Mode::Seasonal) {
+        text += "\\$G | series " + colorMedalAuthor + tostring(q.generatedSeries);
+        // jsonText += '"series":' + queue.generatedSeries + ",";
     }
 
     // "\\$G | season " + colorMedalAuthor + tostring(queue.generatedSeason)
 
-    text += "\\$G | target " + colorMedalAuthor + tostring(queue.generatedTarget)
-        + "\\$G | order " + colorMedalAuthor + tostring(queue.generatedOrder)
-        + "\\$G | queue " + colorMedalAuthor + queue.Length;
+    text += "\\$G | target " + colorMedalAuthor + tostring(q.generatedTarget)
+        + "\\$G | order " + colorMedalAuthor + tostring(q.generatedOrder)
+        // + "\\$G | queue " + colorMedalAuthor + queue.Length
+    ;
 
-    jsonText += '"target":' + queue.generatedTarget + ',"order":' + queue.generatedOrder + "}";
+    // jsonText += '"target":' + queue.generatedTarget + ',"order":' + queue.generatedOrder + "}";
 
     // UI::SetCursorPos(UI::GetCursorPos() + vec2((UI::GetContentRegionAvail().x - Draw::MeasureString(text).x) * 0.5f, 0.0f));
     UI::Text(text);
-    HoverTooltip(jsonText);
-}
-
-void SectionOptions() {
-    if (S_TimeLimit > 0)
-        S_AutoSwitch = true;
-
-    if (UI::CollapsingHeader(Icons::Sliders + " More Options")) {
-        UI::Indent(indentWidth);
-
-        SectionTimeLimit();
-
-        UI::Separator();
-
-        UI::BeginDisabled(S_TimeLimit > 0);
-        S_AutoSwitch = UI::Checkbox("Switch map automatically", S_AutoSwitch);
-        UI::EndDisabled();
-        HoverTooltipSetting("When target is achieved.\n\\$IAlways on for a time limit.", vec2(scale * -5.0f, 0.0f));
-
-        UI::Indent(-indentWidth);
-    }
-}
-
-void SectionOrder() {
-    UI::AlignTextToFramePadding();
-    UI::Text("Order:");
-
-    UI::SameLine();
-    if (UI::RadioButton(Icons::ArrowRight, S_Order == MapOrder::Normal))
-        S_Order = MapOrder::Normal;
-    HoverTooltip("Normal");
-
-    UI::SameLine();
-    if (UI::RadioButton(Icons::ArrowLeft, S_Order == MapOrder::Reverse))
-        S_Order = MapOrder::Reverse;
-    HoverTooltip("Reverse");
-
-    UI::BeginDisabled();
-
-    UI::SameLine();
-    if (UI::RadioButton(Icons::Crosshairs, S_Order == MapOrder::ClosestAbs))
-        S_Order = MapOrder::ClosestAbs;
-    HoverTooltip("Closest (absolute)");
-
-    UI::SameLine();
-    if (UI::RadioButton(Icons::Percent, S_Order == MapOrder::ClosestRel))
-        S_Order = MapOrder::ClosestRel;
-    HoverTooltip("Closest (relative)");
-
-    UI::EndDisabled();
-
-    UI::SameLine();
-    if (UI::RadioButton(Icons::Random, S_Order == MapOrder::Random))
-        S_Order = MapOrder::Random;
-    HoverTooltip("Random");
+    // HoverTooltip(jsonText);
 }
 
 void SectionMode() {
-    UI::AlignTextToFramePadding();
-    UI::Text("Mode:");
-
-    int styles = 0;
-
-    UI::SameLine();
-    styles += PushCheckboxStyles(S_ColorModeSeasonal);
+    int styles = PushCheckboxStyles(S_ColorModeSeasonal);
     if (UI::RadioButton("Seasonal", S_Mode == Mode::Seasonal))
         S_Mode = Mode::Seasonal;
 
@@ -518,14 +151,58 @@ void SectionMode() {
     UI::EndDisabled();
 }
 
-void SectionSeries() {
-    UI::AlignTextToFramePadding();
-    UI::Text("Series:");
+void SectionOptions() {
+    if (S_TimeLimit > 0)
+        S_AutoSwitch = true;
 
-    int styleColors = 0;
+    if (UI::CollapsingHeader(Icons::Sliders + " More Options")) {
+        UI::Indent(indentWidth);
+
+        SectionTimeLimit();
+
+        UI::Separator();
+
+        UI::BeginDisabled(S_TimeLimit > 0);
+        S_AutoSwitch = UI::Checkbox("Switch map automatically", S_AutoSwitch);
+        UI::EndDisabled();
+        HoverTooltipSetting("When target is achieved.\n\\$IAlways on for a time limit.", vec2(scale * -5.0f, 0.0f));
+
+        UI::Indent(-indentWidth);
+    }
+}
+
+void SectionOrder() {
+    if (UI::RadioButton(Icons::ArrowRight, S_Order == MapOrder::Normal))
+        S_Order = MapOrder::Normal;
+    HoverTooltip("Normal");
 
     UI::SameLine();
-    styleColors += PushCheckboxStyles(S_ColorSeriesWhite);
+    if (UI::RadioButton(Icons::ArrowLeft, S_Order == MapOrder::Reverse))
+        S_Order = MapOrder::Reverse;
+    HoverTooltip("Reverse");
+
+    UI::BeginDisabled();
+
+    UI::SameLine();
+    if (UI::RadioButton(Icons::Crosshairs, S_Order == MapOrder::ClosestAbs))
+        S_Order = MapOrder::ClosestAbs;
+    HoverTooltip("Closest (absolute)");
+
+    UI::SameLine();
+    if (UI::RadioButton(Icons::Percent, S_Order == MapOrder::ClosestRel))
+        S_Order = MapOrder::ClosestRel;
+    HoverTooltip("Closest (relative)");
+
+    UI::EndDisabled();
+
+    UI::SameLine();
+    if (UI::RadioButton(Icons::Random, S_Order == MapOrder::Random))
+        S_Order = MapOrder::Random;
+    HoverTooltip("Random");
+}
+
+void SectionSeries() {
+    int styleColors = PushCheckboxStyles(S_ColorSeriesWhite);
     Series filter = Series::White;
     if (UI::Checkbox(tostring(filter), S_Series & filter == filter))
         S_Series |= filter;
@@ -576,13 +253,7 @@ void SectionSeries() {
 }
 
 void SectionTarget() {
-    UI::AlignTextToFramePadding();
-    UI::Text("Medal:");
-
-    int styleColors = 0;
-
-    UI::SameLine();
-    styleColors += PushCheckboxStyles(S_ColorMedalAuthor);
+    int styleColors = PushCheckboxStyles(S_ColorMedalAuthor);
     if (UI::RadioButton("Author", S_Target == TargetMedal::Author))
         S_Target = TargetMedal::Author;
 
