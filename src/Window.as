@@ -131,6 +131,28 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
 
     // const vec2 pre = UI::GetCursorPos();
 
+    // const vec2 buttonSize = vec2(scale * 100.0f, scale * 50.0f);
+    const vec2 buttonSize = vec2(scale * 40.0f);
+
+    UI::BeginGroup();
+
+    UI::BeginDisabled(loadingMap);
+    // UI::SetCursorPos(UI::GetCursorPos() + vec2(scale * 50.0f, scale * 13.0f));
+    if (UI::ButtonColored(shadow + Icons::Play + "##button-play-next", 0.33f, 0.6f, 0.6f, buttonSize))
+        next.Play();
+    HoverTooltip(shadow + "Play \"" + (next.name !is null ? next.name.stripped : "Map") + "\"");
+    UI::EndDisabled();
+
+    // UI::SetCursorPos(UI::GetCursorPos() + vec2(0.0f, scale * 13.0f));
+    if (UI::ButtonColored(shadow + Icons::FastForward + "##button-skip-next", 0.0f, 0.6f, 0.6f, buttonSize)) {
+        next.skipped = true;
+        queue.Next();
+        Files::SaveMaps();
+    }
+    HoverTooltip(shadow + "Skip \"" + (next.name !is null ? next.name.stripped : "Map") + "\"");
+
+    UI::EndGroup();
+    UI::SameLine();
     UI::BeginGroup();
 
     UI::Text("\\$AAA" + shadow + "Next:");
@@ -147,54 +169,91 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
     UI::PopFont();
 
     UI::EndGroup();
-    UI::SameLine();
-
-    const vec2 buttonSize = vec2(scale * 100.0f, scale * 50.0f);
+    // UI::SameLine();
 
     // UI::BeginGroup();
 
-    UI::BeginDisabled(loadingMap);
-    UI::SetCursorPos(UI::GetCursorPos() + vec2(scale * 50.0f, scale * 13.0f));
-    if (UI::ButtonColored(shadow + Icons::Play + " Play##button-play-next", 0.33f, 0.6f, 0.6f, buttonSize))
-        next.Play();
-    UI::EndDisabled();
+    // UI::BeginDisabled(loadingMap);
+    // UI::SetCursorPos(UI::GetCursorPos() + vec2(scale * 50.0f, scale * 13.0f));
+    // if (UI::ButtonColored(shadow + Icons::Play + " Play##button-play-next", 0.33f, 0.6f, 0.6f, buttonSize))
+    //     next.Play();
+    // UI::EndDisabled();
 
-    UI::SameLine();
-    UI::SetCursorPos(UI::GetCursorPos() + vec2(0.0f, scale * 13.0f));
-    if (UI::ButtonColored(shadow + Icons::FastForward + " Skip##button-skip-next", 0.0f, 0.6f, 0.6f, buttonSize)) {
-        next.skipped = true;
-        queue.Next();
-        Files::SaveMaps();
-    }
+    // UI::SameLine();
+    // UI::SetCursorPos(UI::GetCursorPos() + vec2(0.0f, scale * 13.0f));
+    // if (UI::ButtonColored(shadow + Icons::FastForward + " Skip##button-skip-next", 0.0f, 0.6f, 0.6f, buttonSize)) {
+    //     next.skipped = true;
+    //     queue.Next();
+    //     Files::SaveMaps();
+    // }
 
     // UI::EndGroup();
 
     UI::SameLine();
+    UI::SetCursorPos(UI::GetCursorPos() + vec2(scale * 20.0f, scale * 10.0f));
     UI::BeginGroup();
+
+    uint count = 0;
 
 #if DEPENDENCY_WARRIORMEDALS
     const uint wm = WarriorMedals::GetWMTime(next.uid);
+    const bool wmGood = Driven(wm);
 
-    if (next.driven && next.pb < wm)
+    if (next.driven && wmGood && next.pb < wm) {
         UI::Text("PB:  " + Time::Format(next.pb));
+        count++;
+    }
 
     UI::Text(WarriorMedals::GetColorStr() + "Warrior:  \\$G" + Time::Format(wm) + "  " + next.TargetDelta(TargetMedal::Warrior));
-
-    if (next.driven && next.pb == wm)
-        UI::Text("PB:  " + Time::Format(next.pb));
+    count++;
 #endif
 
-    if (next.driven && next.pb < next.authorTime)
+    if (true
+        && next.driven
+#if DEPENDENCY_WARRIORMEDALS
+        && wmGood
+        && next.pb >= wm
+#endif
+        && next.pb < next.authorTime
+    ) {
         UI::Text("PB:  " + Time::Format(next.pb));
+        count++;
+    }
 
     UI::Text(colorMedalAuthor + "Author:  \\$G" + Time::Format(next.authorTime) + "  " + next.TargetDelta(TargetMedal::Author));
+    count++;
 
-    if (next.driven && next.pb >= next.authorTime && next.pb < next.goldTime)
+    if (true
+        && next.driven
+        && next.pb >= next.authorTime
+        && next.pb < next.goldTime
+    ) {
         UI::Text("PB:  " + Time::Format(next.pb));
+        count++;
+    }
+
+    if (count == 3) {
+        UI::EndGroup();
+        UI::SameLine();
+        UI::SetCursorPos(UI::GetCursorPos() + vec2(scale * 10.0f));
+        UI::BeginGroup();
+    }
 
     UI::Text(colorMedalGold + "Gold:  \\$G" + Time::Format(next.goldTime) + "  " + next.TargetDelta(TargetMedal::Gold));
+    count++;
 
-    if (next.driven && next.pb >= next.goldTime && next.pb < next.silverTime)
+    if (count == 3) {
+        UI::EndGroup();
+        UI::SameLine();
+        UI::SetCursorPos(UI::GetCursorPos() + vec2(scale * 10.0f));
+        UI::BeginGroup();
+    }
+
+    if (true
+        && next.driven
+        && next.pb >= next.goldTime
+        && next.pb < next.silverTime
+    )
         UI::Text("PB:  " + Time::Format(next.pb));
 
     UI::Text(colorMedalSilver + "Silver:  \\$G" + Time::Format(next.silverTime) + "  " + next.TargetDelta(TargetMedal::Silver));
@@ -204,7 +263,10 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
 
     UI::Text(colorMedalBronze + "Bronze:  \\$G" + Time::Format(next.bronzeTime) + "  " + next.TargetDelta(TargetMedal::Bronze));
 
-    if (next.driven && next.pb >= next.bronzeTime)
+    if (true
+        && next.driven
+        && next.pb >= next.bronzeTime
+    )
         UI::Text("PB:  " + Time::Format(next.pb));
 
     UI::EndGroup();

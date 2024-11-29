@@ -1,5 +1,5 @@
 // c 2024-10-09
-// m 2024-10-10
+// m 2024-11-28
 
 class FormattedString {
     string formatted;
@@ -9,8 +9,16 @@ class FormattedString {
 
     FormattedString(const string &in raw) {
         this.raw = raw;
-        formatted = Text::OpenplanetFormatCodes(raw);
-        stripped = Text::StripFormatCodes(raw);
-        lower = stripped.ToLower();
+        formatted = CleanString(Text::OpenplanetFormatCodes(raw));
+        stripped = CleanString(Text::StripFormatCodes(raw));
+        lower = CleanString(stripped.ToLower());
     }
+}
+
+string CleanString(const string &in input) {
+    return ReplaceBadQuotes(input.Trim());
+}
+
+string ReplaceBadQuotes(const string &in input) {
+    return input.Replace("‘", "'").Replace("’", "'").Replace("“", "\"").Replace("”", "\"");
 }

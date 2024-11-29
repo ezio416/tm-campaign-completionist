@@ -422,22 +422,28 @@ class Map {
 
         switch (medal) {
 #if DEPENDENCY_WARRIORMEDALS
-            case TargetMedal::Warrior:
-                delta = int(pb) - int(WarriorMedals::GetWMTime(uid));
+            case TargetMedal::Warrior: {
+                const int wm = int(WarriorMedals::GetWMTime(uid));
+                delta = int(pb) - (Driven(wm) ? wm : int(authorTime));
                 break;
+            }
 #endif
             case TargetMedal::Author:
                 delta = int(pb) - int(authorTime);
                 break;
+
             case TargetMedal::Gold:
                 delta = int(pb) - int(goldTime);
                 break;
+
             case TargetMedal::Silver:
                 delta = int(pb) - int(silverTime);
                 break;
+
             case TargetMedal::Bronze:
                 delta = int(pb) - int(bronzeTime);
                 break;
+
             default:
                 delta = 0;
         }
