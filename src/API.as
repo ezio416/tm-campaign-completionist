@@ -406,19 +406,19 @@ namespace API {
 
                             switch (j / 5) {
                                 case 0:
-                                    map.series = Series::White;
+                                    map.series = MapSeries::White;
                                     break;
                                 case 1:
-                                    map.series = Series::Green;
+                                    map.series = MapSeries::Green;
                                     break;
                                 case 2:
-                                    map.series = Series::Blue;
+                                    map.series = MapSeries::Blue;
                                     break;
                                 case 3:
-                                    map.series = Series::Red;
+                                    map.series = MapSeries::Red;
                                     break;
                                 case 4:
-                                    map.series = Series::Black;
+                                    map.series = MapSeries::Black;
                             }
 
                             if (!maps.Exists(map.uid)) {

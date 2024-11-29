@@ -34,6 +34,7 @@ Map@[]       mapsArr;
 // uint         metTargetTotal    = 0;
 // Map@         nextMap;
 const float  scale             = UI::GetScale();
+const string shadow            = "\\$S";
 const float  indentWidth       = scale * 20.0f;
 // const uint   seasonCount       = 18;  // update every season
 

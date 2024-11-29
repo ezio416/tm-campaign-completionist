@@ -1,8 +1,6 @@
 // c 2024-10-24
 // m 2024-11-29
 
-const string shadow = "\\$S";
-
 void RenderWindowDetached() {
     if (false
         || !S_WindowDetached
@@ -19,13 +17,6 @@ void RenderWindowDetached() {
         Window(WindowSource::Detached);
 
     UI::End();
-}
-
-enum WindowSource {
-    Settings,
-    Menu,
-    Detached,
-    Unknown
 }
 
 void Window(WindowSource source = WindowSource::Unknown) {
@@ -47,7 +38,7 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
         && (source != WindowSource::Menu     || S_ShowSettingsInMenu)
         && (source != WindowSource::Detached || S_ShowSettingsInDetached)
     ) {
-        WindowSettings(source);
+        Settings::Render(source);
         // UI::Separator();
     }
 
@@ -74,14 +65,14 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
         UI::ProgressBar(API::progress, vec2(widthAvail, scale * 5.0f));
         UI::PopStyleColor();
 
-        HoverTooltip(Text::Format("%.1f%%", API::progress * 100.0f));
+        UIExt::HoverTooltip(Text::Format("%.1f%%", API::progress * 100.0f));
     }
 
     UI::BeginDisabled(API::requesting);
     if (UI::Button(shadow + Icons::Refresh + " Generate", vec2(widthAvail, scale * 30.0f)))
         q.Generate();
     if (API::requesting)
-        HoverTooltip("plugin is getting stuff, hold on...");
+        UIExt::HoverTooltip("plugin is getting stuff, hold on...");
     // if (API::requesting && UI::IsItemHovered(UI::HoveredFlags::AllowWhenDisabled))
     //     UI::SetTooltip("plugin is getting stuff, hold on...");
     UI::EndDisabled();
@@ -174,36 +165,36 @@ void SectionOptions() {
 void SectionOrder() {
     if (UI::RadioButton(Icons::ArrowRight, S_Order == MapOrder::Normal))
         S_Order = MapOrder::Normal;
-    HoverTooltip("Normal");
+    UIExt::HoverTooltip("Normal");
 
     UI::SameLine();
     if (UI::RadioButton(Icons::ArrowLeft, S_Order == MapOrder::Reverse))
         S_Order = MapOrder::Reverse;
-    HoverTooltip("Reverse");
+    UIExt::HoverTooltip("Reverse");
 
     UI::BeginDisabled();
 
     UI::SameLine();
     if (UI::RadioButton(Icons::Crosshairs, S_Order == MapOrder::ClosestAbs))
         S_Order = MapOrder::ClosestAbs;
-    HoverTooltip("Closest (absolute)");
+    UIExt::HoverTooltip("Closest (absolute)");
 
     UI::SameLine();
     if (UI::RadioButton(Icons::Percent, S_Order == MapOrder::ClosestRel))
         S_Order = MapOrder::ClosestRel;
-    HoverTooltip("Closest (relative)");
+    UIExt::HoverTooltip("Closest (relative)");
 
     UI::EndDisabled();
 
     UI::SameLine();
     if (UI::RadioButton(Icons::Random, S_Order == MapOrder::Random))
         S_Order = MapOrder::Random;
-    HoverTooltip("Random");
+    UIExt::HoverTooltip("Random");
 }
 
 void SectionSeries() {
     int styleColors = PushCheckboxStyles(S_ColorSeriesWhite);
-    Series filter = Series::White;
+    MapSeries filter = MapSeries::White;
     if (UI::Checkbox(tostring(filter), S_Series & filter == filter))
         S_Series |= filter;
     else
@@ -211,7 +202,7 @@ void SectionSeries() {
 
     UI::SameLine();
     styleColors += PushCheckboxStyles(S_ColorSeriesGreen);
-    filter = Series::Green;
+    filter = MapSeries::Green;
     if (UI::Checkbox(tostring(filter), S_Series & filter == filter))
         S_Series |= filter;
     else
@@ -219,7 +210,7 @@ void SectionSeries() {
 
     UI::SameLine();
     styleColors += PushCheckboxStyles(S_ColorSeriesBlue);
-    filter = Series::Blue;
+    filter = MapSeries::Blue;
     if (UI::Checkbox(tostring(filter), S_Series & filter == filter))
         S_Series |= filter;
     else
@@ -227,7 +218,7 @@ void SectionSeries() {
 
     UI::SameLine();
     styleColors += PushCheckboxStyles(S_ColorSeriesRed);
-    filter = Series::Red;
+    filter = MapSeries::Red;
     if (UI::Checkbox(tostring(filter), S_Series & filter == filter))
         S_Series |= filter;
     else
@@ -235,7 +226,7 @@ void SectionSeries() {
 
     UI::SameLine();
     styleColors += PushCheckboxStyles(S_ColorSeriesBlack);
-    filter = Series::Black;
+    filter = MapSeries::Black;
     if (UI::Checkbox(tostring(filter), S_Series & filter == filter))
         S_Series |= filter;
     else
@@ -243,7 +234,7 @@ void SectionSeries() {
 
     UI::SameLine();
     styleColors += PushCheckboxStyles(S_ColorSeriesUnknown);
-    filter = Series::Unknown;
+    filter = MapSeries::Unknown;
     if (UI::Checkbox(tostring(filter), S_Series & filter == filter))
         S_Series |= filter;
     else

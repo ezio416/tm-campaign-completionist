@@ -14,7 +14,7 @@ class Map {
     FormattedString@ name;
     RaceTime         pb;
     Season           season     = Season::Unknown;
-    Series           series     = Series::Unknown;
+    MapSeries        series     = MapSeries::Unknown;
     RaceTime         silverTime;
     bool             skipped    = false;
     // string           targetDelta;
@@ -84,7 +84,7 @@ class Map {
         @name       = FormattedString(JsonExt::GetString(map, "name"));
         pb          = JsonExt::GetUint(map, "pb");
         season      = Season(JsonExt::GetInt(map, "season"));
-        series      = Series(JsonExt::GetInt(map, "series"));
+        series      = MapSeries(JsonExt::GetInt(map, "series"));
         silverTime  = JsonExt::GetUint(map, "silverTime");
         skipped     = JsonExt::GetBool(map, "skipped");
         uid         = JsonExt::GetString(map, "uid");

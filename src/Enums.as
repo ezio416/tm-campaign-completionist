@@ -9,6 +9,15 @@ enum MapOrder {
     Random
 }
 
+enum MapSeries {
+    White   = 1,
+    Green   = 2,
+    Blue    = 4,
+    Red     = 8,
+    Black   = 16,
+    Unknown = 32
+}
+
 enum Mode {
     Seasonal,
     TOTD,
@@ -41,15 +50,6 @@ enum Season {  // update every season
     All,
 }
 
-enum Series {
-    White   = 1,
-    Green   = 2,
-    Blue    = 4,
-    Red     = 8,
-    Black   = 16,
-    Unknown = 32
-}
-
 enum TargetMedal {
     None,
     Bronze,
@@ -59,4 +59,11 @@ enum TargetMedal {
 #if DEPENDENCY_WARRIORMEDALS
     Warrior,
 #endif
+}
+
+enum WindowSource {
+    Detached,
+    Menu,
+    Settings,
+    Unknown
 }

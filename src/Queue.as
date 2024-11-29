@@ -146,12 +146,12 @@ class Queue {
         UI::BeginDisabled(loadingMap);
         if (UI::ButtonColored(shadow + Icons::Play + "##button-next-play", 0.33f, 0.6f, 0.6f, buttonSize))
             next.Play();
-        HoverTooltip("Play \"" + (next.name !is null ? next.name.stripped : "Map") + "\"");
+        UIExt::HoverTooltip("Play \"" + (next.name !is null ? next.name.stripped : "Map") + "\"");
         UI::EndDisabled();
 
         if (UI::ButtonColored(shadow + Icons::Heartbeat + "##button-next-tmio", 0.57f, 0.83f, 0.81f, buttonSize))
             OpenBrowserURL("https://trackmania.io/#/leaderboard/" + next.uid);
-        HoverTooltip("trackmania.io");
+        UIExt::HoverTooltip("trackmania.io");
 
         UI::EndGroup();
         UI::SameLine();
@@ -163,12 +163,12 @@ class Queue {
             Files::SaveMaps();
             Next();
         }
-        HoverTooltip("Skip \"" + (next.name !is null ? next.name.stripped : "Map") + "\"");
+        UIExt::HoverTooltip("Skip \"" + (next.name !is null ? next.name.stripped : "Map") + "\"");
 
         if (UI::ButtonColored(shadow + Icons::Exchange + "##button-next-tmx", 0.39f, 0.57f, 0.8f, buttonSize)) {
             ;
         }
-        HoverTooltip("trackmania.exchange");
+        UIExt::HoverTooltip("trackmania.exchange");
 
         UI::EndGroup();
         UI::SameLine();
@@ -179,7 +179,7 @@ class Queue {
             next.bookmarked = !next.bookmarked;
             Files::SaveMaps();
         }
-        HoverTooltip("Bookmark \"" + (next.name !is null ? next.name.stripped : "Map") + "\"");
+        UIExt::HoverTooltip("Bookmark \"" + (next.name !is null ? next.name.stripped : "Map") + "\"");
 
         // if (UI::ButtonColored(shadow + Icons::Question + "##button-next-idk", 0.85f, 0.6f, 0.6f, buttonSize)) {
         //     ;
