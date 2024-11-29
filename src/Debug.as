@@ -1,5 +1,5 @@
 // c 2024-01-08
-// m 2024-11-02
+// m 2024-11-25
 
 [SettingsTab name="Debug" icon="Bug" order=1]
 void SettingsTab_Debug() {
@@ -67,7 +67,11 @@ void Tab_DebugMaps() {
     if (UI::Button(Icons::Upload + " Load Maps"))
         Files::LoadMaps();
 
-    if (UI::BeginTable("##table-maps", 6, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::SizingStretchProp)) {
+    UI::SameLine();
+    if (UI::Button(Icons::Download + " Get PBs"))
+        startnew(GetAllPBsAsync);
+
+    if (UI::BeginTable("##table-maps", 7, UI::TableFlags::RowBg | UI::TableFlags::ScrollY | UI::TableFlags::SizingStretchProp)) {
         UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(0.0f), 0.5f));
 
         UI::TableSetupScrollFreeze(0, 1);
@@ -76,6 +80,7 @@ void Tab_DebugMaps() {
         UI::TableSetupColumn("season", UI::TableColumnFlags::WidthFixed, scale * 100.0f);
         UI::TableSetupColumn("name",   UI::TableColumnFlags::WidthStretch);
         UI::TableSetupColumn("author disp name", UI::TableColumnFlags::WidthStretch);
+        UI::TableSetupColumn("pb",     UI::TableColumnFlags::WidthFixed, scale * 70.0f);
         UI::TableSetupColumn("dl url", UI::TableColumnFlags::WidthFixed, scale * 50.0f);
         UI::TableHeadersRow();
 
@@ -102,6 +107,14 @@ void Tab_DebugMaps() {
                 UI::Text(map.authorDisplayName);
 
                 UI::TableNextColumn();
+                if (map.pb == uint(-1))
+                    UI::Text("\\$4440:00.000");
+                else if (map.pb == 0)
+                    UI::Text("\\$8880:00.000");
+                else
+                    UI::Text(Time::Format(map.pb));
+
+                UI::TableNextColumn();
                 UI::Text(map.downloadUrl);
             }
         }
@@ -114,8 +127,8 @@ void Tab_DebugMaps() {
 }
 
 // void Tab_DebugMapsCampaign() {
-//     if (!UI::BeginTabItem("mapsCampaign"))
-//         return;
+    // if (!UI::BeginTabItem("mapsCampaign"))
+    //     return;
 
     // if (UI::BeginTable("##table-mapsCampaign", 4, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
     //     UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(0.0f), 0.5f));
@@ -152,12 +165,12 @@ void Tab_DebugMaps() {
     //     UI::EndTable();
     // }
 
-//     UI::EndTabItem();
+    // UI::EndTabItem();
 // }
 
 // void Tab_DebugMapsTotd() {
-//     if (!UI::BeginTabItem("mapsTotd"))
-//         return;
+    // if (!UI::BeginTabItem("mapsTotd"))
+    //     return;
 
     // if (UI::BeginTable("##table-mapsTotd", 2, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
         // UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(0.0f), 0.5f));
@@ -186,7 +199,7 @@ void Tab_DebugMaps() {
         // UI::EndTable();
     // }
 
-//     UI::EndTabItem();
+    // UI::EndTabItem();
 // }
 
 // void RenderDebug() {

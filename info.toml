@@ -7,3 +7,4 @@ siteid = 481
 
 [script]
 dependencies = [ "NadeoServices" ]
+optional_dependencies = [ "WarriorMedals" ]

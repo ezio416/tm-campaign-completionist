@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-11-12
+// m 2024-11-28
 
 // Json::Value@ mapsCampaignFromFile = Json::Object();
 // Json::Value@ mapsTotdFromFile     = Json::Object();
@@ -236,9 +236,7 @@ namespace API {
     }
 
     void GetMapInfosAsync() {
-        // const string modeName = tostring(mode);
         const uint64 start = Time::Now;
-        trace("getting map infos from Nadeo...");
 
         uint index = 0;
         string endpoint;
@@ -251,6 +249,11 @@ namespace API {
             if (map.name is null)
                 mapsStillNeedInfo.InsertLast(map);
         }
+
+        if (mapsStillNeedInfo.Length == 0)
+            return;
+
+        trace("getting " + mapsStillNeedInfo.Length + " map infos from Nadeo...");
 
         while (mapsStillNeedInfo.Length > 0 && (index == 0 || index < mapsStillNeedInfo.Length - 1)) {
             endpoint = "/maps/?mapUidList=";
@@ -265,10 +268,10 @@ namespace API {
             }
 
             trace("getting map info from Nadeo (" + (index + 1) + "/" + mapsStillNeedInfo.Length + ")");
-            const float progressMin = 0.15f;
-            const float progressMax = 0.95f;
+            const float progressMin = 0.08f;
+            const float progressMax = 0.3f;
             progress = progressMin + (float(index) / mapsStillNeedInfo.Length) * (progressMax - progressMin);
-            print("progress " + progress);
+            // print("progress " + progress);
 
             Net::HttpRequest@ req = GetCoreAsync(endpoint.SubStr(0, endpoint.Length - 1));
             // IO::SetClipboard(req.Url);
@@ -301,44 +304,52 @@ namespace API {
                     map.authorId = JsonExt::GetString(mapInfo[i], "author");
                     accounts.Add(map.authorId);
 
-                    map.authorTime  = JsonExt::GetUint(mapInfo[i], "authorScore");
+                    map.authorTime  = JsonExt::GetUint(mapInfo[i], "authorScore");  // I SHOULD HAVE A CONSTRUCTOR FOR THIS???
                     map.bronzeTime  = JsonExt::GetUint(mapInfo[i], "bronzeScore");
                     map.downloadUrl = JsonExt::GetString(mapInfo[i], "fileUrl");
                     map.goldTime    = JsonExt::GetUint(mapInfo[i], "goldScore");
                     map.id          = JsonExt::GetString(mapInfo[i], "mapId");
                     @map.name       = FormattedString(JsonExt::GetString(mapInfo[i], "name"));
-                    map.silverTime  = JsonExt::GetUint(mapInfo[i], "silverScore");
+                    map.silverTime  = JsonExt::GetUint(mapInfo[i], "silverScore");  // broken?
 
                     map.SetSeason();
                 }
             }
 
-            if (mapsStillNeedInfo.Length == 1)
+            if (mapsStillNeedInfo.Length == 1)  // I don't remember why I do this
                 break;
         }
 
-        trace("got map infos from Nadeo after " + (Time::Now - start) + "ms");
+        trace("got " + mapsStillNeedInfo.Length + " map infos from Nadeo after " + (Time::Now - start) + "ms");
     }
 
     void GetMapsAsync() {
         maps.DeleteAll();
         mapsArr = { };
 
-        API::GetMapsAsync(Mode::Seasonal);
+        GetMapsAsync(Mode::Seasonal);
+        progress = 0.02f;
+
+        GetMapsAsync(Mode::TOTD);
         progress = 0.05f;
 
-        API::GetMapsAsync(Mode::TOTD);
-        progress = 0.1f;
+        Files::LoadMaps();
+        progress = 0.08f;
 
-        // Files::LoadMaps();
-        progress = 0.15f;
-
-        API::GetMapInfosAsync();
+        GetMapInfosAsync();
 
         accounts.Refresh();
-        progress = 0.95f;
+        progress = 0.3f;
 
         Files::SaveMaps();
+        progress = 0.32f;
+
+        string[] uids;
+        for (uint i = 0; i < mapsArr.Length; i++) {
+            if (mapsArr[i].pb == uint(-1))
+                uids.InsertLast(mapsArr[i].uid);
+        }
+        GetPBsAsync(uids);
 
         progress = 1.0f;
         sleep(500);
@@ -458,6 +469,133 @@ namespace API {
 
     Net::HttpRequest@ GetMeetAsync(const string &in endpoint, bool start = true) {
         return GetAsync(audienceLive, urlMeet + endpoint, start);
+    }
+
+    void GetPBsAsync(string[]@ uids) {
+        if (uids is null || uids.Length == 0)
+            return;
+
+        const uint64 start = Time::Now;
+        trace("getting PBs for " + uids.Length + " maps");
+
+        uint         count, index = 0;
+        const uint   max          = 50;
+        const float  progressMin  = 0.32f;
+        const float  progressMax  = 1.0f;
+        string[]     remaining    = uids;
+        uint64       reqStart;
+
+        while (remaining.Length > 0 && (index == 0 || index < uids.Length - 1)) {
+            trace("getting PBs (" + index + "/" + uids.Length + ")");
+
+            progress = progressMin + (float(index) / Math::Max(1, uids.Length)) * (progressMax - progressMin);
+            // print("progress " + progress);
+
+            count = Math::Min(max, remaining.Length);
+
+            // trace("checking " + count + " maps of " + remaining.Length + " remaining");
+
+            Json::Value@ body = Json::Object();
+            body["maps"] = Json::Array();
+
+            for (uint i = 0; i < count; i++) {
+                Json::Value@ map = Json::Object();
+
+                map["groupUid"] = "Personal_Best";
+                map["mapUid"] = remaining[i];
+
+                body["maps"].Add(map);
+
+                index++;
+                // print("index " + index++);
+            }
+
+            reqStart = Time::Now;
+
+            Net::HttpRequest@ req = PostLiveAsync("/api/token/leaderboard/group/map", body);
+            // print("aprx. url length: " + (urlLive.Length + 32 + Json::Write(body).Length));
+
+            const int respCode = req.ResponseCode();
+            if (respCode != 200) {
+                error("getting some PBs failed after " + (Time::Now - reqStart) + "ms: code: " + respCode + " | msg: " + req.String().Replace("\n", " "));
+                continue;
+            }
+
+            // const string s = req.String();
+            // warn("setting clipboard with " + s.Length + " chars");
+            // IO::SetClipboard(s);
+
+            Json::Value@ data = req.Json();
+            if (!JsonExt::CheckType(data, Json::Type::Array)) {
+                error("getting some PBs failed after " + (Time::Now - reqStart) + "ms: bad json");
+                continue;
+            }
+
+            uint new = 0, score, total = 0;
+            string uid;
+
+            for (uint i = 0; i < data.Length; i++) {
+                Json::Value@ map_api = data[i];
+                if (!JsonExt::CheckType(map_api)) {
+                    // warn("bad json type: " + i);
+                    continue;
+                }
+
+                uid = JsonExt::GetString(map_api, "mapUid");
+                if (!maps.Exists(uid)) {
+                    // warn("map not found: " + uid);
+                    continue;
+                }
+
+                Map@ map = cast<Map@>(maps[uid]);
+                if (map is null) {
+                    // warn("null map: " + uid);
+                    continue;
+                }
+
+                score = JsonExt::GetUint(map_api, "score");
+                if (!Driven(score)) {
+                    // warn("score invalid: " + score);
+                    continue;
+                }
+
+                total++;
+
+                if (!map.driven || score < map.pb) {
+                    // print("\\$Isetting map pb: " + map.name.stripped + " | " + score);
+                    map.pb = score;
+                    new++;
+                } else if (score != map.pb) {
+                    // warn("problem with score: " + score + " | map.pb " + map.pb);
+                }
+            }
+
+            uint missing = 0;
+
+            for (uint i = 0; i < count; i++) {
+                uid = remaining[i];
+                if (!maps.Exists(uid))
+                    continue;
+
+                Map@ map = cast<Map@>(maps[uid]);
+                if (map is null)
+                    continue;
+
+                if (map.pb == uint(-1)) {
+                    map.pb = 0;  // api returned no pb
+                    missing++;
+                }
+            }
+
+            remaining.RemoveRange(0, count);
+
+            if (missing > 0 || new > 0) {
+                trace("got " + count + " PBs after " + (Time::Now - reqStart) + "ms (new/none): " + new + " | " + missing);
+                Files::SaveMaps();
+            }
+        }
+
+        trace("got PBs for " + uids.Length + " maps total after " + (Time::Now - start) + "ms");
     }
 
     Net::HttpRequest@ PostAsync(const string &in audience, const string &in url, const string &in body = "", bool start = true) {

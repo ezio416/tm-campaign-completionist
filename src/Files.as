@@ -1,5 +1,5 @@
 // c 2024-11-09
-// m 2024-11-11
+// m 2024-11-28
 
 Map@[] mapsFromFile;
 
@@ -16,7 +16,7 @@ namespace Files {
         try {
             @file = Json::FromFile(mapFile);
         } catch {
-            error("error loading maps after " + (Time::Now - start) + "ms: " + getExceptionInfo());
+            error("error loading maps from file after " + (Time::Now - start) + "ms: " + getExceptionInfo());
             return;
         }
 
@@ -44,15 +44,18 @@ namespace Files {
 
     void SaveMaps() {
         const uint64 start = Time::Now;
-        trace("saving maps...");
+        trace("saving maps to file...");
 
         Json::Value@ j = Json::Array();
 
         for (uint i = 0; i < mapsArr.Length; i++)
             j.Add(mapsArr[i].ToJson());
 
-        Json::ToFile(mapFile, j, true);
-
-        trace("saved maps after " + (Time::Now - start) + "ms");
+        try {
+            Json::ToFile(mapFile, j, true);
+            trace("saved " + mapsArr.Length + " maps to file after " + (Time::Now - start) + "ms");
+        } catch {
+            error("error saving maps to file after " + (Time::Now - start) + "ms: " + getExceptionInfo());
+        }
     }
 }

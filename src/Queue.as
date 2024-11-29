@@ -1,5 +1,5 @@
 // c 2024-10-30
-// m 2024-11-09
+// m 2024-11-28
 
 Queue queue;
 
@@ -24,7 +24,11 @@ class Queue {
     }
 
     Map@ get_opIndex(int idx) {
-        return _maps[idx];
+        try {
+            return _maps[idx];
+        } catch {
+            return null;
+        }
     }
 
     int Find(Map@ map) {
@@ -41,6 +45,8 @@ class Queue {
 
             if (true
                 && map.mode == S_Mode
+                && !map.skipped
+                && !map.MetTarget(S_Target)
                 && (false
                     || S_Mode != Mode::Seasonal
                     || map.series == map.series & S_Series
@@ -57,10 +63,47 @@ class Queue {
         generatedTarget = S_Target;
     }
 
+    void GetPBs() {
+        for (uint i = 0; i < Length; i++)
+            this[i].GetPBFromManager();
+
+        Files::SaveMaps();
+    }
+
+    void GetPBsAsync() {
+        for (uint i = 0; i < Length; i++) {
+            Map@ map = this[i];
+
+            const uint pre = map.pb;
+            map.GetPBFromManagerAsync();
+
+            if (pre != map.pb)
+                Files::SaveMaps();
+        }
+    }
+
+    void GetPBsMultipleAsync() {
+        string[] uids;
+
+        for (uint i = 0; i < Length; i++)
+            uids.InsertLast(this[i].uid);
+
+        API::GetPBsAsync(uids);
+    }
+
+    Map@ Next() {
+        if (Length == 0)
+            return null;
+
+        _maps.RemoveAt(0);
+
+        return next;
+    }
+
     /*
-    Pops last element if i is negative
-    Pops element at i if i is nonnegative
-    Returns null if i out of range
+    Pops last element if `i` is negative
+    Pops element at `i` if `i` is not negative
+    Returns null if `i` is out of range
     */
     Map@ Pop(int i = -1) {
         if (i >= int(Length) || Length == 0)
@@ -85,6 +128,14 @@ class Queue {
 
         if (S_Order == MapOrder::Reverse)
             _maps.Reverse();
+
+        if (S_Order == MapOrder::ClosestAbs) {
+            ;
+        }
+
+        if (S_Order == MapOrder::ClosestRel) {
+            ;
+        }
 
         if (S_Order == MapOrder::Random) {
             Map@[] remaining = _maps;

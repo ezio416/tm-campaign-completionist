@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-11-11
+// m 2024-11-28
 
 class Map {
     string           authorId;
@@ -11,7 +11,6 @@ class Map {
     uint             goldTime;
     string           id;
     Mode             mode       = Mode::Unknown;
-    uint             myMedals   = 0;
     FormattedString@ name;
     uint             pb         = uint(-1);
     Season           season     = Season::Unknown;
@@ -34,20 +33,54 @@ class Map {
         return accounts.Get(authorId);
     }
 
-    Map() { }
-    Map(Json::Value@ map) {  // campaign
-        uid = map["mapUid"];
+    bool get_driven() {
+        return Driven(pb);
     }
+
+    uint get_myMedals() {
+        if (!driven)
+            return 0;
+
+#if DEPENDENCY_WARRIORMEDALS
+        if (pb <= WarriorMedals::GetWMTime(uid))
+            return 5;
+#endif
+
+        if (pb <= authorTime)
+            return 4;
+
+        if (pb <= goldTime)
+            return 3;
+
+        if (pb <= silverTime)
+            return 2;
+
+        if (pb <= bronzeTime)
+            return 1;
+
+        return 0;
+    }
+
+    // bool get_undriven() {
+    //     return Undriven(pb);
+    // }
+
+    // Map() { }
     Map(int year, int month, Json::Value@ day) {  // TOTD
         date = "\\$S" + year + "-" + ZPad2(month) + "-" + ZPad2(day["monthDay"]);
         uid = day["mapUid"];
     }
-    Map(Json::Value@ map, bool fromFile) {
+    Map(Json::Value@ map, bool fromFile = false) {  // campaign or local file
+        if (!fromFile) {
+            uid = map["mapUid"];
+            return;
+        }
+
         authorId    = JsonExt::GetString(map, "authorId");
         authorTime  = JsonExt::GetUint(map, "authorTime");
         bookmarked  = JsonExt::GetBool(map, "bookmarked");
         bronzeTime  = JsonExt::GetUint(map, "bronzeTime");
-        date        = "\\$S" + JsonExt::GetString(map, "date");
+        date        = "\\$S" + JsonExt::GetString(map, "date") + "\\$S";
         downloadUrl = JsonExt::GetString(map, "downloadUrl");
         goldTime    = JsonExt::GetUint(map, "goldTime");
         id          = JsonExt::GetString(map, "id");
@@ -60,7 +93,7 @@ class Map {
         skipped     = JsonExt::GetBool(map, "skipped");
         uid         = JsonExt::GetString(map, "uid");
 
-        SetMedals();
+        // SetMedals();
     }
 
     // courtesy of "BetterTOTD" plugin - https://github.com/XertroV/tm-better-totd
@@ -118,28 +151,121 @@ class Map {
         // trace("GetMapInfoFromManager done: " + (Time::Now - start) + "ms");
     // }
 
-    // void GetPB() {
-        // CTrackMania@ App = cast<CTrackMania@>(GetApp());
+    void GetPBFromManager() {
+        CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
-        // if (false
-        //     || App.MenuManager is null
-        //     || App.MenuManager.MenuCustom_CurrentManiaApp is null
-        //     || App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr is null
-        //     || App.UserManagerScript is null
-        //     || App.UserManagerScript.Users.Length == 0
-        //     || App.UserManagerScript.Users[0] is null
-        // ) {
-        //     myTime = 0;
-        //     return;
-        // }
+        if (false
+            || App.MenuManager is null
+            || App.MenuManager.MenuCustom_CurrentManiaApp is null
+            || App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr is null
+            || App.UserManagerScript is null
+            || App.UserManagerScript.Users.Length == 0
+            || App.UserManagerScript.Users[0] is null
+        ) {
+            pb = uint(-1);
+            return;
+        }
 
-        // const uint pb = App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, uid, "PersonalBest", "", "TimeAttack", "");
-        // if (pb != uint(-1))
-        //     myTime = pb;
+        const uint record = App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, uid, "PersonalBest", "", "TimeAttack", "");
+        if (record != uint(-1))
+            pb = record;
 
         // SetMedals();
         // SetTargetDelta();
-    // }
+    }
+
+    void GetPBFromManagerAsync() {
+        trace("GetPBFromManagerAsync " + name.stripped);
+
+        if (pb == 0) {
+            trace("already checked map, no pb for " + name.stripped);
+            return;
+        }
+
+        CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+        if (false
+            || App.MenuManager is null
+            || App.MenuManager.MenuCustom_CurrentManiaApp is null
+            || App.MenuManager.MenuCustom_CurrentManiaApp.LocalUser is null
+            || App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr is null
+            || App.UserManagerScript is null
+            || App.UserManagerScript.Users.Length == 0
+            || App.UserManagerScript.Users[0] is null
+        ) {
+            pb = uint(-1);
+            return;
+        }
+
+        CGameManiaAppTitle@ Title = App.MenuManager.MenuCustom_CurrentManiaApp;
+
+        // MwFastBuffer<wstring> wsids = MwFastBuffer<wstring>();
+        MwFastBuffer<wstring> wsids;
+        const string wsid = Title.LocalUser.WebServicesUserId;
+        wsids.Add(wsid);
+
+        CWebServicesTaskResult_MapRecordListScript@ task = Title.ScoreMgr.Map_GetPlayerListRecordList(
+            App.UserManagerScript.Users[0].Id, wsids, uid, "PersonalBest", "", "TimeAttack", ""
+        );
+        while (task !is null && task.IsProcessing)
+            yield();
+
+        if (task is null) {
+            warn("task null for " + name.stripped);
+            return;
+        }
+
+        if (task.HasFailed || !task.HasSucceeded) {
+            warn("error getting api pb for " + name.stripped + " | wsid: " + wsid + " | error: " + task.ErrorCode + " | type: " + task.ErrorType + " | desc: " + task.ErrorDescription);
+
+            if (Title !is null && Title.ScoreMgr !is null)
+                Title.ScoreMgr.TaskResult_Release(task.Id);
+
+            return;
+        }
+
+        if (task.MapRecordList.Length > 0) {
+            trace("got api pb for " + name.stripped + " | " + Time::Format(pb));
+
+            if (pb == 0 || pb == uint(-1) || task.MapRecordList[0].Time < pb)
+                pb = task.MapRecordList[0].Time;
+        } else
+            pb = 0;
+
+        if (Title !is null && Title.ScoreMgr !is null)
+            Title.ScoreMgr.TaskResult_Release(task.Id);
+    }
+
+    bool MetTarget(TargetMedal medal) {
+        if (!driven)
+            return false;
+
+        switch (medal) {
+#if DEPENDENCY_WARRIORMEDALS
+            case TargetMedal::Warrior: {
+                const uint wm = WarriorMedals::GetWMTime(uid);
+                return Driven(wm) && pb <= wm;
+            }
+#endif
+            case TargetMedal::Author:
+                return pb <= authorTime;
+
+            case TargetMedal::Gold:
+                return pb <= goldTime;
+
+            case TargetMedal::Silver:
+                return pb <= silverTime;
+
+            case TargetMedal::Bronze:
+                return pb <= bronzeTime;
+
+            case TargetMedal::None:
+                return true;
+
+            default:
+                return false;
+        }
+    }
 
     void Play() {
         startnew(CoroutineFunc(PlayAsync));
@@ -171,20 +297,20 @@ class Map {
         loadingMap = false;
     }
 
-    void SetMedals() {
-        if (pb == 0)
-            myMedals = 0;
-        else if (pb <= authorTime)
-            myMedals = 4;
-        else if (pb <= goldTime)
-            myMedals = 3;
-        else if (pb <= silverTime)
-            myMedals = 2;
-        else if (pb <= bronzeTime)
-            myMedals = 1;
-        else
-            myMedals = 0;
-    }
+    // void SetMedals() {
+        // if (pb == 0 || pb == uint(-1))
+        //     myMedals = 0;
+        // else if (pb <= authorTime)
+        //     myMedals = 4;
+        // else if (pb <= goldTime)
+        //     myMedals = 3;
+        // else if (pb <= silverTime)
+        //     myMedals = 2;
+        // else if (pb <= bronzeTime)
+        //     myMedals = 1;
+        // else
+        //     myMedals = 0;
+    // }
 
     void SetSeason() {
         if (mode == Mode::Seasonal) {
@@ -287,6 +413,57 @@ class Map {
         // targetDelta += "\\$S(" + (delta < 0 ? "" : "+") + Time::Format(delta) + ") \\$Z ";  // should never be negative
     // }
 
+    string TargetDelta(TargetMedal medal) {
+        if (!driven)
+            return "";
+
+        int delta;
+        string ret;
+
+        switch (medal) {
+#if DEPENDENCY_WARRIORMEDALS
+            case TargetMedal::Warrior:
+                delta = int(pb) - int(WarriorMedals::GetWMTime(uid));
+                break;
+#endif
+            case TargetMedal::Author:
+                delta = int(pb) - int(authorTime);
+                break;
+            case TargetMedal::Gold:
+                delta = int(pb) - int(goldTime);
+                break;
+            case TargetMedal::Silver:
+                delta = int(pb) - int(silverTime);
+                break;
+            case TargetMedal::Bronze:
+                delta = int(pb) - int(bronzeTime);
+                break;
+            default:
+                delta = 0;
+        }
+
+        if (delta <= 0)  // should never be negative?
+            ret += colorDeltaUnder;
+        else if (delta <= 100)
+            ret += colorDelta0001to0100;
+        else if (delta <= 250)
+            ret += colorDelta0101to0250;
+        else if (delta <= 500)
+            ret += colorDelta0251to0500;
+        else if (delta <= 1000)
+            ret += colorDelta0501to1000;
+        else if (delta <= 2000)
+            ret += colorDelta1001to2000;
+        else if (delta <= 3000)
+            ret += colorDelta2001to3000;
+        else if (delta <= 5000)
+            ret += colorDelta3001to5000;
+        else
+            ret += colorDelta5001Above;
+
+        return ret + "(" + (delta < 0 ? "" : "+") + Time::Format(delta) + ") \\$G";
+    }
+
     Json::Value@ ToJson() {
         Json::Value@ ret = Json::Object();
 
@@ -303,7 +480,7 @@ class Map {
         ret["pb"]          = pb;
         ret["season"]      = int(season);
         ret["series"]      = int(series);
-        ret["silvertime"]  = silverTime;
+        ret["silverTime"]  = silverTime;
         ret["skipped"]     = skipped;
         ret["uid"]         = uid;
 

@@ -1,5 +1,9 @@
 // c 2024-01-02
-// m 2024-11-11
+// m 2024-11-28
+
+bool Driven(uint time) {
+    return time != uint(-1) && time != 0;
+}
 
 float GayHue(uint cycleTimeMs = 5000, float offset = 0.0f, bool reverse = false) {
     const float h = float(Time::Now % cycleTimeMs) / float(cycleTimeMs) + offset;
@@ -9,6 +13,18 @@ float GayHue(uint cycleTimeMs = 5000, float offset = 0.0f, bool reverse = false)
         return 1.0f - normal;
 
     return normal;
+}
+
+void GetAllPBsAsync() {
+    for (uint i = 0; i < mapsArr.Length; i++) {
+        Map@ map = mapsArr[i];
+
+        const uint pre = map.pb;
+        map.GetPBFromManagerAsync();
+
+        if (pre != map.pb)
+            Files::SaveMaps();
+    }
 }
 
 // void GetAllPBsAsync() {
@@ -121,14 +137,14 @@ void ReturnToMenu() {
 }
 
 // string SeriesColor(Series s) {
-//     switch (s) {
-//         case Series::White: return Text::FormatOpenplanetColor(S_ColorSeriesWhite);
-//         case Series::Green: return Text::FormatOpenplanetColor(S_ColorSeriesGreen);
-//         case Series::Blue:  return Text::FormatOpenplanetColor(S_ColorSeriesBlue);
-//         case Series::Red:   return Text::FormatOpenplanetColor(S_ColorSeriesRed);
-//         case Series::Black: return Text::FormatOpenplanetColor(S_ColorSeriesBlack);
-//         default: return "";
-//     }
+    // switch (s) {
+    //     case Series::White: return Text::FormatOpenplanetColor(S_ColorSeriesWhite);
+    //     case Series::Green: return Text::FormatOpenplanetColor(S_ColorSeriesGreen);
+    //     case Series::Blue:  return Text::FormatOpenplanetColor(S_ColorSeriesBlue);
+    //     case Series::Red:   return Text::FormatOpenplanetColor(S_ColorSeriesRed);
+    //     case Series::Black: return Text::FormatOpenplanetColor(S_ColorSeriesBlack);
+    //     default: return "";
+    // }
 // }
 
 // string TimeFormatColored(uint u, bool format = true) {
@@ -136,6 +152,10 @@ void ReturnToMenu() {
     //     return "\\$0F0" + (format ? Time::Format(u) : tostring(u));
 
     // return "\\$G0" + (format ? ":00.000" : "");
+// }
+
+// bool Undriven(uint pb) {
+//     return pb == 0 || pb == uint(-1);
 // }
 
 string ZPad2(int num) {
