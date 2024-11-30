@@ -124,7 +124,7 @@ class Queue {
     }
 
     void Render() {
-        if (Length == 0 || next is null)
+        if (sorting || _maps.Length == 0 || next is null)
             return;
 
         string sepText = "Queue: ";
@@ -133,8 +133,8 @@ class Queue {
         sepText += GetColor(generatedMode) + tostring(generatedMode) + reset + " | ";
         sepText += GetColor(generatedTarget) + tostring(generatedTarget) + reset + " | ";
 
-        sepText += "\\$F80" + Length + reset + " maps | ";
-        sepText += "\\$F80" + tostring(generatedOrder) + reset + " order";
+        sepText += "\\$AAA" + Length + reset + " maps | ";
+        sepText += "\\$AAA" + tostring(generatedOrder) + reset + " order";
 
         UI::PushFont(fontSubHeader);
         UI::SeparatorText(sepText);
@@ -417,9 +417,12 @@ class Queue {
 
         Map@[] sorted;
 
+        uint64 lastYield = start, now;
+
         for (uint i = 0; i < _maps.Length; i++) {
-            if (i % 20 == 0) {  // should auto adjust for framerate maybe
+            if ((now = Time::Now) - lastYield > 50) {
                 // trace("\\$Istill sorting... (" + i + "/" + _maps.Length + ")");
+                lastYield = now;
                 yield();
             }
 
@@ -427,18 +430,17 @@ class Queue {
 
             if (sorted.Length == 0 || !map.driven)
                 sorted.InsertLast(@map);
+
             else {
                 for (uint j = 0; j < sorted.Length; j++) {
-                    Map@ existing = sorted[j];
-
-                    if (false
-                        || j == sorted.Length - 1
-                        || map.Delta(S_Target) < existing.Delta(S_Target)
-                    ) {
+                    if (map.Delta(S_Target) < sorted[j].Delta(S_Target)) {
                         sorted.InsertAt(j, @map);
                         break;
                     }
                 }
+
+                if (sorted.FindByRef(map) == -1)
+                    sorted.InsertLast(@map);
             }
         }
 
@@ -459,9 +461,12 @@ class Queue {
 
         Map@[] sorted;
 
+        uint64 lastYield = start, now;
+
         for (uint i = 0; i < _maps.Length; i++) {
-            if (i % 20 == 0) {  // should auto adjust for framerate maybe
+            if ((now = Time::Now) - lastYield > 50) {
                 // trace("\\$Istill sorting... (" + i + "/" + _maps.Length + ")");
+                lastYield = now;
                 yield();
             }
 
@@ -469,18 +474,19 @@ class Queue {
 
             if (sorted.Length == 0 || !map.driven)
                 sorted.InsertLast(@map);
+
             else {
                 for (uint j = 0; j < sorted.Length; j++) {
                     Map@ existing = sorted[j];
 
-                    if (false
-                        || j == sorted.Length - 1
-                        || float(map.pb) / map.Delta(S_Target) > float(existing.pb) / existing.Delta(S_Target)  // should be based on map medal probably
-                    ) {
+                    if (float(map.pb) / map.Delta(S_Target) > float(existing.pb) / existing.Delta(S_Target)) {  // should be based on map medal probably
                         sorted.InsertAt(j, @map);
                         break;
                     }
                 }
+
+                if (sorted.FindByRef(map) == -1)
+                    sorted.InsertLast(@map);
             }
         }
 
