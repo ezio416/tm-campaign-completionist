@@ -1,5 +1,5 @@
 // c 2024-10-30
-// m 2024-11-29
+// m 2024-11-30
 
 Queue q;
 
@@ -11,6 +11,7 @@ class Queue {
     // Season   generatedSeason = Season::Unknown;
     int         generatedSeries = -1;
     TargetMedal generatedTarget = TargetMedal::None;
+    bool        sorting         = false;
 
     uint get_Length() {
         return _maps.Length;
@@ -46,7 +47,7 @@ class Queue {
             if (true
                 && map.mode == S_Mode
                 && !map.skipped
-                && !map.MetTarget(S_Target)
+                && map.Delta(S_Target) > 0
                 && (false
                     || S_Mode != Mode::Seasonal
                     || map.series == map.series & S_Series
@@ -223,7 +224,7 @@ class Queue {
             count++;
         }
 
-        UI::Text(shadow + wmCol + "Warrior:  " + reset + tostring(wm) + "  " + next.TargetDelta(TargetMedal::Warrior));
+        UI::Text(shadow + wmCol + "Warrior:  " + reset + tostring(wm) + "  " + next.DeltaColored(TargetMedal::Warrior));
         count++;
 #endif
 
@@ -246,7 +247,7 @@ class Queue {
             count++;
         }
 
-        UI::Text(shadow + colorMedalAuthor + "Author:  " + reset + tostring(next.authorTime) + "  " + next.TargetDelta(TargetMedal::Author));
+        UI::Text(shadow + colorMedalAuthor + "Author:  " + reset + tostring(next.authorTime) + "  " + next.DeltaColored(TargetMedal::Author));
         count++;
 
         if (true
@@ -265,7 +266,7 @@ class Queue {
             UI::BeginGroup();
         }
 
-        UI::Text(shadow + colorMedalGold + "Gold:  " + reset + tostring(next.goldTime) + "  " + next.TargetDelta(TargetMedal::Gold));
+        UI::Text(shadow + colorMedalGold + "Gold:  " + reset + tostring(next.goldTime) + "  " + next.DeltaColored(TargetMedal::Gold));
         count++;
 
         if (count == 3) {
@@ -282,12 +283,12 @@ class Queue {
         )
             UI::Text(shadow + "PB:  " + tostring(next.pb));
 
-        UI::Text(shadow + colorMedalSilver + "Silver:  " + reset + tostring(next.silverTime) + "  " + next.TargetDelta(TargetMedal::Silver));
+        UI::Text(shadow + colorMedalSilver + "Silver:  " + reset + tostring(next.silverTime) + "  " + next.DeltaColored(TargetMedal::Silver));
 
         if (next.driven && next.pb >= next.silverTime && next.pb < next.bronzeTime)
             UI::Text(shadow + "PB:  " + tostring(next.pb));
 
-        UI::Text(shadow + colorMedalBronze + "Bronze:  " + reset + tostring(next.bronzeTime) + "  " + next.TargetDelta(TargetMedal::Bronze));
+        UI::Text(shadow + colorMedalBronze + "Bronze:  " + reset + tostring(next.bronzeTime) + "  " + next.DeltaColored(TargetMedal::Bronze));
 
         if (true
             && next.driven
@@ -361,7 +362,7 @@ class Queue {
                 else if (map.pb == 0)
                     UI::Text("\\$888-:--.---");
                 else
-                    UI::Text(Time::Format(map.pb) + "  " + map.TargetDelta(generatedTarget));
+                    UI::Text(Time::Format(map.pb) + "  " + map.DeltaColored(generatedTarget));
             }
         }
 
@@ -376,29 +377,11 @@ class Queue {
 
             case MapOrder::Reverse:
                 _maps.Reverse();
-
-            case MapOrder::ClosestAbs: {
-                // Map@[] sorted;
-
-                // for (uint i = 0; i < _maps.Length; i++) {
-                //     Map@ map = _maps[i];
-
-                //     switch (sorted.Length) {
-                //         case 0: case 1:
-                //             sorted.InsertLast(@map);
-                //             break;
-                //         default: {
-                //             for (uint j = 0; j < sorted.Length; j++) {
-                //                 Map@ existing = sorted[j];
-
-                //                 if (map.driven && map.pb < )
-                //             }
-                //         }
-                //     }
-                // }
-
                 break;
-            }
+
+            case MapOrder::ClosestAbs:
+                startnew(CoroutineFunc(SortClosestAbsAsync));
+                break;
 
             case MapOrder::ClosestRel: {
                 ;
@@ -417,9 +400,53 @@ class Queue {
                     _maps.InsertLast(remaining[index]);
                     remaining.RemoveAt(index);
                 }
+
+                break;
             }
 
             default:;
         }
+    }
+
+    void SortClosestAbsAsync() {  // insertion is terrible, replace this //////////////////////////////////////////////
+        while (sorting)
+            yield();
+
+        sorting = true;
+
+        const uint64 start = Time::Now;
+        trace("sorting... (ca)");
+
+        Map@[] sorted;
+
+        for (uint i = 0; i < _maps.Length; i++) {
+            if (i % 10 == 0) {
+                trace("\\$Istill sorting... (" + i + "/" + _maps.Length + ")");
+                yield();
+            }
+
+            Map@ map = _maps[i];
+
+            switch (sorted.Length) {
+                case 0:
+                    sorted.InsertLast(@map);
+                    break;
+                default: {
+                    for (uint j = 0; j < sorted.Length; j++) {
+                        Map@ existing = sorted[j];
+
+                        if (j == sorted.Length - 1 || map.Delta(S_Target) < existing.Delta(S_Target)) {
+                            sorted.InsertAt(j, @map);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        print("sorting (ca) done after " + (Time::Now - start) + "ms, swapping maps array");
+        _maps = sorted;
+
+        sorting = false;
     }
 }

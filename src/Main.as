@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-11-29
+// m 2024-11-30
 
 const string  pluginColor = "\\$0F0";
 const string  pluginIcon  = Icons::Check;
@@ -15,8 +15,8 @@ const string  pluginTitle = pluginColor + pluginIcon + "\\$G " + pluginMeta.Name
 // string       colorTarget;
 // string       currentUid;
 UI::Font@    fontHeader;
-UI::Font@    fontSmall;
-UI::Font@    fontSmol;
+// UI::Font@    fontSmall;
+// UI::Font@    fontSmol;
 UI::Font@    fontSubHeader;
 // bool         gettingNow        = false;
 bool         hasPlayPermission = false;
@@ -24,6 +24,7 @@ bool         hasPlayPermission = false;
 bool         loadingMap        = false;
 dictionary@  maps              = dictionary();
 Map@[]       mapsArr;
+const int    maxInt            = 2147483647;
 // Map@[]       mapsCampaign;
 // dictionary@  mapsCampaignById  = dictionary();
 // dictionary@  mapsCampaignByUid = dictionary();

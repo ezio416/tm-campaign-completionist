@@ -1,5 +1,5 @@
 // c 2024-11-29
-// m 2024-11-29
+// m 2024-11-30
 
 class RaceTime {
     private uint _val = uint(-1);
@@ -13,6 +13,10 @@ class RaceTime {
 
     bool get_invalid() {
         return _val == uint(-1);
+    }
+
+    bool get_valid() {
+        return _val != uint(-1);
     }
 
     uint opCast()     { return _val; }

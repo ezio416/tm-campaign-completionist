@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-11-29
+// m 2024-11-30
 
 class Map {
     string           authorId;
@@ -90,6 +90,68 @@ class Map {
         uid         = JsonExt::GetString(map, "uid");
     }
 
+    int Delta(TargetMedal medal) {  // <= 0 when achieved
+        if (!driven)
+            return maxInt;
+
+        switch (medal) {
+#if DEPENDENCY_WARRIORMEDALS
+            case TargetMedal::Warrior: {
+                RaceTime wm = WarriorMedals::GetWMTime(uid);
+
+                if (!pb.driven)
+                    return wm.driven ? wm : maxInt;
+
+                return pb - (wm.driven ? wm : authorTime);
+            }
+#endif
+
+            case TargetMedal::Author:
+                return pb - authorTime;
+
+            case TargetMedal::Gold:
+                return pb - goldTime;
+
+            case TargetMedal::Silver:
+                return pb - silverTime;
+
+            case TargetMedal::Bronze:
+                return pb - bronzeTime;
+
+            default:
+                return maxInt;
+        }
+    }
+
+    string DeltaColored(TargetMedal medal) {
+        if (!driven)
+            return "";
+
+        const int delta = Delta(medal);
+        string ret;
+
+        if (delta <= 0)
+            ret += colorDeltaUnder;
+        else if (delta <= 100)
+            ret += colorDelta0001to0100;
+        else if (delta <= 250)
+            ret += colorDelta0101to0250;
+        else if (delta <= 500)
+            ret += colorDelta0251to0500;
+        else if (delta <= 1000)
+            ret += colorDelta0501to1000;
+        else if (delta <= 2000)
+            ret += colorDelta1001to2000;
+        else if (delta <= 3000)
+            ret += colorDelta2001to3000;
+        else if (delta <= 5000)
+            ret += colorDelta3001to5000;
+        else
+            ret += colorDelta5001Above;
+
+        return ret + "(" + (delta < 0 ? "" : "+") + Time::Format(delta) + ")\\$G";
+    }
+
     void GetPBFromManager() {
         CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
@@ -172,34 +234,35 @@ class Map {
     }
 
     bool MetTarget(TargetMedal medal) {
-        if (!driven)
-            return false;
+        return Delta(medal) <= 0;
+//         if (!driven)
+//             return false;
 
-        switch (medal) {
-#if DEPENDENCY_WARRIORMEDALS
-            case TargetMedal::Warrior: {
-                RaceTime wm = WarriorMedals::GetWMTime(uid);
-                return wm.driven && pb <= wm;
-            }
-#endif
-            case TargetMedal::Author:
-                return pb <= authorTime;
+//         switch (medal) {
+// #if DEPENDENCY_WARRIORMEDALS
+//             case TargetMedal::Warrior: {
+//                 RaceTime wm = WarriorMedals::GetWMTime(uid);
+//                 return wm.driven && pb <= wm;
+//             }
+// #endif
+//             case TargetMedal::Author:
+//                 return pb <= authorTime;
 
-            case TargetMedal::Gold:
-                return pb <= goldTime;
+//             case TargetMedal::Gold:
+//                 return pb <= goldTime;
 
-            case TargetMedal::Silver:
-                return pb <= silverTime;
+//             case TargetMedal::Silver:
+//                 return pb <= silverTime;
 
-            case TargetMedal::Bronze:
-                return pb <= bronzeTime;
+//             case TargetMedal::Bronze:
+//                 return pb <= bronzeTime;
 
-            case TargetMedal::None:
-                return true;
+//             case TargetMedal::None:
+//                 return true;
 
-            default:
-                return false;
-        }
+//             default:
+//                 return false;
+//         }
     }
 
     void Play() {
@@ -301,64 +364,6 @@ class Map {
                 default:;
             }
         }
-    }
-
-    string TargetDelta(TargetMedal medal) {
-        if (!driven)
-            return "";
-
-        int delta;
-        string ret;
-
-        switch (medal) {
-#if DEPENDENCY_WARRIORMEDALS
-            case TargetMedal::Warrior: {
-                RaceTime wm = WarriorMedals::GetWMTime(uid);
-                delta = pb - (wm.driven ? wm : authorTime);
-                break;
-            }
-#endif
-
-            case TargetMedal::Author:
-                delta = pb - authorTime;
-                break;
-
-            case TargetMedal::Gold:
-                delta = pb - goldTime;
-                break;
-
-            case TargetMedal::Silver:
-                delta = pb - silverTime;
-                break;
-
-            case TargetMedal::Bronze:
-                delta = pb - bronzeTime;
-                break;
-
-            default:
-                delta = 0;
-        }
-
-        if (delta <= 0)  // should never be negative?
-            ret += colorDeltaUnder;
-        else if (delta <= 100)
-            ret += colorDelta0001to0100;
-        else if (delta <= 250)
-            ret += colorDelta0101to0250;
-        else if (delta <= 500)
-            ret += colorDelta0251to0500;
-        else if (delta <= 1000)
-            ret += colorDelta0501to1000;
-        else if (delta <= 2000)
-            ret += colorDelta1001to2000;
-        else if (delta <= 3000)
-            ret += colorDelta2001to3000;
-        else if (delta <= 5000)
-            ret += colorDelta3001to5000;
-        else
-            ret += colorDelta5001Above;
-
-        return ret + "(" + (delta < 0 ? "" : "+") + Time::Format(delta) + ") \\$G";
     }
 
     Json::Value@ ToJson() {

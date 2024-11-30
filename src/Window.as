@@ -1,5 +1,5 @@
 // c 2024-10-24
-// m 2024-11-29
+// m 2024-11-30
 
 void RenderWindowDetached() {
     if (false
@@ -68,7 +68,7 @@ void WindowContent(WindowSource source = WindowSource::Unknown) {
         UIExt::HoverTooltip(Text::Format("%.1f%%", API::progress * 100.0f));
     }
 
-    UI::BeginDisabled(API::requesting);
+    UI::BeginDisabled(API::requesting || q.sorting);
     if (UI::Button(shadow + Icons::Refresh + " Generate", vec2(widthAvail, scale * 30.0f)))
         q.Generate();
     if (API::requesting)
@@ -172,12 +172,12 @@ void SectionOrder() {
         S_Order = MapOrder::Reverse;
     UIExt::HoverTooltip("Reverse");
 
-    UI::BeginDisabled();
-
     UI::SameLine();
     if (UI::RadioButton(Icons::Crosshairs, S_Order == MapOrder::ClosestAbs))
         S_Order = MapOrder::ClosestAbs;
     UIExt::HoverTooltip("Closest (absolute)");
+
+    UI::BeginDisabled();
 
     UI::SameLine();
     if (UI::RadioButton(Icons::Percent, S_Order == MapOrder::ClosestRel))
