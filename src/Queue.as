@@ -315,10 +315,10 @@ class Queue {
         UI::TableSetupColumn("PB",     UI::TableColumnFlags::WidthFixed, scale * 140.0f);
         UI::TableHeadersRow();
 
-        UI::ListClipper clipper(Length - 1);
+        UI::ListClipper clipper(_maps.Length - 1);
         while (clipper.Step()) {
             for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
-                Map@ map = this[i + 1];
+                Map@ map = _maps[i + 1];
 
                 UI::TableNextRow();
 
@@ -415,7 +415,7 @@ class Queue {
         sorting = true;
 
         const uint64 start = Time::Now;
-        trace("sorting... (ca)");
+        trace("sorting " + _maps.Length + " maps (ca)...");
 
         Map@[] sorted;
 
@@ -444,7 +444,7 @@ class Queue {
             }
         }
 
-        print("sorting (ca) done after " + (Time::Now - start) + "ms, swapping maps array");
+        trace("sorted " + _maps.Length + " maps (ca) after " + (Time::Now - start) + "ms, swapping maps array");
         _maps = sorted;
 
         sorting = false;
