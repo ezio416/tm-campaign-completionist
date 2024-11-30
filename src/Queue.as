@@ -383,11 +383,9 @@ class Queue {
                 startnew(CoroutineFunc(SortClosestAbsAsync));
                 break;
 
-            case MapOrder::ClosestRel: {
-                ;
-
+            case MapOrder::ClosestRel:
+                startnew(CoroutineFunc(SortClosestRelAsync));
                 break;
-            }
 
             case MapOrder::Random: {
                 Map@[] remaining = _maps;
@@ -427,24 +425,66 @@ class Queue {
 
             Map@ map = _maps[i];
 
-            switch (sorted.Length) {
-                case 0:
-                    sorted.InsertLast(@map);
-                    break;
-                default: {
-                    for (uint j = 0; j < sorted.Length; j++) {
-                        Map@ existing = sorted[j];
+            if (sorted.Length == 0 || !map.driven)
+                sorted.InsertLast(@map);
+            else {
+                for (uint j = 0; j < sorted.Length; j++) {
+                    Map@ existing = sorted[j];
 
-                        if (j == sorted.Length - 1 || map.Delta(S_Target) < existing.Delta(S_Target)) {
-                            sorted.InsertAt(j, @map);
-                            break;
-                        }
+                    if (false
+                        || j == sorted.Length - 1
+                        || map.Delta(S_Target) < existing.Delta(S_Target)
+                    ) {
+                        sorted.InsertAt(j, @map);
+                        break;
                     }
                 }
             }
         }
 
         trace("sorted " + _maps.Length + " maps (ca) after " + (Time::Now - start) + "ms, swapping maps array");
+        _maps = sorted;
+
+        sorting = false;
+    }
+
+    void SortClosestRelAsync() {  // insertion is terrible, replace this //////////////////////////////////////////////
+        while (sorting)
+            yield();
+
+        sorting = true;
+
+        const uint64 start = Time::Now;
+        trace("sorting " + _maps.Length + " maps (cr)...");
+
+        Map@[] sorted;
+
+        for (uint i = 0; i < _maps.Length; i++) {
+            if (i % 20 == 0) {  // should auto adjust for framerate maybe
+                // trace("\\$Istill sorting... (" + i + "/" + _maps.Length + ")");
+                yield();
+            }
+
+            Map@ map = _maps[i];
+
+            if (sorted.Length == 0 || !map.driven)
+                sorted.InsertLast(@map);
+            else {
+                for (uint j = 0; j < sorted.Length; j++) {
+                    Map@ existing = sorted[j];
+
+                    if (false
+                        || j == sorted.Length - 1
+                        || float(map.pb) / map.Delta(S_Target) > float(existing.pb) / existing.Delta(S_Target)  // should be based on map medal probably
+                    ) {
+                        sorted.InsertAt(j, @map);
+                        break;
+                    }
+                }
+            }
+        }
+
+        trace("sorted " + _maps.Length + " maps (cr) after " + (Time::Now - start) + "ms, swapping maps array");
         _maps = sorted;
 
         sorting = false;

@@ -177,14 +177,10 @@ void SectionOrder() {
         S_Order = MapOrder::ClosestAbs;
     UIExt::HoverTooltip("Closest (absolute)");
 
-    UI::BeginDisabled();
-
     UI::SameLine();
     if (UI::RadioButton(Icons::Percent, S_Order == MapOrder::ClosestRel))
         S_Order = MapOrder::ClosestRel;
     UIExt::HoverTooltip("Closest (relative)");
-
-    UI::EndDisabled();
 
     UI::SameLine();
     if (UI::RadioButton(Icons::Random, S_Order == MapOrder::Random))
