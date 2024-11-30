@@ -420,8 +420,8 @@ class Queue {
         Map@[] sorted;
 
         for (uint i = 0; i < _maps.Length; i++) {
-            if (i % 10 == 0) {
-                trace("\\$Istill sorting... (" + i + "/" + _maps.Length + ")");
+            if (i % 20 == 0) {  // should auto adjust for framerate maybe
+                // trace("\\$Istill sorting... (" + i + "/" + _maps.Length + ")");
                 yield();
             }
 
