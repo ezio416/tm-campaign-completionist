@@ -5,12 +5,20 @@ bool         cancel = false;
 const string pbFile = IO::FromStorageFolder("pbs.json").Replace("\\", "/");
 Json::Value@ pbs    = Json::Object();
 
-void GetAllPBsAsync() {
+void GetAllPBsAsyncCached() {
+    GetAllPBsAsync(true);
+}
+
+void GetAllPBsAsyncForceRefresh() {
+    GetAllPBsAsync(false);
+}
+
+void GetAllPBsAsync(bool useCache) {
     const uint64 start = Time::Now;
     trace("getting all PBs");
 
     trace("getting PBs for campaign maps (" + mapsCampaign.Length + ")");
-    GetAllPBsForMapSet(@mapsCampaign);
+    GetAllPBsForMapSet(@mapsCampaign, useCache);
 
     if (cancel) {
         warn("GetAllPBsAsync(" + useCache + ") cancelled");
@@ -21,7 +29,7 @@ void GetAllPBsAsync() {
     }
 
     trace("getting PBs for TOTD maps (" + mapsTotd.Length + ")");
-    GetAllPBsForMapSet(@mapsTotd);
+    GetAllPBsForMapSet(@mapsTotd, useCache);
 
     if (cancel) {
         warn("GetAllPBsAsync(" + useCache + ") cancelled");
@@ -37,7 +45,7 @@ void GetAllPBsAsync() {
     SetNextMapAsync();
 }
 
-void GetAllPBsForMapSet(Map@[]@ maps) {
+void GetAllPBsForMapSet(Map@[]@ maps, bool useCache) {
     uint64 lastYield = Time::Now;
     const uint64 maxFrameTime = 50;
 
