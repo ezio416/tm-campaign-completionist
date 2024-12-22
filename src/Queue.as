@@ -1,5 +1,5 @@
 // c 2024-10-30
-// m 2024-11-30
+// m 2024-12-01
 
 Queue q;
 
@@ -312,7 +312,7 @@ class Queue {
         UI::TableSetupColumn("Map");
         UI::TableSetupColumn(generatedMode == Mode::Seasonal ? "Series" : "Author");
         UI::TableSetupColumn("Target", UI::TableColumnFlags::WidthFixed, scale * 70.0f);
-        UI::TableSetupColumn("PB",     UI::TableColumnFlags::WidthFixed, scale * 140.0f);
+        UI::TableSetupColumn("PB",     UI::TableColumnFlags::WidthFixed, scale * 195.0f);
         UI::TableHeadersRow();
 
         UI::ListClipper clipper(_maps.Length - 1);
@@ -361,8 +361,10 @@ class Queue {
                     UI::Text("\\$444-:--.---");
                 else if (map.pb == 0)
                     UI::Text("\\$888-:--.---");
-                else
-                    UI::Text(Time::Format(map.pb) + "  " + map.DeltaColored(generatedTarget));
+                else {
+                    const float d = map.DeltaPercent(generatedTarget) * 100.0f;
+                    UI::Text(Time::Format(map.pb) + "  " + map.DeltaColored(generatedTarget) + "  " + (d <= 0.0f ? "\\$0F0-" : "\\$F00+") + Text::Format("%.1f", d) + "%");
+                }
             }
         }
 
@@ -406,62 +408,20 @@ class Queue {
         }
     }
 
-    void SortClosestAbsAsync() {  // insertion is terrible, replace this //////////////////////////////////////////////
+    void SortClosestAsync(MapOrder order) {  // insertion is terrible, replace this //////////////////////////////////////////////
+        if (order != MapOrder::ClosestAbs && order != MapOrder::ClosestRel)
+            return;
+
         while (sorting)
             yield();
 
         sorting = true;
 
         const uint64 start = Time::Now;
-        trace("sorting " + _maps.Length + " maps (ca)...");
-
-        Map@[] sorted;
+        trace("sorting " + _maps.Length + " maps (" + tostring(order) + ")...");
 
         uint64 lastYield = start, now;
-
-        for (uint i = 0; i < _maps.Length; i++) {
-            if ((now = Time::Now) - lastYield > 50) {
-                // trace("\\$Istill sorting... (" + i + "/" + _maps.Length + ")");
-                lastYield = now;
-                yield();
-            }
-
-            Map@ map = _maps[i];
-
-            if (sorted.Length == 0 || !map.driven)
-                sorted.InsertLast(@map);
-
-            else {
-                for (uint j = 0; j < sorted.Length; j++) {
-                    if (map.Delta(S_Target) < sorted[j].Delta(S_Target)) {
-                        sorted.InsertAt(j, @map);
-                        break;
-                    }
-                }
-
-                if (sorted.FindByRef(map) == -1)
-                    sorted.InsertLast(@map);
-            }
-        }
-
-        trace("sorted " + _maps.Length + " maps (ca) after " + (Time::Now - start) + "ms, swapping maps array");
-        _maps = sorted;
-
-        sorting = false;
-    }
-
-    void SortClosestRelAsync() {  // insertion is terrible, replace this //////////////////////////////////////////////
-        while (sorting)
-            yield();
-
-        sorting = true;
-
-        const uint64 start = Time::Now;
-        trace("sorting " + _maps.Length + " maps (cr)...");
-
         Map@[] sorted;
-
-        uint64 lastYield = start, now;
 
         for (uint i = 0; i < _maps.Length; i++) {
             if ((now = Time::Now) - lastYield > 50) {
@@ -479,9 +439,16 @@ class Queue {
                 for (uint j = 0; j < sorted.Length; j++) {
                     Map@ existing = sorted[j];
 
-                    if (float(map.pb) / map.Delta(S_Target) > float(existing.pb) / existing.Delta(S_Target)) {  // should be based on map medal probably
+                    if (order == MapOrder::ClosestAbs && map.Delta(S_Target) <= existing.Delta(S_Target)) {
                         sorted.InsertAt(j, @map);
                         break;
+                    }
+
+                    if (order == MapOrder::ClosestRel) {
+                        if (map.DeltaPercent(S_Target) <= existing.DeltaPercent(S_Target)) {
+                            sorted.InsertAt(j, @map);
+                            break;
+                        }
                     }
                 }
 
@@ -490,9 +457,17 @@ class Queue {
             }
         }
 
-        trace("sorted " + _maps.Length + " maps (cr) after " + (Time::Now - start) + "ms, swapping maps array");
+        trace("sorted " + _maps.Length + " maps (" + tostring(order) + ") after " + (Time::Now - start) + "ms, swapping maps array");
         _maps = sorted;
 
         sorting = false;
+    }
+
+    void SortClosestAbsAsync() {
+        SortClosestAsync(MapOrder::ClosestAbs);
+    }
+
+    void SortClosestRelAsync() {
+        SortClosestAsync(MapOrder::ClosestRel);
     }
 }

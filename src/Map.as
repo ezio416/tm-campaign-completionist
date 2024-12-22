@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-11-30
+// m 2024-12-02
 
 class Map {
     string           authorId;
@@ -42,7 +42,8 @@ class Map {
             return 0;
 
 #if DEPENDENCY_WARRIORMEDALS
-        if (pb <= WarriorMedals::GetWMTime(uid))
+        RaceTime wm = WarriorMedals::GetWMTime(uid);
+        if (wm.driven && pb <= wm)
             return 5;
 #endif
 
@@ -90,37 +91,12 @@ class Map {
         uid         = JsonExt::GetString(map, "uid");
     }
 
-    int Delta(TargetMedal medal) {  // <= 0 when achieved
+    int Delta(TargetMedal medal) {
         if (!driven)
             return maxInt;
 
-        switch (medal) {
-#if DEPENDENCY_WARRIORMEDALS
-            case TargetMedal::Warrior: {
-                RaceTime wm = WarriorMedals::GetWMTime(uid);
-
-                if (!pb.driven)
-                    return wm.driven ? wm : maxInt;
-
-                return pb - (wm.driven ? wm : authorTime);
-            }
-#endif
-
-            case TargetMedal::Author:
-                return pb - authorTime;
-
-            case TargetMedal::Gold:
-                return pb - goldTime;
-
-            case TargetMedal::Silver:
-                return pb - silverTime;
-
-            case TargetMedal::Bronze:
-                return pb - bronzeTime;
-
-            default:
-                return maxInt;
-        }
+        RaceTime rt = MedalTime(medal);
+        return rt.driven ? pb - rt : maxInt;
     }
 
     string DeltaColored(TargetMedal medal) {
@@ -152,6 +128,17 @@ class Map {
         return ret + "(" + (delta < 0 ? "" : "+") + Time::Format(delta) + ")\\$G";
     }
 
+    float DeltaPercent(TargetMedal medal) {
+        if (!pb.driven)
+            return 90.001f;
+
+        RaceTime rt = MedalTime(medal);
+        if (!rt.driven)
+            return 90.001f;
+
+        return (float(pb) / rt) - 1.0f;
+    }
+
     void GetPBFromManager() {
         CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
@@ -167,18 +154,18 @@ class Map {
             return;
         }
 
-        const uint record = App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, uid, "PersonalBest", "", "TimeAttack", "");
-        if (record != uint(-1))
-            pb = record;
+        RaceTime rt = App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, uid, "PersonalBest", "", "TimeAttack", "");
+        if (rt.driven)
+            pb = rt;
     }
 
     void GetPBFromManagerAsync() {
-        trace("GetPBFromManagerAsync " + name.stripped);
-
         if (pb == 0) {
             trace("already checked map, no pb for " + name.stripped);
             return;
         }
+
+        trace("GetPBFromManagerAsync " + name.stripped);
 
         CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
@@ -213,7 +200,10 @@ class Map {
         }
 
         if (task.HasFailed || !task.HasSucceeded) {
-            warn("error getting api pb for " + name.stripped + " | wsid: " + wsid + " | error: " + task.ErrorCode + " | type: " + task.ErrorType + " | desc: " + task.ErrorDescription);
+            warn(
+                "error getting api pb for " + name.stripped + " | wsid: " + wsid + " | error: "
+                + task.ErrorCode + " | type: " + task.ErrorType + " | desc: " + task.ErrorDescription
+            );
 
             if (Title !is null && Title.ScoreMgr !is null)
                 Title.ScoreMgr.TaskResult_Release(task.Id);
@@ -233,36 +223,34 @@ class Map {
             Title.ScoreMgr.TaskResult_Release(task.Id);
     }
 
+    uint MedalTime(TargetMedal medal) {
+        switch (medal) {
+#if DEPENDENCY_WARRIORMEDALS
+            case TargetMedal::Warrior: {
+                RaceTime wm = WarriorMedals::GetWMTime(uid);
+                return wm.driven ? wm : uint(-1);
+            }
+#endif
+
+            case TargetMedal::Author:
+                return authorTime;
+
+            case TargetMedal::Gold:
+                return goldTime;
+
+            case TargetMedal::Silver:
+                return silverTime;
+
+            case TargetMedal::Bronze:
+                return bronzeTime;
+
+            default:
+                return uint(-1);
+        }
+    }
+
     bool MetTarget(TargetMedal medal) {
         return Delta(medal) <= 0;
-//         if (!driven)
-//             return false;
-
-//         switch (medal) {
-// #if DEPENDENCY_WARRIORMEDALS
-//             case TargetMedal::Warrior: {
-//                 RaceTime wm = WarriorMedals::GetWMTime(uid);
-//                 return wm.driven && pb <= wm;
-//             }
-// #endif
-//             case TargetMedal::Author:
-//                 return pb <= authorTime;
-
-//             case TargetMedal::Gold:
-//                 return pb <= goldTime;
-
-//             case TargetMedal::Silver:
-//                 return pb <= silverTime;
-
-//             case TargetMedal::Bronze:
-//                 return pb <= bronzeTime;
-
-//             case TargetMedal::None:
-//                 return true;
-
-//             default:
-//                 return false;
-//         }
     }
 
     void Play() {
@@ -284,11 +272,7 @@ class Map {
 
         App.ManiaTitleControlScriptAPI.PlayMap(downloadUrl, "TrackMania/TM_PlayMap_Local", "");
 
-        const uint64 waitToPlayAgain = 5000;
-        const uint64 now = Time::Now;
-
-        while (Time::Now - now < waitToPlayAgain)
-            yield();
+        sleep(5000);
 
         loadingMap = false;
     }
