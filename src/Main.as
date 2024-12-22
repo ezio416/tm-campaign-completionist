@@ -1,5 +1,5 @@
 // c 2024-01-01
-// m 2024-11-25
+// m 2024-12-22
 
 string       accountId;
 bool         allTarget         = false;
@@ -17,6 +17,8 @@ Map@[]       mapsCampaign;
 dictionary@  mapsCampaignById  = dictionary();
 dictionary@  mapsCampaignByUid = dictionary();
 Map@[]       mapsRemaining;
+dictionary@  mapsShortsById    = dictionary();
+dictionary@  mapsShortsByUid   = dictionary();
 Map@[]       mapsTotd;
 dictionary@  mapsTotdById      = dictionary();
 dictionary@  mapsTotdByUid     = dictionary();
@@ -32,7 +34,7 @@ void Main() {
         warn("Paid access required to play maps");
 
         if (S_NotifyStarter)
-            UI::ShowNotification(title, "Paid access is required to play maps, but you can still track your progress on the current Nadeo Campaign", vec4(1.0f, 0.1f, 0.1f, 0.8f));
+            UI::ShowNotification(title, "Paid access is required to play maps, but you can still track your progress on the current Nadeo Campaign and this week's Shorts", vec4(1.0f, 0.1f, 0.1f, 0.8f));
     }
 
     lastMode = S_Mode;
@@ -69,26 +71,25 @@ void RenderMenu() {
         if (hasPlayPermission) {
             if (S_MenuAutoSwitch && UI::MenuItem("\\$S" + Icons::ArrowsH + " Auto Switch Maps", "", S_AutoSwitch))
                 S_AutoSwitch = !S_AutoSwitch;
+        }
 
-            if (UI::MenuItem(
-                S_Mode == Mode::NadeoCampaign ? "\\$1D4\\$S" + Icons::Kenney::Car + " Mode: Nadeo Campaign" : "\\$19F\\$S" + Icons::Calendar + " Mode: Track of the Day",
-                "",
-                false,
-                !gettingNow
-            )) {
-                S_Mode = S_Mode == Mode::NadeoCampaign ? Mode::TrackOfTheDay : Mode::NadeoCampaign;
+        if (UI::RadioButton("\\$1D4\\$S" + Icons::Kenney::Car + " Campaign", S_Mode == Mode::NadeoCampaign)) {
+            S_Mode = Mode::NadeoCampaign;
+            OnSettingsChanged();
+        }
+
+        UI::SameLine();
+        if (UI::RadioButton("\\$F15\\$S" + Icons::ClockO + " Weekly", S_Mode == Mode::WeeklyShorts)) {
+            S_Mode = Mode::WeeklyShorts;
+            OnSettingsChanged();
+        }
+
+        if (hasPlayPermission) {
+            UI::SameLine();
+            if (UI::RadioButton("\\$19F\\$S" + Icons::Calendar + " Daily", S_Mode == Mode::TrackOfTheDay)) {
+                S_Mode = Mode::TrackOfTheDay;
                 OnSettingsChanged();
             }
-
-            if (S_MenuOnlyCurrentCampaign && S_Mode == Mode::NadeoCampaign && UI::MenuItem("\\$S" + Icons::ClockO + " Only Current Season", "", S_OnlyCurrentCampaign)) {
-                S_OnlyCurrentCampaign = !S_OnlyCurrentCampaign;
-                startnew(SetNextMapAsync);
-            }
-        } else {
-            UI::MenuItem("\\$1D4\\$S" + Icons::ArrowsH + " Mode: Nadeo Campaign", "", false, false);
-
-            if (S_Mode == Mode::TrackOfTheDay)
-                S_Mode = Mode::NadeoCampaign;
         }
 
         if (S_MenuSeason && hasPlayPermission) {
@@ -209,68 +210,66 @@ void RenderMenu() {
             }
         }
 
-        if (S_MenuSeries && S_Mode == Mode::NadeoCampaign && UI::BeginMenu(colorSeries + "\\$S" + Icons::Columns + " Series: " + tostring(S_Series))) {
-            if (UI::MenuItem(colorSeriesAll + "\\$S" + Icons::Columns + " All", "", S_Series == CampaignSeries::All, S_Series != CampaignSeries::All)) {
-                S_Series = CampaignSeries::All;
-                OnSettingsChanged();
-            }
-
-            UI::Separator();
-
-            if (UI::MenuItem(colorSeriesWhite + "\\$S" + Icons::Columns + " White", "", S_Series == CampaignSeries::White, S_Series != CampaignSeries::White)) {
+        if (S_MenuSeries && S_Mode == Mode::NadeoCampaign) {
+            if (UI::RadioButton(colorSeriesWhite + "\\$SWhite", S_Series == CampaignSeries::White)) {
                 S_Series = CampaignSeries::White;
                 OnSettingsChanged();
             }
-            if (UI::MenuItem(colorSeriesGreen + "\\$S" + Icons::Columns + " Green", "", S_Series == CampaignSeries::Green, S_Series != CampaignSeries::Green)) {
+            UI::SameLine();
+            if (UI::RadioButton(colorSeriesGreen + "\\$SGreen", S_Series == CampaignSeries::Green)) {
                 S_Series = CampaignSeries::Green;
                 OnSettingsChanged();
             }
-            if (UI::MenuItem(colorSeriesBlue + "\\$S" + Icons::Columns + " Blue", "", S_Series == CampaignSeries::Blue, S_Series != CampaignSeries::Blue)) {
+            UI::SameLine();
+            if (UI::RadioButton(colorSeriesBlue + "\\$SBlue", S_Series == CampaignSeries::Blue)) {
                 S_Series = CampaignSeries::Blue;
                 OnSettingsChanged();
             }
-            if (UI::MenuItem(colorSeriesRed + "\\$S" + Icons::Columns + " Red", "", S_Series == CampaignSeries::Red, S_Series != CampaignSeries::Red)) {
+            UI::SameLine();
+            if (UI::RadioButton(colorSeriesRed + "\\$SRed", S_Series == CampaignSeries::Red)) {
                 S_Series = CampaignSeries::Red;
                 OnSettingsChanged();
             }
-            if (UI::MenuItem(colorSeriesBlack + "\\$S" + Icons::Columns + " Black", "", S_Series == CampaignSeries::Black, S_Series != CampaignSeries::Black)) {
+            UI::SameLine();
+            if (UI::RadioButton(colorSeriesBlack + "\\$SBlack", S_Series == CampaignSeries::Black)) {
                 S_Series = CampaignSeries::Black;
                 OnSettingsChanged();
             }
-
-            UI::EndMenu();
+            UI::SameLine();
+            if (UI::RadioButton(colorSeriesAll + "\\$SAll", S_Series == CampaignSeries::All)) {
+                S_Series = CampaignSeries::All;
+                OnSettingsChanged();
+            }
         }
 
-        // if (S_MenuRefresh && UI::MenuItem("\\$S" + Icons::Refresh + " Refresh Records", "", false, !gettingNow))
-        //     startnew(RefreshRecords);
-
-        if (UI::BeginMenu(colorTarget + "\\$S" + Icons::Circle + " Target Medal: " + tostring(S_Target))) {
-            if (UI::MenuItem(colorMedalAuthor + "\\$S" + Icons::Circle + " Author", "", S_Target == TargetMedal::Author, S_Target != TargetMedal::Author)) {
-                S_Target = TargetMedal::Author;
-                OnSettingsChanged();
-                startnew(SetNextMapAsync);
-            }
-            if (UI::MenuItem(colorMedalGold + "\\$S" + Icons::Circle + " Gold", "", S_Target == TargetMedal::Gold, S_Target != TargetMedal::Gold)) {
-                S_Target = TargetMedal::Gold;
-                OnSettingsChanged();
-                startnew(SetNextMapAsync);
-            }
-            if (UI::MenuItem(colorMedalSilver + "\\$S" + Icons::Circle + " Silver", "", S_Target == TargetMedal::Silver, S_Target != TargetMedal::Silver)) {
-                S_Target = TargetMedal::Silver;
-                OnSettingsChanged();
-                startnew(SetNextMapAsync);
-            }
-            if (UI::MenuItem(colorMedalBronze + "\\$S" + Icons::Circle + " Bronze", "", S_Target == TargetMedal::Bronze, S_Target != TargetMedal::Bronze)) {
-                S_Target = TargetMedal::Bronze;
-                OnSettingsChanged();
-                startnew(SetNextMapAsync);
-            }
-            if (UI::MenuItem(colorMedalNone + "\\$S" + Icons::Circle + " None", "", S_Target == TargetMedal::None, S_Target != TargetMedal::None)) {
-                S_Target = TargetMedal::None;
-                OnSettingsChanged();
-                startnew(SetNextMapAsync);
-            }
-            UI::EndMenu();
+        if (UI::RadioButton(colorMedalAuthor + "\\$SAuthor", S_Target == TargetMedal::Author)) {
+            S_Target = TargetMedal::Author;
+            OnSettingsChanged();
+            startnew(SetNextMapAsync);
+        }
+        UI::SameLine();
+        if (UI::RadioButton(colorMedalGold + "\\$SGold", S_Target == TargetMedal::Gold)) {
+            S_Target = TargetMedal::Gold;
+            OnSettingsChanged();
+            startnew(SetNextMapAsync);
+        }
+        UI::SameLine();
+        if (UI::RadioButton(colorMedalSilver + "\\$SSilver", S_Target == TargetMedal::Silver)) {
+            S_Target = TargetMedal::Silver;
+            OnSettingsChanged();
+            startnew(SetNextMapAsync);
+        }
+        UI::SameLine();
+        if (UI::RadioButton(colorMedalBronze + "\\$SBronze", S_Target == TargetMedal::Bronze)) {
+            S_Target = TargetMedal::Bronze;
+            OnSettingsChanged();
+            startnew(SetNextMapAsync);
+        }
+        UI::SameLine();
+        if (UI::RadioButton(colorMedalNone + "\\$SFinish", S_Target == TargetMedal::None)) {
+            S_Target = TargetMedal::None;
+            OnSettingsChanged();
+            startnew(SetNextMapAsync);
         }
 
         UI::MenuItem(
@@ -295,7 +294,12 @@ void RenderMenu() {
             if (S_MenuTargetDelta)
                 nextText += "\\$Z" + nextMap.targetDelta;
 
-            nextText += S_Mode == Mode::NadeoCampaign ? "" : nextMap.date + ": ";
+            switch (S_Mode) {
+                case Mode::NadeoCampaign: break;
+                case Mode::WeeklyShorts: break;
+                case Mode::TrackOfTheDay: nextText += nextMap.date + ": "; break;
+                default:;
+            }
             nextText += "\\$Z" + (S_ColorMapNames ? nextMap.nameColored : nextMap.nameClean);
             nextText += nextMap.uid == currentUid ? "\\$Z\\$S (current)" : "";
         } else

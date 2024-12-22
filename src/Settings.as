@@ -1,9 +1,10 @@
 // c 2024-01-02
-// m 2024-11-25
+// m 2024-12-22
 
 enum Mode {
     NadeoCampaign,
-    TrackOfTheDay
+    TrackOfTheDay,
+    WeeklyShorts
 }
 
 [Setting hidden]
