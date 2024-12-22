@@ -1,9 +1,6 @@
 // c 2024-01-02
 // m 2024-09-14
 
-const string cachedRecordsFile = IO::FromStorageFolder("records_cache.json").Replace("\\", "/");
-Json::Value@ cachedRecords    = Json::Object();
-
 bool loadingMap = false;
 
 class Map {
@@ -85,17 +82,7 @@ class Map {
         trace("GetMapInfoFromManager done: " + (Time::Now - start) + "ms");
     }
 
-    void GetPB(bool useCache) {
-        if (useCache) {
-            int cachedRecord = cachedRecords.Get(uid, -1);
-            if (cachedRecord != -1) {
-                myTime = cachedRecord;
-                SetMedals();
-                SetTargetDelta();
-                return;
-            }
-        }
-
+    void GetPB() {
         CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
         if (false
@@ -110,31 +97,12 @@ class Map {
             return;
         }
 
-        auto mccma = App.MenuManager.MenuCustom_CurrentManiaApp;
-
-        trace("GetPB: Loading PB from API. Track - " + nameRaw);
-        MwFastBuffer<wstring> wsids = MwFastBuffer<wstring>();
-        wsids.Add(mccma.LocalUser.WebServicesUserId);
-        auto task = mccma.ScoreMgr.Map_GetPlayerListRecordList(App.UserManagerScript.Users[0].Id, wsids, uid, "PersonalBest", "", "TimeAttack", "");
-        WaitAndClearTaskLater(task, mccma.ScoreMgr);
-        if (task.HasFailed || !task.HasSucceeded) {
-            warn("Failed to get player record on map: " + uid + " wsid " + mccma.LocalUser.WebServicesUserId + ' // Error: ' + task.ErrorCode + ", " + task.ErrorType + ", " + task.ErrorDescription);
-            return;
-        }
-        if (task.MapRecordList.Length == 0) {
-            // log_warn("No record for map: " + mapUid + ' // Error: ' + task.ErrorCode + ", " + task.ErrorType + ", " + task.ErrorDescription);
-            myTime = 0;
-        } else {
-            myTime = task.MapRecordList[0].Time;
-            cachedRecords[uid] = myTime;
-            SaveCachedRecords();
-        }
-        yield();
+        const uint pb = App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, uid, "PersonalBest", "", "TimeAttack", "");
+        if (pb != uint(-1))
+            myTime = pb;
 
         SetMedals();
         SetTargetDelta();
-
-		trace("GetPB done: Track - " + nameRaw + ", medals - " + myMedals + ", myTime - " + myTime) ;
     }
 
     // courtesy of "Play Map" plugin - https://github.com/XertroV/tm-play-map
@@ -282,29 +250,5 @@ class Map {
             targetDelta += colorDeltaAbove3;
 
         targetDelta += "\\$S(" + (delta < 0 ? "" : "+") + Time::Format(delta) + ") \\$Z ";  // should never be negative
-    }
-}
-
-
-void LoadCachedRecords() {
-    if (!IO::FileExists(cachedRecordsFile))
-        return;
-
-    trace("loading " + cachedRecordsFile);
-
-    try {
-        cachedRecords = Json::FromFile(cachedRecordsFile);
-    } catch {
-        warn("failed loading cached records: " + getExceptionInfo());
-    }
-}
-
-void SaveCachedRecords() {
-    trace("saving " + cachedRecordsFile);
-
-    try {
-        Json::ToFile(cachedRecordsFile, cachedRecords);
-    } catch {
-        warn("error saving cached records: " + getExceptionInfo());
     }
 }
