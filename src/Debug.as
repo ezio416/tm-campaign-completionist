@@ -1,15 +1,26 @@
 // c 2024-01-08
-// m 2024-02-01
+// m 2024-11-25
 
 void RenderDebug() {
     if (!S_Debug)
         return;
 
-    UI::Begin(title + " Debug", S_Debug, UI::WindowFlags::None);
+    if (UI::Begin(title + " Debug", S_Debug, UI::WindowFlags::None)) {
+        if (!gettingNow) {
+            if (UI::Button(Icons::Download + " Get All PBs (not quick)")) {
+                gettingNow = true;
+                startnew(GetAllPBsAsyncForceRefresh);
+            }
+        } else if (UI::Button(Icons::Times + " Cancel"))
+            cancel = true;
+
         UI::BeginTabBar("##tabs");
-            Tab_MapsDebug(mapsCampaign, Mode::NadeoCampaign);
-            Tab_MapsDebug(mapsTotd,     Mode::TrackOfTheDay);
+
+        Tab_MapsDebug(mapsCampaign, Mode::NadeoCampaign);
+        Tab_MapsDebug(mapsTotd,     Mode::TrackOfTheDay);
+
         UI::EndTabBar();
+    }
     UI::End();
 }
 
@@ -85,7 +96,12 @@ void Tab_MapsDebug(Map@[]@ mapsDebug, Mode mode) {
                 UI::Text(TimeFormatColored(map.bronzeTime));
 
                 UI::TableNextColumn();
-                UI::Text(TimeFormatColored(map.myTime));
+                if (map.myTime == (uint(-1)))
+                    UI::Text("\\$4440:00.000");
+                else if (map.myTime == 0)
+                    UI::Text("\\$8880:00.000");
+                else
+                    UI::Text(TimeFormatColored(map.myTime));
 
                 UI::TableNextColumn();
                 UI::Text(TimeFormatColored(map.myMedals, false));

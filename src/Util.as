@@ -1,5 +1,9 @@
 // c 2024-01-02
-// m 2024-09-12
+// m 2024-11-25
+
+bool         cancel = false;
+const string pbFile = IO::FromStorageFolder("pbs.json").Replace("\\", "/");
+Json::Value@ pbs    = Json::Object();
 
 void GetAllPBsAsync() {
     const uint64 start = Time::Now;
@@ -8,12 +12,29 @@ void GetAllPBsAsync() {
     trace("getting PBs for campaign maps (" + mapsCampaign.Length + ")");
     GetAllPBsForMapSet(@mapsCampaign);
 
+    if (cancel) {
+        warn("GetAllPBsAsync(" + useCache + ") cancelled");
+        cancel = false;
+        gettingNow = false;
+        SetNextMapAsync();
+        return;
+    }
+
     trace("getting PBs for TOTD maps (" + mapsTotd.Length + ")");
     GetAllPBsForMapSet(@mapsTotd);
+
+    if (cancel) {
+        warn("GetAllPBsAsync(" + useCache + ") cancelled");
+        cancel = false;
+        gettingNow = false;
+        SetNextMapAsync();
+        return;
+    }
 
     trace("getting all PBs done after " + (Time::Now - start) + "ms");
 
     gettingNow = false;
+    SetNextMapAsync();
 }
 
 void GetAllPBsForMapSet(Map@[]@ maps) {
@@ -21,12 +42,19 @@ void GetAllPBsForMapSet(Map@[]@ maps) {
     const uint64 maxFrameTime = 50;
 
     for (uint i = 0; i < maps.Length; i++) {
+        if (cancel) {
+            warn("GetAllPBsForMapSet(" + (maps is mapsCampaign ? "mapsCampaign" : "mapsTotd") + ", " + useCache + ") cancelled");
+            return;
+        }
+
         Map@ map = maps[i];
 
         if (map is null)
             continue;
 
-        map.GetPB();
+        print("\\$444" + i + " / " + maps.Length);
+
+        map.GetPB(useCache);
 
         const uint64 now = Time::Now;
         if (now - lastYield > maxFrameTime) {
@@ -41,8 +69,24 @@ void HoverTooltip(const string &in msg) {
         return;
 
     UI::BeginTooltip();
-        UI::Text(msg);
+    UI::Text(msg);
     UI::EndTooltip();
+}
+
+void LoadPBs() {
+    if (!IO::FileExists(pbFile)) {
+        warn("not found: " + pbFile);
+        return;
+    }
+
+    trace("loading " + pbFile);
+
+    try {
+        @pbs = Json::FromFile(pbFile);
+    } catch {
+        warn("failed loading PBs: " + getExceptionInfo());
+        @pbs = Json::Object();
+    }
 }
 
 void Notify() {
@@ -108,6 +152,17 @@ void ReturnToMenu() {
 
     while (!App.ManiaTitleControlScriptAPI.IsReady)
         yield();
+}
+
+void SavePBs(bool log = true) {
+    if (log)
+        trace("saving " + pbFile);
+
+    try {
+        Json::ToFile(pbFile, pbs);
+    } catch {
+        warn("error saving PBs: " + getExceptionInfo());
+    }
 }
 
 string TimeFormatColored(uint u, bool format = true) {

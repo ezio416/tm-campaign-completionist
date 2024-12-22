@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2024-09-14
+// m 2024-11-25
 
 bool loadingMap = false;
 
@@ -11,7 +11,7 @@ class Map {
     uint   goldTime;
     string id;
     uint   myMedals = 0;
-    uint   myTime   = 0;
+    uint   myTime   = uint(-1);
     string nameClean;
     string nameColored;
     string nameQuoted;
@@ -82,7 +82,18 @@ class Map {
         trace("GetMapInfoFromManager done: " + (Time::Now - start) + "ms");
     }
 
-    void GetPB() {
+    void GetPB(bool useCache) {
+        if (useCache && pbs.HasKey(uid)) {
+            const uint cachedRecord = uint(pbs[uid]);
+
+            if (cachedRecord != uint(-1)) {
+                myTime = cachedRecord;
+                SetMedals();
+                SetTargetDelta();
+                return;
+            }
+        }
+
         CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
         if (false
@@ -93,16 +104,46 @@ class Map {
             || App.UserManagerScript.Users.Length == 0
             || App.UserManagerScript.Users[0] is null
         ) {
-            myTime = 0;
+            myTime = uint(-1);
             return;
         }
 
-        const uint pb = App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, uid, "PersonalBest", "", "TimeAttack", "");
-        if (pb != uint(-1))
+        CGameManiaAppTitle@ mccma = App.MenuManager.MenuCustom_CurrentManiaApp;
+
+        const uint pb = mccma.ScoreMgr.Map_GetRecord_v2(App.UserManagerScript.Users[0].Id, uid, "PersonalBest", "", "TimeAttack", "");
+        if (pb != uint(-1)) {
             myTime = pb;
+            pbs[uid] = myTime;
+            SavePBs(false);
+            return;
+        }
+
+        if (myTime == 0)
+            return;  // will only be 0 if we already checked via API, so don't check again
+
+        trace("getting api pb for " + nameQuoted);
+        MwFastBuffer<wstring> wsids = MwFastBuffer<wstring>();
+        wsids.Add(mccma.LocalUser.WebServicesUserId);
+        CWebServicesTaskResult_MapRecordListScript@ task = mccma.ScoreMgr.Map_GetPlayerListRecordList(App.UserManagerScript.Users[0].Id, wsids, uid, "PersonalBest", "", "TimeAttack", "");
+        WaitAndClearTaskLater(task, mccma.ScoreMgr);
+        if (task.HasFailed || !task.HasSucceeded) {
+            warn("error getting pb on " + nameQuoted + " | wsid " + mccma.LocalUser.WebServicesUserId + " | error " + task.ErrorCode + " | type " + task.ErrorType + " | desc " + task.ErrorDescription);
+            return;
+        }
+        myTime = task.MapRecordList.Length > 0 ? task.MapRecordList[0].Time : 0;
+
+        pbs[uid] = myTime;
+        SavePBs(false);
+        yield();
 
         SetMedals();
         SetTargetDelta();
+
+        trace("got api pb for " + nameQuoted + " | medals " + myMedals + " | pb " + Time::Format(myTime));
+    }
+
+    void GetPBForceAsync() {
+        GetPB(false);
     }
 
     // courtesy of "Play Map" plugin - https://github.com/XertroV/tm-play-map
@@ -211,7 +252,7 @@ class Map {
                     case 1:  case 2:  case 3:  season = Season::Winter_2024; break;
                     case 4:  case 5:  case 6:  season = Season::Spring_2024; break;
                     case 7:  case 8:  case 9:  season = Season::Summer_2024; break;
-                    // case 10: case 11: case 12: season = Season::Fall_2024;   break;
+                    case 10: case 11: case 12: season = Season::Fall_2024;   break;
                     default:;
                 }
                 break;

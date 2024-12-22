@@ -1,5 +1,5 @@
 // c 2024-01-23
-// m 2024-03-08
+// m 2024-11-25
 
 const string bookmarkedFile = IO::FromStorageFolder("bookmarks.json").Replace("\\", "/");
 Json::Value@ bookmarkedUids = Json::Object();
@@ -9,7 +9,7 @@ const string skippedFile    = IO::FromStorageFolder("skips.json").Replace("\\", 
 Json::Value@ skippedUids    = Json::Object();
 
 void ClickAction(bool skipped, bool bookmarked, const string &in uid) {
-    if (UI::IsItemHovered()) {
+    if (UI::IsItemHovered(UI::HoveredFlags::AllowWhenDisabled)) {
         if (S_MenuClickHover) {
             UI::BeginTooltip();
             UI::Text(Icons::Kenney::MouseLeftButton + " play, " + Icons::Kenney::MouseAlt + (skipped ? " un-" : " ") + "skip, " + Icons::Kenney::MouseRightButton + (bookmarked ? " un-" : " ") + "bookmark");
@@ -35,25 +35,25 @@ void ClickAction(bool skipped, bool bookmarked, const string &in uid) {
 void AddBookmark(const string &in uid) {
     bookmarkedUids[uid] = 0;
     SaveBookmarks();
-    startnew(SetNextMap);
+    startnew(SetNextMapAsync);
 }
 
 void AddSkip(const string &in uid) {
     skippedUids[uid] = 0;
     SaveSkips();
-    startnew(SetNextMap);
+    startnew(SetNextMapAsync);
 }
 
 void RemoveBookmark(const string &in uid) {
     bookmarkedUids.Remove(uid);
     SaveBookmarks();
-    startnew(SetNextMap);
+    startnew(SetNextMapAsync);
 }
 
 void RemoveSkip(const string &in uid) {
     skippedUids.Remove(uid);
     SaveSkips();
-    startnew(SetNextMap);
+    startnew(SetNextMapAsync);
 }
 
 void LoadBookmarks() {
