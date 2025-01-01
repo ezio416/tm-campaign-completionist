@@ -17,6 +17,7 @@ Map@[]       mapsCampaign;
 dictionary@  mapsCampaignById  = dictionary();
 dictionary@  mapsCampaignByUid = dictionary();
 Map@[]       mapsRemaining;
+Map@[]       mapsShorts;
 dictionary@  mapsShortsById    = dictionary();
 dictionary@  mapsShortsByUid   = dictionary();
 Map@[]       mapsTotd;
@@ -614,7 +615,12 @@ void SetNextMapAsync() {
             S_OnlyCurrentCampaign = true;
     }
 
-    maps = S_Mode == Mode::NadeoCampaign ? mapsCampaign : mapsTotd;
+    switch (S_Mode) {
+        case Mode::NadeoCampaign: maps = mapsCampaign; break;
+        case Mode::WeeklyShorts:  maps = mapsShorts;   break;
+        case Mode::TrackOfTheDay: maps = mapsTotd;     break;
+        default: warn("bad mode: " + tostring(S_Mode)); return;
+    }
 
     if (S_Mode == Mode::NadeoCampaign && S_OnlyCurrentCampaign && maps.Length >= 25)
         maps.RemoveRange(0, maps.Length - 25);
@@ -622,7 +628,7 @@ void SetNextMapAsync() {
     if (!hasPlayPermission)
         maps.RemoveRange(10, 15);
 
-    if (S_Season != Season::All) {
+    if (S_Mode != Mode::WeeklyShorts && S_Season != Season::All) {
         for (int i = maps.Length - 1; i >= 0 ; i--) {
             if (maps[i].season != S_Season)
                 maps.RemoveAt(i);

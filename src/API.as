@@ -27,14 +27,20 @@ void GetMaps() {
     mapsCampaignById.DeleteAll();
     mapsCampaignByUid.DeleteAll();
 
+    mapsShorts = {};
+    mapsShortsById.DeleteAll();
+    mapsShortsByUid.DeleteAll();
+
     mapsTotd = {};
     mapsTotdById.DeleteAll();
     mapsTotdByUid.DeleteAll();
 
     GetMapsFromApi(Mode::NadeoCampaign);
+    GetMapsFromApi(Mode::WeeklyShorts);
     GetMapsFromApi(Mode::TrackOfTheDay);
     GetMapsFromFiles();
     GetMapInfoFromApi(Mode::NadeoCampaign);
+    GetMapInfoFromApi(Mode::WeeklyShorts);
     GetMapInfoFromApi(Mode::TrackOfTheDay);
     startnew(GetAllPBsAsyncCached);
     // gettingNow = false;
@@ -55,10 +61,16 @@ void GetMapsFromApi(Mode mode) {
     while (coro.IsRunning())
         yield();
 
-    Net::HttpRequest@ req = NadeoServices::Get(
-        audienceLive,
-        NadeoServices::BaseURLLive() + "/api/token/campaign/" + (mode == Mode::NadeoCampaign ? "official" : "month") + "?length=99&offset=0"
-    );  // length 99 will work until 2045 (campaign) or 2029 (TOTD)
+    string url = NadeoServices::BaseURLLive() + "/api/";
+    switch (mode) {
+        case Mode::NadeoCampaign: url += "token/campaign/official"; break;
+        case Mode::TrackOfTheDay: url += "token/campaign/month";    break;
+        case Mode::WeeklyShorts:  url += "campaign/weekly-shorts";  break;
+        default:;
+    }
+    url += "?length=99&offset=0";  // length 99 will work until 2045 (campaign) 2029 (TOTD), or 2026? (Shorts)
+
+    Net::HttpRequest@ req = NadeoServices::Get(audienceLive, url);
     req.Start();
     while (!req.Finished())
         yield();
@@ -69,39 +81,53 @@ void GetMapsFromApi(Mode mode) {
         return;
     }
 
-    if (mode == Mode::NadeoCampaign) {
-        Json::Value@ campaignList = Json::Parse(req.String())["campaignList"];
+    switch (mode) {
+        case Mode::NadeoCampaign: {
+            Json::Value@ campaignList = Json::Parse(req.String())["campaignList"];
 
-        for (int i = campaignList.Length - 1; i >= 0; i--) {
-            Json::Value@ playlist = campaignList[i]["playlist"];
+            for (int i = campaignList.Length - 1; i >= 0; i--) {
+                Json::Value@ playlist = campaignList[i]["playlist"];
 
-            for (uint j = 0; j < playlist.Length; j++) {
-                Map@ map = Map(playlist[j]);
+                for (uint j = 0; j < playlist.Length; j++) {
+                    Map@ map = Map(playlist[j]);
 
-                if (mapsCampaignByUid.Exists(map.uid))
-                    continue;  // should never happen but who knows at this point
+                    if (mapsCampaignByUid.Exists(map.uid))
+                        continue;  // should never happen but who knows at this point
 
-                mapsCampaign.InsertLast(map);
-                mapsCampaignByUid.Set(map.uid, @map);
-            }
-        }
-    } else {
-        Json::Value@ monthList = Json::Parse(req.String())["monthList"];
-
-        for (int i = monthList.Length - 1; i >= 0; i--) {
-            Json::Value@ days = monthList[i]["days"];
-
-            for (uint j = 0; j < days.Length; j++) {
-                Map@ map = Map(monthList[i]["year"], monthList[i]["month"], days[j]);
-
-                if (map.uid.Length > 0) {
-                    if (mapsTotdByUid.Exists(map.uid))
-                        continue;  // should never happen, but it did on 2024-01-06 so ¯\_(ツ)_/¯
-
-                    mapsTotd.InsertLast(map);
-                    mapsTotdByUid.Set(map.uid, @map);
+                    mapsCampaign.InsertLast(map);
+                    mapsCampaignByUid.Set(map.uid, @map);
                 }
             }
+
+            break;
+        }
+
+        case Mode::WeeklyShorts: {
+            ;
+
+            break;
+        }
+
+        case Mode::TrackOfTheDay: {
+            Json::Value@ monthList = Json::Parse(req.String())["monthList"];
+
+            for (int i = monthList.Length - 1; i >= 0; i--) {
+                Json::Value@ days = monthList[i]["days"];
+
+                for (uint j = 0; j < days.Length; j++) {
+                    Map@ map = Map(monthList[i]["year"], monthList[i]["month"], days[j]);
+
+                    if (map.uid.Length > 0) {
+                        if (mapsTotdByUid.Exists(map.uid))
+                            continue;  // should never happen, but it did on 2024-01-06 so ¯\_(ツ)_/¯
+
+                        mapsTotd.InsertLast(map);
+                        mapsTotdByUid.Set(map.uid, @map);
+                    }
+                }
+            }
+
+            break;
         }
     }
 
