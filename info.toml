@@ -1,9 +1,8 @@
 [meta]
-name = "Campaign Completionist"
+name = "Campaign Completionist 2"
 author = "Ezio"
 category = "Race"
-version = "1.10.1"
-siteid = 481
+version = "2.0.0"
 
 [script]
 dependencies = [ "NadeoServices" ]
