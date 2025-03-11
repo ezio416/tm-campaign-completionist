@@ -1,22 +1,30 @@
 // c 2024-01-01
-// m 2025-03-03
+// m 2025-03-10
 
-const string  pluginColor = "\\$FFF";
-const string  pluginIcon  = Icons::Arrows;
-Meta::Plugin@ pluginMeta  = Meta::ExecutingPlugin();
-const string  pluginTitle = pluginColor + pluginIcon + "\\$G " + pluginMeta.Name;
-
-[Setting category="General" name="Enabled"]
-bool S_Enabled = true;
-
-[Setting category="General" name="Show/hide with game UI"]
-bool S_HideWithGame = true;
-
-[Setting category="General" name="Show/hide with Openplanet UI"]
-bool S_HideWithOP = false;
+dictionary@   allMaps           = dictionary();
+Campaign@[]   campaigns;
+bool          hasPlayPermission = false;
+const string  pluginColor       = "\\$0F0";
+const string  pluginIcon        = Icons::Check;
+Meta::Plugin@ pluginMeta        = Meta::ExecutingPlugin();
+const string  pluginTitle       = pluginColor + pluginIcon + "\\$G " + pluginMeta.Name;
+const float   scale             = UI::GetScale();
 
 void Main() {
-    ;
+    if (Permissions::PlayLocalMap())
+        hasPlayPermission = true;
+    else {
+        warn("Paid access required to play maps");
+
+        if (S_NotifyStarter)
+            UI::ShowNotification(
+                pluginTitle,
+                "Paid access is required to play maps, but you can still track your progress on the current Nadeo Campaign",
+                vec4(1.0f, 0.1f, 0.1f, 0.8f)
+            );
+    }
+
+    // GetInfosAsync();
 }
 
 void Render() {
@@ -35,8 +43,4 @@ void Render() {
 void RenderMenu() {
     if (UI::MenuItem(pluginTitle, "", S_Enabled))
         S_Enabled = !S_Enabled;
-}
-
-void RenderWindow() {
-    ;
 }
