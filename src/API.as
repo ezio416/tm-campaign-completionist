@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2025-03-10
+// m 2025-03-11
 
 namespace API {
     bool requesting = false;
@@ -47,84 +47,127 @@ namespace API {
     }
 
     namespace Nadeo {
-        const string audienceCore = "NadeoServices";
-        const string audienceLive = "NadeoLiveServices";
-        bool         cancel       = false;
-        uint64       lastRequest  = 0;
-        const uint64 minimumWait  = 1000;
-        bool         requesting   = false;
+        bool requesting = false;
 
-        Net::HttpRequest@ GetAsync(const string &in audience, const string &in url, bool start = true) {
-            NadeoServices::AddAudience(audience);
+        namespace Internal {
+            const string audienceCore = "NadeoServices";
+            const string audienceLive = "NadeoLiveServices";
+            uint64       lastRequest  = 0;
+            const uint64 minimumWait  = 1000;
 
-            while (!NadeoServices::IsAuthenticated(audience) || requesting)
-                yield();
+            Net::HttpRequest@ GetAsync(const string &in audience, const string &in url, bool start = true) {
+                NadeoServices::AddAudience(audience);
 
-            if (start)
-                requesting = true;
-
-            WaitAsync();
-
-            Net::HttpRequest@ req = NadeoServices::Get(audience, url);
-            if (start) {
-                req.Start();
-                while (!req.Finished())
+                while (!NadeoServices::IsAuthenticated(audience) || requesting)
                     yield();
 
-                requesting = false;
+                if (start)
+                    requesting = true;
+
+                WaitAsync();
+
+                Net::HttpRequest@ req = NadeoServices::Get(audience, url);
+                if (start) {
+                    req.Start();
+                    while (!req.Finished())
+                        yield();
+
+                    requesting = false;
+                }
+
+                return req;
             }
 
-            return req;
-        }
+            Net::HttpRequest@ GetCoreAsync(const string &in endpoint, bool start = true) {
+                return GetAsync(audienceCore, NadeoServices::BaseURLCore() + endpoint, start);
+            }
 
-        Net::HttpRequest@ GetCoreAsync(const string &in endpoint, bool start = true) {
-            return GetAsync(audienceCore, NadeoServices::BaseURLCore() + endpoint, start);
-        }
+            Net::HttpRequest@ GetLiveAsync(const string &in endpoint, bool start = true) {
+                return GetAsync(audienceLive, NadeoServices::BaseURLLive() + endpoint, start);
+            }
 
-        Net::HttpRequest@ GetLiveAsync(const string &in endpoint, bool start = true) {
-            return GetAsync(audienceLive, NadeoServices::BaseURLLive() + endpoint, start);
-        }
+            Net::HttpRequest@ GetMeetAsync(const string &in endpoint, bool start = true) {
+                return GetAsync(audienceLive, NadeoServices::BaseURLMeet() + endpoint, start);
+            }
 
-        void GetMapsAsync() {
-            try {
-                campaigns = {};
-                allMaps.DeleteAll();
+            Net::HttpRequest@ PostAsync(const string &in audience, const string &in url, const string &in body = "", bool start = true) {
+                NadeoServices::AddAudience(audience);
 
-                GetMapsSeasonalAsync();
-                GetMapsWeeklyAsync();
-                GetMapsTotdAsync();
+                while (!NadeoServices::IsAuthenticated(audience) || requesting)
+                    yield();
 
-                GetInfosAsync();
+                if (start)
+                    requesting = true;
 
-            } catch {
-                const string info = getExceptionInfo();
-                error(info);
-                UI::ShowNotification(
-                    pluginTitle,
-                    info,
-                    vec4(1.0f, 0.3f, 0.0f, 0.8f),
-                    10000
-                );
+                WaitAsync();
+
+                Net::HttpRequest@ req = NadeoServices::Post(audience, url, body);
+                if (start) {
+                    req.Start();
+                    while (!req.Finished())
+                        yield();
+
+                    requesting = false;
+                }
+
+                return req;
+            }
+
+            Net::HttpRequest@ PostAsync(const string &in audience, const string &in url, Json::Value@ body = null, bool start = true) {
+                return PostAsync(audience, url, Json::Write(body), start);
+            }
+
+            Net::HttpRequest@ PostCoreAsync(const string &in endpoint, const string &in body = "", bool start = true) {
+                return PostAsync(audienceCore, NadeoServices::BaseURLCore() + endpoint, body, start);
+            }
+
+            Net::HttpRequest@ PostCoreAsync(const string &in endpoint, Json::Value@ body = null, bool start = true) {
+                return PostAsync(audienceCore, NadeoServices::BaseURLCore() + endpoint, body, start);
+            }
+
+            Net::HttpRequest@ PostLiveAsync(const string &in endpoint, const string &in body = "", bool start = true) {
+                return PostAsync(audienceLive, NadeoServices::BaseURLLive() + endpoint, body, start);
+            }
+
+            Net::HttpRequest@ PostLiveAsync(const string &in endpoint, Json::Value@ body = null, bool start = true) {
+                return PostAsync(audienceLive, NadeoServices::BaseURLLive() + endpoint, body, start);
+            }
+
+            Net::HttpRequest@ PostMeetAsync(const string &in endpoint, const string &in body = "", bool start = true) {
+                return PostAsync(audienceLive, NadeoServices::BaseURLMeet() + endpoint, body, start);
+            }
+
+            Net::HttpRequest@ PostMeetAsync(const string &in endpoint, Json::Value@ body = null, bool start = true) {
+                return PostAsync(audienceLive, NadeoServices::BaseURLMeet() + endpoint, body, start);
+            }
+
+            void WaitAsync() {
+                uint64 now;
+
+                while ((now = Time::Now) - lastRequest < minimumWait)
+                    yield();
+
+                lastRequest = now;
             }
         }
 
         void GetMapsSeasonalAsync() {
-            trace("GetMapsSeasonalAsync");
+            trace("A:GetMapsSeasonalAsync");
 
-            Net::HttpRequest@ req = GetLiveAsync(
+            Net::HttpRequest@ req = Internal::GetLiveAsync(
                 "/api/token/campaign/official?length="
                 + (2 + 4 * (Text::ParseInt(Time::FormatStringUTC("%Y", Time::Stamp)) - 2020))
             );
 
             const int code = req.ResponseCode();
             if (code != 200) {
-                error("GetMapsSeasonalAsync: " + code + "; " + req.Error() + "; " + req.String());
+                error("A:GetMapsSeasonalAsync: " + code + "; " + req.Error() + "; " + req.String());
                 return;
             }
 
             Json::Value@ json = req.Json();
             if (!JsonExt::CheckType(json)) {
-                error("GetMapsSeasonalAsync: bad json data: " + Json::Write(json));
+                error("A:GetMapsSeasonalAsync: bad json data: " + Json::Write(json));
                 return;
             }
 
@@ -132,7 +175,7 @@ namespace API {
 
             Json::Value@ campaignList = JsonExt::GetValue(json, "campaignList", Json::Type::Array);
             if (campaignList is null || campaignList.Length == 0) {
-                error("GetMapsSeasonalAsync: bad/empty campaignList");
+                error("A:GetMapsSeasonalAsync: bad/empty campaignList");
                 return;
             }
 
@@ -141,22 +184,22 @@ namespace API {
         }
 
         void GetMapsTotdAsync() {
-            trace("GetMapsTotdAsync");
+            trace("A:GetMapsTotdAsync");
 
-            Net::HttpRequest@ req = GetLiveAsync(
+            Net::HttpRequest@ req = Internal::GetLiveAsync(
                 "/api/token/campaign/month?length="
                 + (6 + 12 * (Text::ParseInt(Time::FormatStringUTC("%Y", Time::Stamp)) - 2020))
             );
 
             const int code = req.ResponseCode();
             if (code != 200) {
-                error("GetMapsTotdAsync: " + code + "; " + req.Error() + "; " + req.String());
+                error("A:GetMapsTotdAsync: " + code + "; " + req.Error() + "; " + req.String());
                 return;
             }
 
             Json::Value@ json = req.Json();
             if (!JsonExt::CheckType(json)) {
-                error("GetMapsTotdAsync: bad json data: " + Json::Write(json));
+                error("A:GetMapsTotdAsync: bad json data: " + Json::Write(json));
                 return;
             }
 
@@ -164,7 +207,7 @@ namespace API {
 
             Json::Value@ monthList = JsonExt::GetValue(json, "monthList", Json::Type::Array);
             if (monthList is null || monthList.Length == 0) {
-                error("GetMapsTotdAsync: bad/empty monthList");
+                error("A:GetMapsTotdAsync: bad/empty monthList");
                 return;
             }
 
@@ -173,22 +216,22 @@ namespace API {
         }
 
         void GetMapsWeeklyAsync() {
-            trace("GetMapsWeeklyAsync");
+            trace("A:GetMapsWeeklyAsync");
 
-            Net::HttpRequest@ req = GetLiveAsync(
+            Net::HttpRequest@ req = Internal::GetLiveAsync(
                 "/api/campaign/weekly-shorts?length="
                 + (3 + 53 * (Text::ParseInt(Time::FormatStringUTC("%Y", Time::Stamp)) - 2024))
             );
 
             const int code = req.ResponseCode();
             if (code != 200) {
-                error("GetMapsWeeklyAsync: " + code + "; " + req.Error() + "; " + req.String());
+                error("A:GetMapsWeeklyAsync: " + code + "; " + req.Error() + "; " + req.String());
                 return;
             }
 
             Json::Value@ json = req.Json();
             if (!JsonExt::CheckType(json)) {
-                error("GetMapsWeeklyAsync: bad json data: " + Json::Write(json));
+                error("A:GetMapsWeeklyAsync: bad json data: " + Json::Write(json));
                 return;
             }
 
@@ -196,7 +239,7 @@ namespace API {
 
             Json::Value@ campaignList = JsonExt::GetValue(json, "campaignList", Json::Type::Array);
             if (campaignList is null || campaignList.Length == 0) {
-                error("GetMapsWeeklyAsync: bad/empty campaignList");
+                error("A:GetMapsWeeklyAsync: bad/empty campaignList");
                 return;
             }
 
@@ -204,68 +247,362 @@ namespace API {
                 campaigns.InsertAt(0, Campaign(campaignList[i], CampaignType::Weekly));
         }
 
-        Net::HttpRequest@ GetMeetAsync(const string &in endpoint, bool start = true) {
-            return GetAsync(audienceLive, NadeoServices::BaseURLMeet() + endpoint, start);
-        }
+        void GetPBsAsync(string[]@ uids) {
+            if (uids is null || uids.Length == 0)
+                return;
 
-        Net::HttpRequest@ PostAsync(const string &in audience, const string &in url, const string &in body = "", bool start = true) {
-            NadeoServices::AddAudience(audience);
+            const uint64 start = Time::Now;
+            trace("A:GetPBsAsync " + uids.Length + " maps");
 
-            while (!NadeoServices::IsAuthenticated(audience) || requesting)
-                yield();
+            uint         count, index = 0;
+            const uint   max          = 50;
+            // const float  progressMin  = 0.32f;
+            // const float  progressMax  = 1.0f;
+            string[]     remaining    = uids;
+            uint64       reqStart;
 
-            if (start)
-                requesting = true;
+            while (remaining.Length > 0 && (index == 0 || index < uids.Length - 1)) {
+                trace("A:GetPBsAsync " + index + "/" + uids.Length);
 
-            WaitAsync();
+                // progress = progressMin + (float(index) / Math::Max(1, uids.Length)) * (progressMax - progressMin);
+                // print("progress " + progress);
 
-            Net::HttpRequest@ req = NadeoServices::Post(audience, url, body);
-            if (start) {
-                req.Start();
-                while (!req.Finished())
-                    yield();
+                count = Math::Min(max, remaining.Length);
 
-                requesting = false;
+                // trace("checking " + count + " maps of " + remaining.Length + " remaining");
+
+                Json::Value@ body = Json::Object();
+                body["maps"] = Json::Array();
+
+                for (uint i = 0; i < count; i++) {
+                    Json::Value@ map = Json::Object();
+
+                    map["groupUid"] = "Personal_Best";
+                    map["mapUid"] = remaining[i];
+
+                    body["maps"].Add(map);
+
+                    index++;
+                    // print("index " + index++);
+                }
+
+                reqStart = Time::Now;
+
+                Net::HttpRequest@ req = Internal::PostLiveAsync("/api/token/leaderboard/group/map", body);
+                // print("aprx. url length: " + (urlLive.Length + 32 + Json::Write(body).Length));
+
+                const int respCode = req.ResponseCode();
+                if (respCode != 200) {
+                    error("A:GetPBsAsync some failed after " + (Time::Now - reqStart) + "ms: code: " + respCode + " | msg: " + req.String().Replace("\n", " "));
+                    continue;
+                }
+
+                // const string s = req.String();
+                // warn("setting clipboard with " + s.Length + " chars");
+                // IO::SetClipboard(s);
+
+                Json::Value@ data = req.Json();
+                if (!JsonExt::CheckType(data, Json::Type::Array)) {
+                    error("A:GetPBsAsync some failed after " + (Time::Now - reqStart) + "ms: bad json");
+                    continue;
+                }
+
+                uint new = 0, score, total = 0;
+                string uid;
+
+                for (uint i = 0; i < data.Length; i++) {
+                    Json::Value@ map_api = data[i];
+                    if (!JsonExt::CheckType(map_api)) {
+                        // warn("bad json type: " + i);
+                        continue;
+                    }
+
+                    uid = JsonExt::GetString(map_api, "mapUid");
+                    // if (!maps.Exists(uid)) {
+                    if (!allMaps.Exists(uid)) {
+                        // warn("map not found: " + uid);
+                        continue;
+                    }
+
+                    Map@ map = cast<Map@>(allMaps[uid]);
+                    if (map is null) {
+                        // warn("null map: " + uid);
+                        continue;
+                    }
+
+                    score = JsonExt::GetUint(map_api, "score");
+                    if (!Driven(score)) {
+                        // warn("score invalid: " + score);
+                        continue;
+                    }
+
+                    total++;
+
+                    if (!map.driven || score < map.pb) {
+                        // print("\\$Isetting map pb: " + map.name.stripped + " | " + score);
+                        map.pb = score;
+                        new++;
+                    } else if (score != map.pb) {
+                        // warn("problem with score: " + score + " | map.pb " + map.pb);
+                    }
+                }
+
+                uint missing = 0;
+
+                for (uint i = 0; i < count; i++) {
+                    uid = remaining[i];
+                    if (!allMaps.Exists(uid))
+                        continue;
+
+                    Map@ map = cast<Map@>(allMaps[uid]);
+                    if (map is null)
+                        continue;
+
+                    if (map.pb == uint(-1)) {
+                        map.pb = 0;  // api returned no pb
+                        missing++;
+                    }
+                }
+
+                remaining.RemoveRange(0, count);
+
+                if (missing > 0 || new > 0) {
+                    trace("A:GetPBsAsync " + count + " PBs after " + (Time::Now - reqStart) + "ms (new/none): " + new + " | " + missing);
+                    Files::SavePBs();
+                }
             }
 
-            return req;
+            trace("A:GetPBsAsync " + uids.Length + " maps done after " + (Time::Now - start) + "ms");
         }
 
-        Net::HttpRequest@ PostAsync(const string &in audience, const string &in url, Json::Value@ body = null, bool start = true) {
-            return PostAsync(audience, url, Json::Write(body), start);
+        void GetPBsAsync() {
+            GetPBsAsync(allMaps.GetKeys());
         }
+    }
+}
 
-        Net::HttpRequest@ PostCoreAsync(const string &in endpoint, const string &in body = "", bool start = true) {
-            return PostAsync(audienceCore, NadeoServices::BaseURLCore() + endpoint, body, start);
-        }
+namespace Manager {
+    void GetMapInfoAsync(Map@ map) {
+        const uint64 start = Time::Now;
+        trace("M:GetMapInfoAsync " + map.uid);
 
-        Net::HttpRequest@ PostCoreAsync(const string &in endpoint, Json::Value@ body = null, bool start = true) {
-            return PostAsync(audienceCore, NadeoServices::BaseURLCore() + endpoint, body, start);
-        }
+        try {
+            if (map.uid.Length != 26 && map.uid.Length != 27)
+                throw("bad uid: '" + map.uid + "'");
 
-        Net::HttpRequest@ PostLiveAsync(const string &in endpoint, const string &in body = "", bool start = true) {
-            return PostAsync(audienceLive, NadeoServices::BaseURLLive() + endpoint, body, start);
-        }
+            CGameManiaAppTitle@ Title = cast<CTrackMania@>(GetApp()).MenuManager.MenuCustom_CurrentManiaApp;
 
-        Net::HttpRequest@ PostLiveAsync(const string &in endpoint, Json::Value@ body = null, bool start = true) {
-            return PostAsync(audienceLive, NadeoServices::BaseURLLive() + endpoint, body, start);
-        }
-
-        Net::HttpRequest@ PostMeetAsync(const string &in endpoint, const string &in body = "", bool start = true) {
-            return PostAsync(audienceLive, NadeoServices::BaseURLMeet() + endpoint, body, start);
-        }
-
-        Net::HttpRequest@ PostMeetAsync(const string &in endpoint, Json::Value@ body = null, bool start = true) {
-            return PostAsync(audienceLive, NadeoServices::BaseURLMeet() + endpoint, body, start);
-        }
-
-        void WaitAsync() {
-            uint64 now;
-
-            while ((now = Time::Now) - lastRequest < minimumWait)
+            CWebServicesTaskResult_NadeoServicesMapScript@ task = Title.DataFileMgr.Map_NadeoServices_GetFromUid(
+                Title.UserMgr.Users[0].Id,
+                map.uid
+            );
+            while (task.IsProcessing)
                 yield();
 
-            lastRequest = now;
+            if (task.HasFailed || !task.HasSucceeded || task.Map is null) {
+                if (Title !is null && Title.DataFileMgr !is null)
+                    Title.DataFileMgr.TaskResult_Release(task.Id);
+
+                throw("task failed: '" + map.uid + "'");
+            }
+
+            @map.name      = FormattedString(task.Map.Name);
+            map.timeAuthor = task.Map.AuthorScore;
+            map.timeGold   = task.Map.GoldScore;
+            map.timeSilver = task.Map.SilverScore;
+            map.timeBronze = task.Map.BronzeScore;
+            map.url        = task.Map.FileUrl;
+
+            trace("M:GetMapInfoAsync " + map.uid + " (" + map.name + ") done after " + (Time::Now - start) + "ms");
+
+            if (Title !is null && Title.DataFileMgr !is null)
+                Title.DataFileMgr.TaskResult_Release(task.Id);
+
+        } catch {
+            warn("M:GetMapInfoAsync " + map.uid + " failed after " + (Time::Now - start) + "ms: " + getExceptionInfo());
         }
+    }
+
+    void GetMapInfoAsync(const string &in uid) {
+        if (!allMaps.Exists(uid))
+            return;
+
+        GetMapInfoAsync(cast<Map@>(allMaps[uid]));
+    }
+
+    void GetMapInfosAsync(string[]@ uids) {
+        if (uids is null || uids.Length == 0)
+            return;
+
+        const uint64 start = Time::Now;
+        trace("M:GetMapInfosAsync " + uids.Length + " maps");
+
+        CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+        try {
+            MwFastBuffer<wstring> MapUidList;
+            for (uint i = 0; i < uids.Length; i++)
+                MapUidList.Add(wstring(uids[i]));
+
+            CGameManiaAppTitle@ Title = App.MenuManager.MenuCustom_CurrentManiaApp;
+
+            CWebServicesTaskResult_NadeoServicesMapListScript@ task = Title.DataFileMgr.Map_NadeoServices_GetListFromUid(
+                Title.UserMgr.Users[0].Id,
+                MapUidList
+            );
+            while (task.IsProcessing)
+                yield();
+
+            if (task.HasFailed || !task.HasSucceeded || task.MapList.Length == 0) {
+                if (Title !is null && Title.DataFileMgr !is null)
+                    Title.DataFileMgr.TaskResult_Release(task.Id);
+
+                throw("task failed");
+            }
+
+            // print("\\$0F0got " + task.MapList.Length + " maps");
+
+            for (uint i = 0; i < task.MapList.Length; i++) {
+                CNadeoServicesMap@ reqMap = task.MapList[i];
+                // print("got map '" + Text::OpenplanetFormatCodes(reqMap.Name) + "'");
+                Map@ map = cast<Map@>(allMaps[reqMap.Uid]);
+
+                map.timeAuthor = reqMap.AuthorScore;
+                map.timeGold   = reqMap.GoldScore;
+                map.timeSilver = reqMap.SilverScore;
+                map.timeBronze = reqMap.BronzeScore;
+                @map.name      = FormattedString(reqMap.Name);
+            }
+
+            trace("M:GetMapInfosAsync " + task.MapList.Length + " maps after " + (Time::Now - start) + "ms");
+
+            if (Title !is null && Title.DataFileMgr !is null)
+                Title.DataFileMgr.TaskResult_Release(task.Id);
+
+        } catch {
+            warn("M:GetMapInfosAsync failed after " + (Time::Now - start) + "ms: " + getExceptionInfo());
+        }
+    }
+
+    void GetMapInfosAsync() {
+        GetMapInfosAsync(allMaps.GetKeys());
+    }
+
+    void GetPB(Map@ map) {
+        if (map is null)
+            return;
+
+        CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+        if (false
+            || App.MenuManager is null
+            || App.MenuManager.MenuCustom_CurrentManiaApp is null
+            || App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr is null
+            || App.UserManagerScript is null
+            || App.UserManagerScript.Users.Length == 0
+            || App.UserManagerScript.Users[0] is null
+        ) {
+            map.pb = uint(-1);
+            return;
+        }
+
+        const uint pb = App.MenuManager.MenuCustom_CurrentManiaApp.ScoreMgr.Map_GetRecord_v2(
+            App.UserManagerScript.Users[0].Id,
+            map.uid,
+            "PersonalBest",
+            "",
+            "TimeAttack",
+            ""
+        );
+        if (pb != uint(-1))
+            map.pb = pb;
+    }
+
+    void GetPB(const string &in uid) {
+        if (!allMaps.Exists(uid))
+            return;
+
+        GetPB(cast<Map@>(allMaps[uid]));
+    }
+
+    void GetPBAsync(Map@ map) {
+        if (map is null)
+            return;
+
+        const uint64 start = Time::Now;
+        trace("M:GetPBAsync " + map.uid);
+
+        try {
+            CTrackMania@ App = cast<CTrackMania@>(GetApp());
+            CGameManiaAppTitle@ Title = App.MenuManager.MenuCustom_CurrentManiaApp;
+
+            MwFastBuffer<wstring> wsid;
+            wsid.Add(Title.LocalUser.WebServicesUserId);
+
+            CWebServicesTaskResult_MapRecordListScript@ task = Title.ScoreMgr.Map_GetPlayerListRecordList(
+                App.UserManagerScript.Users[0].Id,
+                wsid,
+                map.uid,
+                "PersonalBest",
+                "",
+                "TimeAttack",
+                ""
+            );
+            while (task.IsProcessing)
+                yield();
+
+            if (task.HasFailed || !task.HasSucceeded) {
+                if (Title !is null && Title.DataFileMgr !is null)
+                    Title.DataFileMgr.TaskResult_Release(task.Id);
+
+                throw("task failed: '" + map.uid + "'");
+            }
+
+            map.pb = task.MapRecordList.Length > 0 ? task.MapRecordList[0].Time : 0;
+
+            trace("M:GetPBAsync " + map.uid + " (" + map.name + ") done after " + (Time::Now - start) + "ms");
+
+            if (Title !is null && Title.DataFileMgr !is null)
+                Title.DataFileMgr.TaskResult_Release(task.Id);
+
+        } catch {
+            warn("M:GetPBAsync " + map.uid + " failed after " + (Time::Now - start) + "ms: " + getExceptionInfo());
+        }
+    }
+
+    void GetPBAsync(const string &in uid) {
+        if (!allMaps.Exists(uid))
+            return;
+
+        GetPBAsync(cast<Map@>(allMaps[uid]));
+    }
+
+    void GetPBs(string[]@ uids) {
+        if (uids is null || uids.Length == 0)
+            return;
+
+        for (uint i = 0; i < uids.Length; i++)
+            GetPB(uids[i]);
+    }
+
+    void GetPBs() {
+        GetPBs(allMaps.GetKeys());
+    }
+
+    void GetPBsAsync(string[]@ uids) {
+        if (uids is null || uids.Length == 0)
+            return;
+
+        const uint64 start = Time::Now;
+        trace("M:GetPBsAsync " + uids.Length + " maps");
+
+        for (uint i = 0; i < uids.Length; i++)
+            GetPBAsync(uids[i]);
+
+        trace("M:GetPBsAsync " + uids.Length + " maps done after " + (Time::Now - start) + "ms");
+    }
+
+    void GetPBsAsync() {
+        GetPBsAsync(allMaps.GetKeys());
     }
 }

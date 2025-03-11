@@ -1,5 +1,5 @@
 // c 2024-01-08
-// m 2025-03-10
+// m 2025-03-11
 
 [SettingsTab name="Debug" icon="Bug" order=1]
 void RenderDebug() {
@@ -47,18 +47,28 @@ void RenderDebug() {
         UI::EndTabItem();
     }
 
+    int cols = 10;
+#if DEPENDENCY_WARRIORMEDALS
+    cols++;
+#endif
+
     if (UI::BeginTabItem("Maps")) {
-        if (UI::BeginTable("##table-maps", 8, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
+        if (UI::BeginTable("##table-maps", cols, UI::TableFlags::RowBg | UI::TableFlags::ScrollY)) {
             UI::PushStyleColor(UI::Col::TableRowBgAlt, vec4(vec3(), 0.5f));
             UI::TableSetupScrollFreeze(0, 1);
-            UI::TableSetupColumn("uid",  UI::TableColumnFlags::WidthFixed, scale * 200.0f);
-            UI::TableSetupColumn("name", UI::TableColumnFlags::WidthFixed, scale * 200.0f);
-            UI::TableSetupColumn("camp", UI::TableColumnFlags::WidthFixed, scale * 200.0f);
-            UI::TableSetupColumn("at",   UI::TableColumnFlags::WidthFixed, scale * 70.0f);
-            UI::TableSetupColumn("gt",   UI::TableColumnFlags::WidthFixed, scale * 70.0f);
-            UI::TableSetupColumn("st",   UI::TableColumnFlags::WidthFixed, scale * 70.0f);
-            UI::TableSetupColumn("bt",   UI::TableColumnFlags::WidthFixed, scale * 70.0f);
-            UI::TableSetupColumn("play", UI::TableColumnFlags::WidthFixed, scale * 30.0f);
+            UI::TableSetupColumn("uid",     UI::TableColumnFlags::WidthFixed, scale * 250.0f);
+            UI::TableSetupColumn("name",    UI::TableColumnFlags::WidthFixed, scale * 200.0f);
+            UI::TableSetupColumn("camp",    UI::TableColumnFlags::WidthFixed, scale * 120.0f);
+#if DEPENDENCY_WARRIORMEDALS
+            UI::TableSetupColumn("warrior", UI::TableColumnFlags::WidthFixed, scale * 70.0f);
+#endif`
+            UI::TableSetupColumn("author",  UI::TableColumnFlags::WidthFixed, scale * 70.0f);
+            UI::TableSetupColumn("gold",    UI::TableColumnFlags::WidthFixed, scale * 70.0f);
+            UI::TableSetupColumn("silver",  UI::TableColumnFlags::WidthFixed, scale * 70.0f);
+            UI::TableSetupColumn("bronze",  UI::TableColumnFlags::WidthFixed, scale * 70.0f);
+            UI::TableSetupColumn("pb",      UI::TableColumnFlags::WidthFixed, scale * 70.0f);
+            UI::TableSetupColumn("medals",  UI::TableColumnFlags::WidthFixed, scale * 70.0f);
+            UI::TableSetupColumn("play",    UI::TableColumnFlags::WidthFixed, scale * 30.0f);
             UI::TableHeadersRow();
 
             string[]@ uids = allMaps.GetKeys();
@@ -79,6 +89,11 @@ void RenderDebug() {
                     UI::TableNextColumn();
                     UI::Text(map.campaign.name);
 
+#if DEPENDENCY_WARRIORMEDALS
+                    UI::TableNextColumn();
+                    UI::Text(Driven(map.timeWarrior) ? Time::Format(map.timeWarrior) : "");
+#endif
+
                     UI::TableNextColumn();
                     UI::Text(Time::Format(map.timeAuthor));
 
@@ -90,6 +105,12 @@ void RenderDebug() {
 
                     UI::TableNextColumn();
                     UI::Text(Time::Format(map.timeBronze));
+
+                    UI::TableNextColumn();
+                    UI::Text(map.pbFmt);
+
+                    UI::TableNextColumn();
+                    UI::Text(map.medals > -1 ? tostring(map.medals) : "");
 
                     UI::TableNextColumn();
                     UI::BeginDisabled(map.loading);

@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2025-03-10
+// m 2025-03-11
 
 enum MapSeries {
     White,
@@ -10,30 +10,59 @@ enum MapSeries {
     Unknown
 }
 
+enum Medal {
+    Unplayed = -1,
+    None     = 0,
+    Bronze   = 1,
+    Silver   = 2,
+    Gold     = 3,
+    Author   = 4,
+#if DEPENDENCY_WARRIORMEDALS
+    Warrior  = 5
+#endif
+}
+
 class Map {
     Campaign@        campaign;
+    bool             gettingPB   = false;
     string           id;
-    int              monthDay   = -1;
+    bool             loading     = false;
+    int              medals      = -1;
+    int              monthDay    = -1;
     FormattedString@ name;
-    uint             pb         = uint(-1);
-    int              position   = -1;
-    MapSeries        series     = MapSeries::Unknown;
-    uint             timeAuthor = uint(-1);
-    uint             timeBronze = uint(-1);
-    uint             timeGold   = uint(-1);
-    uint             timeSilver = uint(-1);
+    int              position    = -1;
+    MapSeries        series      = MapSeries::Unknown;
+    uint             timeAuthor  = uint(-1);
+    uint             timeBronze  = uint(-1);
+    uint             timeGold    = uint(-1);
+    uint             timeSilver  = uint(-1);
+    uint             timeWarrior = uint(-1);
     string           uid;
     string           url;
     int              weekDay    = -1;
-
-    bool             gettingInfo = false;
-    bool             loading     = false;
 
     string get_date() {
         if (campaign is null || campaign.type != CampaignType::Totd)
             return "";
 
         return campaign.name.stripped + "-" + monthDay;
+    }
+
+    bool get_driven() {
+        return Driven(_pb);
+    }
+
+    private uint _pb = uint(-1);
+    uint get_pb() { return _pb; }
+    void set_pb(uint p) {
+        _pb = p;
+        medals = GetMedals();
+        // print(uid + " pb set to " + _pb);
+        Files::AddPB(this);
+    }
+
+    string get_pbFmt() {
+        return driven ? Time::Format(_pb) : "";
     }
 
     Map(Json::Value@ json) {
@@ -50,52 +79,22 @@ class Map {
         }
     }
 
-    void GetInfoAsync() {
-        if (gettingInfo)
+    bool Achieved(Medal medal) {
+        return medals >= medal;
+    }
+
+    void GetPB() {
+        Manager::GetPB(this);
+    }
+
+    void GetPBAsync() {
+        if (gettingPB)
             return;
 
-        gettingInfo = true;
-
-        const uint64 start = Time::Now;
-        trace("getting info for '" + uid + "'");
-
-        try {
-            if (uid.Length != 26 && uid.Length != 27)
-                throw("bad uid: '" + uid + "'");
-
-            CGameManiaAppTitle@ Title = cast<CTrackMania@>(GetApp()).MenuManager.MenuCustom_CurrentManiaApp;
-
-            CWebServicesTaskResult_NadeoServicesMapScript@ task = Title.DataFileMgr.Map_NadeoServices_GetFromUid(
-                Title.UserMgr.Users[0].Id,
-                uid
-            );
-            while (task.IsProcessing)
-                yield();
-
-            if (task.HasFailed || !task.HasSucceeded || task.Map is null) {
-                if (Title !is null && Title.DataFileMgr !is null)
-                    Title.DataFileMgr.TaskResult_Release(task.Id);
-
-                throw("task failed: '" + uid + "'");
-            }
-
-            @name      = FormattedString(task.Map.Name);
-            timeAuthor = task.Map.AuthorScore;
-            timeGold   = task.Map.GoldScore;
-            timeSilver = task.Map.SilverScore;
-            timeBronze = task.Map.BronzeScore;
-            url        = task.Map.FileUrl;
-
-            trace("got info for '" + uid + "' (" + name.stripped + ") after " + (Time::Now - start) + "ms");
-
-            if (Title !is null && Title.DataFileMgr !is null)
-                Title.DataFileMgr.TaskResult_Release(task.Id);
-
-        } catch {
-            warn("GetInfoAsync failed on '" + uid + "' after " + (Time::Now - start) + "ms: " + getExceptionInfo());
-        }
-
-        gettingInfo = false;
+        gettingPB = true;
+        GetPB();
+        sleep(500);
+        gettingPB = false;
     }
 
     void PlayAsync() {
@@ -103,22 +102,22 @@ class Map {
             return;
 
         if (url.Length == 0) {
-            GetInfoAsync();
+            Manager::GetMapInfoAsync(this);
 
             if (url.Length == 0) {
-                warn("can't play " + name.stripped + ": blank url");
+                warn("can't play " + name + ": blank url");
                 return;
             }
         }
 
         loading = true;
-        trace("loading " + name.stripped);
+        trace("loading '" + name + "'");
 
 #if DEPENDENCY_MLHOOK
     if (Meta::GetPluginFromID("MLHook").Enabled)
         MLHook::Queue_Menu_SendCustomEvent(
             "Event_UpdateLoadingScreen",
-            {"$0F0$I$N$SCampaign Completionist - $G$I$M$S" + name.raw}
+            {"$0F0$I$N$S" + PluginName() + " - $G$I$M$S" + name.raw}
         );
 #endif
 
@@ -131,6 +130,26 @@ class Map {
 
         loading = false;
     }
+
+    int GetMedals() {
+        if (!driven)
+            return -1;
+
+#if DEPENDENCY_WARRIORMEDALS
+        if (Driven(timeWarrior) && pb <= timeWarrior)
+            return 5;
+#endif
+        if (pb <= timeAuthor)
+            return 4;
+        if (pb <= timeGold)
+            return 3;
+        if (pb <= timeSilver)
+            return 2;
+        if (pb <= timeBronze)
+            return 1;
+
+        return 0;
+    }
 }
 
 void AddMap(Map@ map) {
@@ -138,72 +157,4 @@ void AddMap(Map@ map) {
         allMaps.Set(map.uid, @map);
     else
         warn("duplicate uid: " + map.uid);
-}
-
-void GetInfosAsync() {
-    const uint64 start = Time::Now;
-    trace("getting info for " + allMaps.GetSize() + " maps");
-
-    CTrackMania@ App = cast<CTrackMania@>(GetApp());
-
-    try {
-        MwFastBuffer<wstring> MapUidList;
-        string[]@ uids = allMaps.GetKeys();
-        if (uids.Length == 0)
-            throw("no maps");
-        for (uint i = 0; i < uids.Length; i++)
-            MapUidList.Add(wstring(uids[i]));
-
-        CGameManiaAppTitle@ Title = App.MenuManager.MenuCustom_CurrentManiaApp;
-
-        CWebServicesTaskResult_NadeoServicesMapListScript@ task = Title.DataFileMgr.Map_NadeoServices_GetListFromUid(
-            Title.UserMgr.Users[0].Id,
-            MapUidList
-        );
-        while (task.IsProcessing)
-            yield();
-
-        if (task.HasFailed || !task.HasSucceeded || task.MapList.Length == 0) {
-            if (Title !is null && Title.DataFileMgr !is null)
-                Title.DataFileMgr.TaskResult_Release(task.Id);
-
-            throw("task failed");
-        }
-
-        // print("\\$0F0got " + task.MapList.Length + " maps");
-
-        for (uint i = 0; i < task.MapList.Length; i++) {
-            CNadeoServicesMap@ reqMap = task.MapList[i];
-            // print("got map '" + Text::OpenplanetFormatCodes(reqMap.Name) + "'");
-            Map@ map = cast<Map@>(allMaps[reqMap.Uid]);
-
-            map.timeAuthor = reqMap.AuthorScore;
-            map.timeGold   = reqMap.GoldScore;
-            map.timeSilver = reqMap.SilverScore;
-            map.timeBronze = reqMap.BronzeScore;
-            @map.name      = FormattedString(reqMap.Name);
-        }
-
-        trace("got info for " + task.MapList.Length + " maps after " + (Time::Now - start) + "ms");
-
-        if (Title !is null && Title.DataFileMgr !is null)
-            Title.DataFileMgr.TaskResult_Release(task.Id);
-
-    } catch {
-        warn("GetInfosAsync failed after " + (Time::Now - start) + "ms: " + getExceptionInfo());
-    }
-}
-
-void ReturnToMenuAsync() {
-    CTrackMania@ App = cast<CTrackMania@>(GetApp());
-
-    if (App.Network.PlaygroundClientScriptAPI.IsInGameMenuDisplayed)
-        App.Network.PlaygroundInterfaceScriptHandler.CloseInGameMenu(
-            CGameScriptHandlerPlaygroundInterface::EInGameMenuResult::Quit
-        );
-
-    App.BackToMainMenu();
-
-    while (!App.ManiaTitleControlScriptAPI.IsReady)
-        yield();
 }
