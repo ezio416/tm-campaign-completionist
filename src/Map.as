@@ -158,3 +158,10 @@ void AddMap(Map@ map) {
     else
         warn("duplicate uid: " + map.uid);
 }
+
+Map@ GetMap(const string &in uid) {
+    if (!allMaps.Exists(uid))
+        return null;
+
+    return cast<Map@>(allMaps[uid]);
+}

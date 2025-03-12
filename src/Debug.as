@@ -75,7 +75,7 @@ void RenderDebug() {
             UI::ListClipper clipper(uids.Length);
             while (clipper.Step()) {
                 for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
-                    Map@ map = cast<Map@>(allMaps[uids[i]]);
+                    Map@ map = GetMap(uids[i]);
 
                     UI::TableNextRow();
 

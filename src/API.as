@@ -318,13 +318,7 @@ namespace API {
                     }
 
                     uid = JsonExt::GetString(map_api, "mapUid");
-                    // if (!maps.Exists(uid)) {
-                    if (!allMaps.Exists(uid)) {
-                        // warn("map not found: " + uid);
-                        continue;
-                    }
-
-                    Map@ map = cast<Map@>(allMaps[uid]);
+                    Map@ map = GetMap(uid);
                     if (map is null) {
                         // warn("null map: " + uid);
                         continue;
@@ -350,11 +344,7 @@ namespace API {
                 uint missing = 0;
 
                 for (uint i = 0; i < count; i++) {
-                    uid = remaining[i];
-                    if (!allMaps.Exists(uid))
-                        continue;
-
-                    Map@ map = cast<Map@>(allMaps[uid]);
+                    Map@ map = GetMap(remaining[i]);
                     if (map is null)
                         continue;
 
@@ -383,6 +373,9 @@ namespace API {
 
 namespace Manager {
     void GetMapInfoAsync(Map@ map) {
+        if (map is null)
+            return;
+
         const uint64 start = Time::Now;
         trace("M:GetMapInfoAsync " + map.uid);
 
@@ -424,10 +417,7 @@ namespace Manager {
     }
 
     void GetMapInfoAsync(const string &in uid) {
-        if (!allMaps.Exists(uid))
-            return;
-
-        GetMapInfoAsync(cast<Map@>(allMaps[uid]));
+        GetMapInfoAsync(GetMap(uid));
     }
 
     void GetMapInfosAsync(string[]@ uids) {
@@ -465,7 +455,7 @@ namespace Manager {
             for (uint i = 0; i < task.MapList.Length; i++) {
                 CNadeoServicesMap@ reqMap = task.MapList[i];
                 // print("got map '" + Text::OpenplanetFormatCodes(reqMap.Name) + "'");
-                Map@ map = cast<Map@>(allMaps[reqMap.Uid]);
+                Map@ map = GetMap(reqMap.Uid);
 
                 map.timeAuthor = reqMap.AuthorScore;
                 map.timeGold   = reqMap.GoldScore;
@@ -519,10 +509,7 @@ namespace Manager {
     }
 
     void GetPB(const string &in uid) {
-        if (!allMaps.Exists(uid))
-            return;
-
-        GetPB(cast<Map@>(allMaps[uid]));
+        GetPB(GetMap(uid));
     }
 
     void GetPBAsync(Map@ map) {
@@ -571,10 +558,7 @@ namespace Manager {
     }
 
     void GetPBAsync(const string &in uid) {
-        if (!allMaps.Exists(uid))
-            return;
-
-        GetPBAsync(cast<Map@>(allMaps[uid]));
+        GetPBAsync(GetMap(uid));
     }
 
     void GetPBs(string[]@ uids) {

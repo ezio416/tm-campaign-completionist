@@ -4,6 +4,7 @@
 dictionary@   allMaps           = dictionary();
 Campaign@[]   campaigns;
 bool          hasPlayPermission = false;
+bool          init              = false;
 const string  pluginColor       = "\\$0F0";
 const string  pluginIcon        = Icons::Check;
 Meta::Plugin@ pluginMeta        = Meta::ExecutingPlugin();
@@ -19,7 +20,8 @@ void Main() {
         if (S_NotifyStarter)
             UI::ShowNotification(
                 pluginTitle,
-                "Paid access is required to play maps, but you can still track your progress on the current Nadeo Campaign",
+                "Paid access is required to play maps, but you can still track your progress on"
+                " the first 10 maps of current Nadeo Campaign and the current Weekly Shorts",
                 vec4(1.0f, 0.1f, 0.1f, 0.8f)
             );
     }
@@ -59,6 +61,8 @@ void GetMapsAsync() {
         Manager::GetMapInfosAsync(keys);
         GetWarriorsAsync(keys);
 
+        // Ordering of PB checking matters
+        // Trust Nadeo's servers over anything local
         Files::LoadPBs();
         if (!S_Init) {
             Manager::GetPBsAsync(keys);
@@ -68,7 +72,7 @@ void GetMapsAsync() {
         Files::SavePBs();
 
     } catch {
-        const string info = getExceptionInfo();
+        const string info = "GetMapsAsync " + getExceptionInfo();
         error(info);
         UI::ShowNotification(
             PluginTitle(),
@@ -88,12 +92,12 @@ void GetWarriorsAsync(string[]@ uids) {
 
     const dictionary@ warMaps = WarriorMedals::GetMaps();
     while (warMaps is null || warMaps.GetSize() == 0)
-        yield();
+        yield();  // unlikely since GetMapInfosAsync takes so long
 
     uint wm;
     for (uint i = 0; i < uids.Length; i++) {
         if (Driven((wm = WarriorMedals::GetWMTime(uids[i])))) {
-            cast<Map@>(allMaps[uids[i]]).timeWarrior = wm;
+            GetMap(uids[i]).timeWarrior = wm;
             total++;
         }
     }
@@ -108,18 +112,18 @@ void PBLoop() {
     while (true) {
         sleep(500);
 
-        if (App.RootMap is null || !allMaps.Exists(App.RootMap.EdChallengeId))
+        if (App.RootMap is null || App.Editor !is null)
             continue;
 
-        Map@ map = cast<Map@>(allMaps[App.RootMap.EdChallengeId]);
+        Map@ map = GetMap(App.RootMap.EdChallengeId);
+        if (map is null)
+            continue;
 
         const uint prevPb = map.pb;
-
         map.GetPBAsync();
-
         if (prevPb != map.pb) {
             trace("PBLoop " + map.uid + " new pb " + Time::Format(map.pb));
-            Files::SavePB(map);
+            Files::SavePBs();
         }
     }
 }

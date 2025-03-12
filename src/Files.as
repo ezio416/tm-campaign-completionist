@@ -4,6 +4,7 @@
 Json::Value@ pbs = Json::Object();
 
 namespace Files {
+    bool         loaded  = false;
     const string pbsPath = IO::FromStorageFolder("pbs.json").Replace("\\", "/");
 
     void AddPB(const string &in uid, uint pb) {
@@ -35,6 +36,7 @@ namespace Files {
         if (!IO::FileExists(pbsPath)) {
             warn("F:LoadPBs not found");
             @pbs = Json::Object();
+            loaded = true;
             return;
         }
 
@@ -56,23 +58,24 @@ namespace Files {
 
         for (uint i = 0; i < uids.Length; i++) {
             uid = uids[i];
-
-            if (allMaps.Exists(uid)) {
-                Map@ map = cast<Map@>(allMaps[uid]);
-
-                if (map !is null) {
-                    const uint score = uint(pbs[uid]);
-
-                    if (score != uint(-1) && score > 0)
-                        map.pb = score;
-                } else
-                    warn("F:LoadPBs map is null: " + uid);
-            } else {
+            if (!allMaps.Exists(uid)) {
                 warn("F:LoadPBs missing key in maps: " + uid);
                 missing++;
+                continue;
             }
+
+            Map@ map = GetMap(uid);
+            if (map is null) {
+                warn("F:LoadPBs map is null: " + uid);
+                continue;
+            }
+
+            const uint score = JsonExt::GetUint(pbs, uid);
+            if (Driven(score))
+                map.pb = score;
         }
 
+        loaded = true;
         trace("F:LoadPBs " + pbs.Length + (missing > 0 ? " (" + missing + " missing)" : "") + " done after " + (Time::Now - start) + "ms");
     }
 
@@ -89,13 +92,13 @@ namespace Files {
     }
 
     void SavePB(const string &in uid) {
-        if (!allMaps.Exists(uid))
-            return;
-
-        SavePB(cast<Map@>(allMaps[uid]));
+        SavePB(GetMap(uid));
     }
 
     void SavePBs() {
+        if (!loaded)
+            return;
+
         const uint64 start = Time::Now;
         trace("F:SavePBs " + pbs.Length);
 
@@ -105,5 +108,12 @@ namespace Files {
         } catch {
             error("F:SavePBs " + pbs.Length + " failed after " + (Time::Now - start) + "ms: " + getExceptionInfo());
         }
+    }
+
+    void SavePBsWaitForInitAsync() {
+        while (!init)
+            yield();
+
+        SavePBs();
     }
 }
