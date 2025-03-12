@@ -3,12 +3,9 @@
 ![Version](https://img.shields.io/badge/dynamic/json?query=version&url=https%3A%2F%2Fopenplanet.dev%2Fapi%2Fplugin%2F481&label=Version&color=red)
 ![Game Trackmania](https://img.shields.io/badge/Game-Trackmania-blue)
 
-    ╔═╗┌─┐┌┬┐┌─┐┌─┐┬┌─┐┌┐┌
-    ║  ├─┤│││├─┘├─┤││ ┬│││
-    ╚═╝┴ ┴┴ ┴┴  ┴ ┴┴└─┘┘└┘
-    ╔═╗┌─┐┌┬┐┌─┐┬  ┌─┐┌┬┐┬┌─┐┌┐┌┬┌─┐┌┬┐
-    ║  │ ││││├─┘│  ├┤  │ ││ │││││└─┐ │
-    ╚═╝└─┘┴ ┴┴  ┴─┘└─┘ ┴ ┴└─┘┘└┘┴└─┘ ┴
+    ╔═╗┌─┐┌┬┐┌─┐┌─┐┬┌─┐┌┐┌  ╔═╗┌─┐┌┬┐┌─┐┬  ┌─┐┌┬┐┬┌─┐┌┐┌┬┌─┐┌┬┐
+    ║  ├─┤│││├─┘├─┤││ ┬│││  ║  │ ││││├─┘│  ├┤  │ ││ │││││└─┐ │
+    ╚═╝┴ ┴┴ ┴┴  ┴ ┴┴└─┘┘└┘  ╚═╝└─┘┴ ┴┴  ┴─┘└─┘ ┴ ┴└─┘┘└┘┴└─┘ ┴
 
 *PAID ACCESS REQUIRED TO PLAY MAPS*
 

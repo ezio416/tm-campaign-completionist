@@ -1,48 +1,27 @@
 // c 2024-01-02
 // m 2025-03-11
 
-enum MapSeries {
-    White,
-    Green,
-    Blue,
-    Red,
-    Black,
-    Unknown
-}
-
-enum Medal {
-    Unplayed = -1,
-    None     = 0,
-    Bronze   = 1,
-    Silver   = 2,
-    Gold     = 3,
-    Author   = 4,
-#if DEPENDENCY_WARRIORMEDALS
-    Warrior  = 5
-#endif
-}
-
 class Map {
-    Campaign@        campaign;
-    bool             gettingPB   = false;
-    string           id;
-    bool             loading     = false;
-    int              medals      = -1;
-    int              monthDay    = -1;
-    FormattedString@ name;
-    int              position    = -1;
-    MapSeries        series      = MapSeries::Unknown;
-    uint             timeAuthor  = uint(-1);
-    uint             timeBronze  = uint(-1);
-    uint             timeGold    = uint(-1);
-    uint             timeSilver  = uint(-1);
-    uint             timeWarrior = uint(-1);
-    string           uid;
-    string           url;
-    int              weekDay    = -1;
+    Campaign@    campaign;
+    bool         gettingPB   = false;
+    string       id;
+    bool         loading     = false;
+    int          medals      = -1;
+    int          monthDay    = -1;
+    String@      name;
+    int          position    = -1;
+    Maps::Series series      = Maps::Series::Unknown;
+    uint         timeAuthor  = uint(-1);
+    uint         timeBronze  = uint(-1);
+    uint         timeGold    = uint(-1);
+    uint         timeSilver  = uint(-1);
+    uint         timeWarrior = uint(-1);
+    string       uid;
+    string       url;
+    int          weekDay    = -1;
 
     string get_date() {
-        if (campaign is null || campaign.type != CampaignType::Totd)
+        if (campaign is null || campaign.type != Campaigns::Type::Totd)
             return "";
 
         return campaign.name.stripped + "-" + monthDay;
@@ -58,7 +37,7 @@ class Map {
         _pb = p;
         medals = GetMedals();
         // print(uid + " pb set to " + _pb);
-        Files::AddPB(this);
+        PB::Add(this);
     }
 
     string get_pbFmt() {
@@ -79,7 +58,7 @@ class Map {
         }
     }
 
-    bool Achieved(Medal medal) {
+    bool Achieved(Maps::Medal medal) {
         return medals >= medal;
     }
 
@@ -152,16 +131,39 @@ class Map {
     }
 }
 
-void AddMap(Map@ map) {
-    if (!allMaps.Exists(map.uid))
-        allMaps.Set(map.uid, @map);
-    else
-        warn("duplicate uid: " + map.uid);
-}
+namespace Maps {
+    enum Medal {
+        Unplayed = -1,
+        None     = 0,
+        Bronze   = 1,
+        Silver   = 2,
+        Gold     = 3,
+        Author   = 4,
+#if DEPENDENCY_WARRIORMEDALS
+        Warrior  = 5
+#endif
+    }
 
-Map@ GetMap(const string &in uid) {
-    if (!allMaps.Exists(uid))
-        return null;
+    enum Series {
+        White,
+        Green,
+        Blue,
+        Red,
+        Black,
+        Unknown
+    }
 
-    return cast<Map@>(allMaps[uid]);
+    void Add(Map@ map) {
+        if (!allMaps.Exists(map.uid))
+            allMaps.Set(map.uid, @map);
+        else
+            warn("duplicate: " + map.uid);
+    }
+
+    Map@ Get(const string &in uid) {
+        if (!allMaps.Exists(uid))
+            return null;
+
+        return cast<Map@>(allMaps[uid]);
+    }
 }

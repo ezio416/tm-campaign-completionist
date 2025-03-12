@@ -4,7 +4,6 @@
 dictionary@   allMaps           = dictionary();
 Campaign@[]   campaigns;
 bool          hasPlayPermission = false;
-bool          init              = false;
 const string  pluginColor       = "\\$0F0";
 const string  pluginIcon        = Icons::Check;
 Meta::Plugin@ pluginMeta        = Meta::ExecutingPlugin();
@@ -53,9 +52,9 @@ void GetMapsAsync() {
         campaigns = {};
         allMaps.DeleteAll();
 
-        API::Nadeo::GetMapsSeasonalAsync();
-        API::Nadeo::GetMapsWeeklyAsync();
-        API::Nadeo::GetMapsTotdAsync();
+        Http::Nadeo::GetMapsSeasonalAsync();
+        Http::Nadeo::GetMapsWeeklyAsync();
+        Http::Nadeo::GetMapsTotdAsync();
 
         string[]@ keys = allMaps.GetKeys();
         Manager::GetMapInfosAsync(keys);
@@ -63,13 +62,13 @@ void GetMapsAsync() {
 
         // Ordering of PB checking matters
         // Trust Nadeo's servers over anything local
-        Files::LoadPBs();
+        PB::Load();
         if (!S_Init) {
             Manager::GetPBsAsync(keys);
-            API::Nadeo::GetPBsAsync(keys);
+            Http::Nadeo::GetPBsAsync(keys);
             S_Init = true;
         }
-        Files::SavePBs();
+        PB::SaveAll();
 
     } catch {
         const string info = "GetMapsAsync " + getExceptionInfo();
@@ -97,7 +96,7 @@ void GetWarriorsAsync(string[]@ uids) {
     uint wm;
     for (uint i = 0; i < uids.Length; i++) {
         if (Driven((wm = WarriorMedals::GetWMTime(uids[i])))) {
-            GetMap(uids[i]).timeWarrior = wm;
+            Maps::Get(uids[i]).timeWarrior = wm;
             total++;
         }
     }
@@ -115,7 +114,7 @@ void PBLoop() {
         if (App.RootMap is null || App.Editor !is null)
             continue;
 
-        Map@ map = GetMap(App.RootMap.EdChallengeId);
+        Map@ map = Maps::Get(App.RootMap.EdChallengeId);
         if (map is null)
             continue;
 
@@ -123,7 +122,7 @@ void PBLoop() {
         map.GetPBAsync();
         if (prevPb != map.pb) {
             trace("PBLoop " + map.uid + " new pb " + Time::Format(map.pb));
-            Files::SavePBs();
+            PB::SaveAll();
         }
     }
 }
