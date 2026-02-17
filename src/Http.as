@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2025-03-11
+// m 2025-03-14
 
 namespace Http {
     bool requesting = false;
@@ -152,6 +152,7 @@ namespace Http {
         }
 
         void GetMapsSeasonalAsync() {
+            const uint64 start = Time::Now;
             trace("H:N:GetMapsSeasonalAsync");
 
             Net::HttpRequest@ req = Base::GetLiveAsync(
@@ -161,13 +162,13 @@ namespace Http {
 
             const int code = req.ResponseCode();
             if (code != 200) {
-                error("H:N:GetMapsSeasonalAsync " + code + "; " + req.Error() + "; " + req.String());
+                error("H:N:GetMapsSeasonalAsync failed after " + (Time::Now - start) + "ms | response: " + code + " | " + req.String());
                 return;
             }
 
             Json::Value@ json = req.Json();
             if (!JsonExt::CheckType(json)) {
-                error("H:N:GetMapsSeasonalAsync bad json data: " + Json::Write(json));
+                error("H:N:GetMapsSeasonalAsync failed after " + (Time::Now - start) + "ms | bad json data: " + Json::Write(json));
                 return;
             }
 
@@ -175,15 +176,18 @@ namespace Http {
 
             Json::Value@ campaignList = JsonExt::GetValue(json, "campaignList", Json::Type::Array);
             if (campaignList is null || campaignList.Length == 0) {
-                error("H:N:GetMapsSeasonalAsync bad/empty campaignList");
+                error("H:N:GetMapsSeasonalAsync failed after " + (Time::Now - start) + "ms | bad/empty campaignList");
                 return;
             }
 
             for (uint i = 0; i < campaignList.Length; i++)
-                campaigns.InsertLast(Campaign(campaignList[i], Campaigns::Type::Seasonal));
+                campaigns.InsertLast(Campaign::Campaign(campaignList[i], Campaign::Type::Seasonal));
+
+            trace("H:N:GetMapsSeasonalAsync " + campaignList.Length + " seasons done after " + (Time::Now - start) + "ms");
         }
 
         void GetMapsTotdAsync() {
+            const uint64 start = Time::Now;
             trace("H:N:GetMapsTotdAsync");
 
             Net::HttpRequest@ req = Base::GetLiveAsync(
@@ -193,13 +197,13 @@ namespace Http {
 
             const int code = req.ResponseCode();
             if (code != 200) {
-                error("H:N:GetMapsTotdAsync " + code + "; " + req.Error() + "; " + req.String());
+                error("H:N:GetMapsTotdAsync failed after " + (Time::Now - start) + "ms | response: " + code + " | " + req.String());
                 return;
             }
 
             Json::Value@ json = req.Json();
             if (!JsonExt::CheckType(json)) {
-                error("H:N:GetMapsTotdAsync bad json data: " + Json::Write(json));
+                error("H:N:GetMapsTotdAsync failed after " + (Time::Now - start) + "ms | bad json data: " + Json::Write(json));
                 return;
             }
 
@@ -207,15 +211,18 @@ namespace Http {
 
             Json::Value@ monthList = JsonExt::GetValue(json, "monthList", Json::Type::Array);
             if (monthList is null || monthList.Length == 0) {
-                error("H:N:GetMapsTotdAsync bad/empty monthList");
+                error("H:N:GetMapsTotdAsync failed after " + (Time::Now - start) + "ms | bad/empty monthList");
                 return;
             }
 
             for (uint i = 0; i < monthList.Length; i++)
-                campaigns.InsertLast(Campaign(monthList[i], Campaigns::Type::Totd));
+                campaigns.InsertLast(Campaign::Campaign(monthList[i], Campaign::Type::Totd));
+
+            trace("H:N:GetMapsTotdAsync " + monthList.Length + " months done after " + (Time::Now - start) + "ms");
         }
 
         void GetMapsWeeklyAsync() {
+            const uint64 start = Time::Now;
             trace("H:N:GetMapsWeeklyAsync");
 
             Net::HttpRequest@ req = Base::GetLiveAsync(
@@ -225,13 +232,13 @@ namespace Http {
 
             const int code = req.ResponseCode();
             if (code != 200) {
-                error("H:N:GetMapsWeeklyAsync: " + code + "; " + req.Error() + "; " + req.String());
+                error("H:N:GetMapsWeeklyAsync failed after " + (Time::Now - start) + "ms | response: " + code + " | " + req.String());
                 return;
             }
 
             Json::Value@ json = req.Json();
             if (!JsonExt::CheckType(json)) {
-                error("H:N:GetMapsWeeklyAsync: bad json data: " + Json::Write(json));
+                error("H:N:GetMapsWeeklyAsync failed after " + (Time::Now - start) + "ms | bad json data: " + Json::Write(json));
                 return;
             }
 
@@ -239,12 +246,14 @@ namespace Http {
 
             Json::Value@ campaignList = JsonExt::GetValue(json, "campaignList", Json::Type::Array);
             if (campaignList is null || campaignList.Length == 0) {
-                error("H:N:GetMapsWeeklyAsync: bad/empty campaignList");
+                error("H:N:GetMapsWeeklyAsync failed after " + (Time::Now - start) + "ms | bad/empty campaignList");
                 return;
             }
 
             for (uint i = 0; i < campaignList.Length; i++)
-                campaigns.InsertAt(0, Campaign(campaignList[i], Campaigns::Type::Weekly));
+                campaigns.InsertLast(Campaign::Campaign(campaignList[i], Campaign::Type::Weekly));
+
+            trace("H:N:GetMapsWeeklyAsync " + campaignList.Length + " weeks done after " + (Time::Now - start) + "ms");
         }
 
         void GetPBsAsync(string[]@ uids) {
@@ -294,16 +303,16 @@ namespace Http {
                     continue;
                 }
 
-                uint new = 0, score, total = 0;
-                string uid;
+                uint new   = 0;
+                uint score;
+                uint total = 0;
 
                 for (uint i = 0; i < data.Length; i++) {
                     Json::Value@ map_api = data[i];
                     if (!JsonExt::CheckType(map_api))
                         continue;
 
-                    uid = JsonExt::GetString(map_api, "mapUid");
-                    Map@ map = Maps::Get(uid);
+                    Map::Map@ map = Map::Get(JsonExt::GetString(map_api, "mapUid"));
                     if (map is null)
                         continue;
 
@@ -324,7 +333,7 @@ namespace Http {
                 uint missing = 0;
 
                 for (uint i = 0; i < count; i++) {
-                    Map@ map = Maps::Get(remaining[i]);
+                    Map::Map@ map = Map::Get(remaining[i]);
                     if (map is null)
                         continue;
 
@@ -334,7 +343,7 @@ namespace Http {
                     }
                 }
 
-                remaining = {};
+                remaining.RemoveRange(0, count);
 
                 if (missing > 0 || new > 0) {
                     trace("H:N:GetPBsAsync " + count + " PBs after " + (Time::Now - reqStart) + "ms (new/none): " + new + " | " + missing);

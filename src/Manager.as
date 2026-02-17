@@ -1,8 +1,10 @@
 // c 2025-03-11
-// m 2025-03-11
+// m 2025-03-14
 
 namespace Manager {
-    void GetMapInfoAsync(Map@ map) {
+    bool gettingPBs = false;
+
+    void GetMapInfoAsync(Map::Map@ map) {
         if (map is null)
             return;
 
@@ -29,7 +31,7 @@ namespace Manager {
                 throw("task failed: '" + map.uid + "'");
             }
 
-            @map.name      = String(task.Map.Name);
+            @map.name      = String::String(task.Map.Name);
             map.timeAuthor = task.Map.AuthorScore;
             map.timeGold   = task.Map.GoldScore;
             map.timeSilver = task.Map.SilverScore;
@@ -42,12 +44,12 @@ namespace Manager {
                 Title.DataFileMgr.TaskResult_Release(task.Id);
 
         } catch {
-            warn("M:GetMapInfoAsync " + map.uid + " failed after " + (Time::Now - start) + "ms: " + getExceptionInfo());
+            error("M:GetMapInfoAsync " + map.uid + " failed after " + (Time::Now - start) + "ms | " + getExceptionInfo());
         }
     }
 
     void GetMapInfoAsync(const string &in uid) {
-        GetMapInfoAsync(Maps::Get(uid));
+        GetMapInfoAsync(Map::Get(uid));
     }
 
     void GetMapInfosAsync(string[]@ uids) {
@@ -85,30 +87,45 @@ namespace Manager {
             for (uint i = 0; i < task.MapList.Length; i++) {
                 CNadeoServicesMap@ reqMap = task.MapList[i];
                 // print("got map '" + Text::OpenplanetFormatCodes(reqMap.Name) + "'");
-                Map@ map = Maps::Get(reqMap.Uid);
+                Map::Map@ map = Map::Get(reqMap.Uid);
 
                 map.timeAuthor = reqMap.AuthorScore;
                 map.timeGold   = reqMap.GoldScore;
                 map.timeSilver = reqMap.SilverScore;
                 map.timeBronze = reqMap.BronzeScore;
-                @map.name      = String(reqMap.Name);
+                @map.name      = String::String(reqMap.Name);
+                map.url        = reqMap.FileUrl;
             }
 
-            trace("M:GetMapInfosAsync " + task.MapList.Length + " maps after " + (Time::Now - start) + "ms");
+            trace("M:GetMapInfosAsync " + task.MapList.Length + " maps done after " + (Time::Now - start) + "ms");
 
             if (Title !is null && Title.DataFileMgr !is null)
                 Title.DataFileMgr.TaskResult_Release(task.Id);
 
         } catch {
-            warn("M:GetMapInfosAsync failed after " + (Time::Now - start) + "ms: " + getExceptionInfo());
+            error("M:GetMapInfosAsync failed after " + (Time::Now - start) + "ms | " + getExceptionInfo());
         }
+    }
+
+    void GetMapInfosAsync(Map::Map@[]@ maps) {
+        if (maps is null || maps.Length == 0)
+            return;
+
+        string[] uids;
+
+        for (uint i = 0; i < maps.Length; i++) {
+            if (maps[i] !is null)
+                uids.InsertLast(maps[i].uid);
+        }
+
+        GetMapInfosAsync(uids);
     }
 
     void GetMapInfosAsync() {
         GetMapInfosAsync(allMaps.GetKeys());
     }
 
-    void GetPB(Map@ map) {
+    void GetPB(Map::Map@ map) {
         if (map is null)
             return;
 
@@ -139,10 +156,10 @@ namespace Manager {
     }
 
     void GetPB(const string &in uid) {
-        GetPB(Maps::Get(uid));
+        GetPB(Map::Get(uid));
     }
 
-    void GetPBAsync(Map@ map) {
+    void GetPBAsync(Map::Map@ map) {
         if (map is null)
             return;
 
@@ -183,12 +200,12 @@ namespace Manager {
                 Title.DataFileMgr.TaskResult_Release(task.Id);
 
         } catch {
-            warn("M:GetPBAsync " + map.uid + " failed after " + (Time::Now - start) + "ms: " + getExceptionInfo());
+            error("M:GetPBAsync " + map.uid + " failed after " + (Time::Now - start) + "ms | " + getExceptionInfo());
         }
     }
 
     void GetPBAsync(const string &in uid) {
-        GetPBAsync(Maps::Get(uid));
+        GetPBAsync(Map::Get(uid));
     }
 
     void GetPBs(string[]@ uids) {
@@ -204,8 +221,10 @@ namespace Manager {
     }
 
     void GetPBsAsync(string[]@ uids) {
-        if (uids is null || uids.Length == 0)
+        if (gettingPBs || uids is null || uids.Length == 0)
             return;
+
+        gettingPBs = true;
 
         const uint64 start = Time::Now;
         trace("M:GetPBsAsync " + uids.Length + " maps");
@@ -214,6 +233,7 @@ namespace Manager {
             GetPBAsync(uids[i]);
 
         trace("M:GetPBsAsync " + uids.Length + " maps done after " + (Time::Now - start) + "ms");
+        gettingPBs = false;
     }
 
     void GetPBsAsync() {

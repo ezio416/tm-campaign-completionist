@@ -1,25 +1,25 @@
 // c 2024-10-22
-// m 2025-03-11
+// m 2025-03-14
 
 namespace PB {
     bool         loaded = false;
     const string path   = IO::FromStorageFolder("pbs.json").Replace("\\", "/");
     Json::Value@ pbs    = Json::Object();
 
-    void Add(Map@ map) {
+    void Add(Map::Map@ map) {
         if (map !is null && map.driven)
             pbs[map.uid] = map.pb;
     }
 
     void Add(const string &in uid) {
-        Add(Maps::Get(uid));
+        Add(Map::Get(uid));
     }
 
     uint Get(const string &in uid) {
         return pbs.HasKey(uid) ? JsonExt::GetUint(pbs, uid) : uint(-1);
     }
 
-    uint Get(Map@ map) {
+    uint Get(Map::Map@ map) {
         return map !is null ? Get(map.uid) : uint(-1);
     }
 
@@ -58,7 +58,7 @@ namespace PB {
                 continue;
             }
 
-            Map@ map = Maps::Get(uid);
+            Map::Map@ map = Map::Get(uid);
             if (map is null) {
                 warn("P:Load map is null: " + uid);
                 continue;
@@ -70,10 +70,10 @@ namespace PB {
         }
 
         loaded = true;
-        trace("P:Load " + pbs.Length + (missing > 0 ? " (" + missing + " missing)" : "") + " done after " + (Time::Now - start) + "ms");
+        trace("P:Load " + pbs.Length + (missing > 0 ? " (" + missing + " missing)" : "") + " PBs done after " + (Time::Now - start) + "ms");
     }
 
-    void Save(Map@ map) {
+    void Save(Map::Map@ map) {
         if (map !is null) {
             Add(map);
             SaveAll();
@@ -81,7 +81,7 @@ namespace PB {
     }
 
     void Save(const string &in uid) {
-        Save(Maps::Get(uid));
+        Save(Map::Get(uid));
     }
 
     void SaveAll() {
@@ -89,11 +89,11 @@ namespace PB {
             return;
 
         const uint64 start = Time::Now;
-        trace("P:SaveAll " + pbs.Length);
+        trace("P:SaveAll " + pbs.Length + " PBs");
 
         try {
             Json::ToFile(path, pbs, true);
-            trace("P:SaveAll " + pbs.Length + " done after " + (Time::Now - start) + "ms");
+            trace("P:SaveAll " + pbs.Length + " PBs done after " + (Time::Now - start) + "ms");
         } catch {
             error("P:SaveAll " + pbs.Length + " failed after " + (Time::Now - start) + "ms: " + getExceptionInfo());
         }

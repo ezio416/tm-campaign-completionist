@@ -1,0 +1,52 @@
+// c 2025-03-14
+// m 2025-03-16
+
+// MARK: includes
+#Include "MathLib" as ML
+#Include "TextLib" as TL
+
+#Include "Libs/Nadeo/Trackmania/MainMenu/TitleControl.Script.txt" as TitleControl
+
+// MARK: constants
+#Const C_CampaignType_None     -1
+#Const C_CampaignType_Quarterly 0
+#Const C_CampaignType_Monthly   1
+#Const C_CampaignType_Club      2
+#Const C_CampaignType_Royal     3
+#Const C_CampaignType_Weekly    5
+
+#Const C_EventType_PlayMap     "CampComp.PlayMap"
+#Const C_EventType_PlayMapList "CampComp.PlayMapList"
+
+// MARK: functions
+main() {
+    // TitleControl::PlayMap(
+    //     TitleControl,
+    //     "https://core.trackmania.nadeo.live/maps/abf1f2cf-9841-469d-889a-410e4800b8de/file",
+    //     "TrackMania/TM_PlayMap_Local",
+    //     ""
+    // );
+
+    while (True) {
+        yield;
+
+        foreach (Event in PendingEvents) {
+            if (Event.CustomEventType == C_EventType_PlayMap) {
+                TitleControl::PlayMap(
+                    TitleControl,
+                    "https://core.trackmania.nadeo.live/maps/abf1f2cf-9841-469d-889a-410e4800b8de/file",
+                    "TrackMania/TM_PlayMap_Local",
+                    ""
+                );
+                // if (Event.CustomEventData.count > 0) {
+                    //     TitleControl::PlayMap(
+                    //         TitleControl,
+                    //         Event.CustomEventData[0],
+                    //         "TrackMania/TM_PlayMap_Local",
+                    //         ""
+                    //     );
+                    // }
+                }
+            }
+        }
+}

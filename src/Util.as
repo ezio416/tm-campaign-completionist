@@ -1,5 +1,5 @@
 // c 2024-01-02
-// m 2025-03-11
+// m 2025-03-21
 
 bool Driven(uint time) {
     return time != uint(-1) && time != 0;
@@ -65,7 +65,4 @@ void ReturnToMenuAsync() {
         );
 
     App.BackToMainMenu();
-
-    while (!App.ManiaTitleControlScriptAPI.IsReady)
-        yield();
 }

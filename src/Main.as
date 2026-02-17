@@ -1,50 +1,61 @@
 // c 2024-01-01
-// m 2025-03-11
+// m 2025-03-14
 
-dictionary@   allMaps           = dictionary();
-Campaign@[]   campaigns;
-bool          hasPlayPermission = false;
-const string  pluginColor       = "\\$0F0";
-const string  pluginIcon        = Icons::Check;
-Meta::Plugin@ pluginMeta        = Meta::ExecutingPlugin();
-const string  pluginTitle       = pluginColor + pluginIcon + "\\$G " + pluginMeta.Name;
-const float   scale             = UI::GetScale();
+dictionary@           allMaps           = dictionary();
+Campaign::Campaign@[] campaigns;
+UI::Font@             fontHeader;
+UI::Font@             fontSubHeader;
+bool                  hasPlayPermission = false;
+const string          pluginColor       = "\\$0F0";
+const string          pluginIcon        = Icons::Check;
+Meta::Plugin@         pluginMeta        = Meta::ExecutingPlugin();
+const string          pluginTitle       = pluginColor + pluginIcon + "\\$G " + pluginMeta.Name;
+const float           scale             = UI::GetScale();
+const float           indentWidth       = scale * 20.0f;
+string                script;
 
 void Main() {
-    if (Permissions::PlayLocalMap())
-        hasPlayPermission = true;
-    else {
-        warn("Paid access required to play maps");
-
-        if (S_NotifyStarter)
-            UI::ShowNotification(
-                pluginTitle,
-                "Paid access is required to play maps, but you can still track your progress on"
-                " the first 10 maps of current Nadeo Campaign and the current Weekly Shorts",
-                vec4(1.0f, 0.1f, 0.1f, 0.8f)
-            );
+    if (!(hasPlayPermission = Permissions::PlayLocalMap())) {
+        const string msg = "This plugin requires Club access";
+        UI::ShowNotification(PluginTitle(), msg, vec4(1.0f, 0.1f, 0.1f, 0.8f), 15000);
+        throw(msg);
     }
 
     startnew(GetMapsAsync);
     startnew(PBLoop);
+
+    Color::SetAll();
+
+    // IO::FileSource file("src/ML.Script.txt");
+    // script = "\n<script><!--\n\n" + file.ReadToEnd() + "\n--></script>\n";
+    // MLHook::InjectManialinkToMenu("CampaignCompletionist", script, true);
 }
 
 void Render() {
     if (false
-        || !S_Enabled
-        || (S_HideWithGame && !UI::IsGameUIVisible())
-        || (S_HideWithOP && !UI::IsOverlayShown())
+        || !hasPlayPermission
+        || !S_WindowDetached
+        || (S_WindowHideWithGame && !UI::IsGameUIVisible())
+        || (S_WindowHideWithOP && !UI::IsOverlayShown())
     )
         return;
 
-    if (UI::Begin(PluginTitle() + "###campcomp-main", S_Enabled, UI::WindowFlags::None))
-        RenderWindow();
+    if (UI::Begin(
+        PluginTitle() + "###campcomp-main",
+        S_WindowDetached,
+        UI::WindowFlags::None
+    ))
+        RenderWindow(Windows::Source::Detached);
     UI::End();
 }
 
 void RenderMenu() {
-    if (UI::MenuItem(pluginTitle, "", S_Enabled))
-        S_Enabled = !S_Enabled;
+    if (!hasPlayPermission || !UI::BeginMenu(pluginTitle))
+        return;
+
+    RenderWindow(Windows::Source::Menu);
+
+    UI::EndMenu();
 }
 
 void GetMapsAsync() {
@@ -96,13 +107,17 @@ void GetWarriorsAsync(string[]@ uids) {
     uint wm;
     for (uint i = 0; i < uids.Length; i++) {
         if (Driven((wm = WarriorMedals::GetWMTime(uids[i])))) {
-            Maps::Get(uids[i]).timeWarrior = wm;
+            Map::Get(uids[i]).timeWarrior = wm;
             total++;
         }
     }
 
-    trace("GetWarriorsAsync " + total + "/" + allMaps.GetSize() + " maps after " + (Time::Now - start) + "ms");
+    trace("GetWarriorsAsync " + total + "/" + allMaps.GetSize() + " maps done after " + (Time::Now - start) + "ms");
 #endif
+}
+
+void GetWarriorsAsync() {
+    GetWarriorsAsync(allMaps.GetKeys());
 }
 
 void PBLoop() {
@@ -114,7 +129,7 @@ void PBLoop() {
         if (App.RootMap is null || App.Editor !is null)
             continue;
 
-        Map@ map = Maps::Get(App.RootMap.EdChallengeId);
+        Map::Map@ map = Map::Get(App.RootMap.EdChallengeId);
         if (map is null)
             continue;
 

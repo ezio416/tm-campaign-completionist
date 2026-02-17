@@ -1,14 +1,16 @@
 // c 2025-03-03
-// m 2025-03-11
+// m 2025-03-12
 
-void RenderWindow() {
-    UI::BeginDisabled(Http::Nadeo::requesting);
-    if (UI::Button("Get Maps"))
-        startnew(GetMapsAsync);
-    if (UI::Button("A:GetPBsAsync"))
-        startnew(Http::Nadeo::GetPBsAsync);
-    UI::EndDisabled();
+void RenderWindow(Windows::Source source) {
+    Settings::Render();
 
-    if (UI::Button("M:GetPBsAsync"))
-        startnew(Manager::GetPBsAsync);
+    ;
+}
+
+namespace Windows {
+    enum Source {
+        Detached,
+        Menu,
+        Settings
+    }
 }
