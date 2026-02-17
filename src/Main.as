@@ -1,6 +1,3 @@
-// c 2024-01-01
-// m 2024-11-25
-
 string       accountId;
 bool         allTarget         = false;
 const string audienceCore      = "NadeoServices";

@@ -1,6 +1,3 @@
-// c 2024-01-02
-// m 2024-11-25
-
 bool         cancel = false;
 const string pbFile = IO::FromStorageFolder("pbs.json").Replace("\\", "/");
 Json::Value@ pbs    = Json::Object();

@@ -1,6 +1,3 @@
-// c 2024-01-02
-// m 2024-12-22
-
 uint64       latestNandoRequest   = 0;
 Json::Value@ mapsCampaignFromFile = Json::Object();
 Json::Value@ mapsTotdFromFile     = Json::Object();

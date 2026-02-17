@@ -1,6 +1,3 @@
-// c 2024-01-23
-// m 2024-11-25
-
 const string bookmarkedFile = IO::FromStorageFolder("bookmarks.json").Replace("\\", "/");
 Json::Value@ bookmarkedUids = Json::Object();
 Map@[]       mapsBookmarked;

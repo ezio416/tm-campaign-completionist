@@ -1,6 +1,3 @@
-// c 2024-01-02
-// m 2024-11-25
-
 bool loadingMap = false;
 
 class Map {
